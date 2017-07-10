@@ -24,18 +24,30 @@ enum OperationResult
   TIME_OUT = 4
 };
 
-class NetworkBase
+class NetworkBase: public QObject
 {
+  Q_OBJECT
 public:
-  NetworkBase();
+  NetworkBase(QString address, int port);
   virtual ~NetworkBase();
+
+  SocketState State() { return state; }
+
+  void ConnectToHost();
+  void ConnectToHost(QString hostAddress, int hostPort);
+
+public slots:
+  void SlotConnected();
+  void SlotReadyRead();
+  void SlotError(QAbstractSocket::SocketError);
 
 protected:
   QString address;
   int port;
-  QTcpSocket clientSocket;
+  QTcpSocket* clientSocket;
   QByteArray recievedData;
   SocketState state;
+
 };
 
 #endif
