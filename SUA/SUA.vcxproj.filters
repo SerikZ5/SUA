@@ -36,6 +36,9 @@
     <Filter Include="ProtocolLogic">
       <UniqueIdentifier>{128804a6-6bbc-439b-b305-a0acef27f38f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{805462d6-cda2-4bb2-8dae-81d5d1371c8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -56,6 +59,15 @@
     <ClCompile Include="Protocol.cpp">
       <Filter>ProtocolLogic</Filter>
     </ClCompile>
+    <ClCompile Include="CommandAnswer.cpp">
+      <Filter>ProtocolLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandNetwork.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkBase.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="sua.h">
@@ -74,6 +86,15 @@
     </ClInclude>
     <ClInclude Include="Protocol.h">
       <Filter>ProtocolLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandAnswer.h">
+      <Filter>ProtocolLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandNetwork.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkBase.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -119,17 +119,17 @@ QByteArray Protocol::SetDNAZenith(float dnaZenith)
   if (dnaZenith >= 0 && dnaZenith <= 99.9f)
   {
     arr.push_back(QString("N4").toLatin1());
-    string arg = string.Format("{0:00.0}", dnaZenith);
+    QString arg = QString("%1").arg(dnaZenith, 3, 'f', 1, QChar('0'));
     arg.replace(",", ".");
-    arr.push_back(QString(arg).toLatin1());
+    arr.push_back(arg.toLatin1());
     arr.push_back(QString("\r\n").toLatin1());
   }
   else if (dnaZenith < 0 && dnaZenith >= -99.9f)
   {
     arr.push_back(QString("N5-").toLatin1());
     dnaZenith *= (-1);
-    string arg = string.Format("{0:00.0}", dnaZenith);
-    arg.Replace(",", ".");
+    QString arg = QString("%1").arg(dnaZenith, 3, 'f', 1, QChar('0'));
+    arg.replace(",", ".");
     arr.push_back(QString(arg).toLatin1());
     arr.push_back(QString("\r\n").toLatin1());
   }
@@ -141,7 +141,7 @@ QByteArray Protocol::SetDNAZenith(float dnaZenith)
 }
 
 
-QByteArray Protocol::SetMovementOptions(RotatePlane plane, Int32 acceleration, Int32 velocity, Int32 braking)
+QByteArray Protocol::SetMovementOptions(RotatePlane plane, int acceleration, int velocity, int braking)
 {
   QByteArray arr;
   arr.push_back(preambula);
@@ -163,7 +163,7 @@ QByteArray Protocol::SetMovementOptions(RotatePlane plane, Int32 acceleration, I
   arr.push_back(QString("7").toLatin1());
   if (acceleration >= 1 && acceleration <= 24)
   {
-    string arg = string.Format("{0:00}", acceleration);
+    QString arg = QString("%1").arg(acceleration, 2, 10, QChar('0'));
     arr.push_back(QString(arg).toLatin1());
   }
   else
@@ -172,7 +172,7 @@ QByteArray Protocol::SetMovementOptions(RotatePlane plane, Int32 acceleration, I
   }
   if (velocity >= 0 && velocity <= 250)
   {
-    string arg = string.Format("{0:000}", velocity);
+    QString arg = QString("%1").arg(velocity, 3, 10, QChar('0'));
     arr.push_back(QString(arg).toLatin1());
   }
   else
@@ -181,7 +181,7 @@ QByteArray Protocol::SetMovementOptions(RotatePlane plane, Int32 acceleration, I
   }
   if (braking >= 1 && braking <= 24)
   {
-    string arg = string.Format("{0:00}", braking);
+    QString arg = QString("%1").arg(braking, 2, 10, QChar('0'));
     arr.push_back(QString(arg).toLatin1());
   }
   else
@@ -214,7 +214,7 @@ QByteArray Protocol::SetPositioningOptions(RotatePlane plane, int speed, int zer
   arr.push_back(QString("6").toLatin1());
   if (speed >= 0 && speed <= 250)
   {
-    string arg = string.Format("{0:000}", speed);
+    QString arg = QString("%1").arg(speed, 3, 10, QChar('0'));
     arr.push_back(QString(arg).toLatin1());
   }
   else
