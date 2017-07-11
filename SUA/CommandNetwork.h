@@ -6,7 +6,7 @@
 class CommandNetwok : public NetworkBase
 {
 public:
-  CommandNetwok();
+  CommandNetwok(QString address, int port);
   virtual ~CommandNetwok();
 
 private:

@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClCompile Include="CommandAnswer.cpp" />
     <ClCompile Include="CommandNetwork.cpp" />
+    <ClCompile Include="GeneratedFiles\Debug\moc_NetworkBase.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_sua.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -161,6 +162,7 @@
     <ClCompile Include="NetworkBase.cpp" />
     <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="sua.cpp" />
+    <ClCompile Include="TelemetryNetwork.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="sua.h">
@@ -206,7 +208,9 @@
     <ClInclude Include="CommandAnswer.h" />
     <ClInclude Include="CommandNetwork.h" />
     <ClInclude Include="GeneratedFiles\ui_sua.h" />
-    <ClInclude Include="NetworkBase.h" />
+    <ClInclude Include="TelemetryNetwork.h" />
+    <ClInclude Include="TelemetryPacket.h" />
+    <CustomBuild Include="NetworkBase.h" />
     <ClInclude Include="Protocol.h" />
   </ItemGroup>
   <ItemGroup>

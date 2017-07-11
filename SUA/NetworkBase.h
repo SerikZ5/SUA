@@ -15,15 +15,6 @@ enum SocketState
   ERROR = 5
 };
 
-enum OperationResult
-{
-  CONNECTED = 0,
-  CONNECTION_FAILED = 1,
-  DISCONNECTED = 2,
-  DISCONNECTION_FAILED = 3,
-  TIME_OUT = 4
-};
-
 class NetworkBase: public QObject
 {
   Q_OBJECT
@@ -34,20 +25,24 @@ public:
   SocketState State() { return state; }
 
   void ConnectToHost();
-  void ConnectToHost(QString hostAddress, int hostPort);
+  void ConnectToHost(QString hostAddress, int hostPort); 
+  void DisconnectFromHost();
+
+  void Send(QByteArray data);
 
 public slots:
-  void SlotConnected();
   void SlotReadyRead();
+  void OnStateChanged(QAbstractSocket::SocketState);
   void SlotError(QAbstractSocket::SocketError);
+
+signals:
+  void NetworkStateChanged(SocketState);
 
 protected:
   QString address;
   int port;
   QTcpSocket* clientSocket;
-  QByteArray recievedData;
   SocketState state;
-
 };
 
 #endif

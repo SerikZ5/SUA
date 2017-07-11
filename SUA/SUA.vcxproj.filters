@@ -68,6 +68,12 @@
     <ClCompile Include="NetworkBase.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_NetworkBase.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="TelemetryNetwork.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="sua.h">
@@ -78,6 +84,9 @@
     </CustomBuild>
     <CustomBuild Include="sua.qrc">
       <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="NetworkBase.h">
+      <Filter>Network</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -93,8 +102,11 @@
     <ClInclude Include="CommandNetwork.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkBase.h">
+    <ClInclude Include="TelemetryNetwork.h">
       <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="TelemetryPacket.h">
+      <Filter>ProtocolLogic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
