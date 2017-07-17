@@ -77,6 +77,9 @@
     <ClCompile Include="TelemetryDecoder.cpp">
       <Filter>ProtocolLogic</Filter>
     </ClCompile>
+    <ClCompile Include="RecievedArray.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="sua.h">
@@ -113,6 +116,9 @@
     </ClInclude>
     <ClInclude Include="TelemetryDecoder.h">
       <Filter>ProtocolLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="RecievedArray.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
