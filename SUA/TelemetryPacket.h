@@ -17,10 +17,10 @@ struct TelemetryPacket
   float azimuth;
   float zenith;
   float temperature;
-  QString workmode;
+  QString workMode;
   QString error;
-  float UAVazimuth;
-  float UAVzenith;
+  float uavAzimuth;
+  float uavZenith;
   uint distance;
   int heightGPS;
 };

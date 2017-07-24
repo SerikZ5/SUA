@@ -36,27 +36,28 @@ TelemetryPacket TelemetryDecored::GetTelemetryPacket()
     }
     try
     {
-      packet.Time = Encoding.ASCII.GetString(arr, 6, 19);//ok
-      packet.Latitude = float.Parse(Encoding.ASCII.GetString(arr, 44, 9).Replace(".", ","));//ok
-      packet.Longitude = float.Parse(Encoding.ASCII.GetString(arr, 54, 9).Replace(".", ","));//ok
-      packet.Height = float.Parse(Encoding.ASCII.GetString(arr, 72, 8).Replace(".", ","));//ok
-      packet.Status = Encoding.ASCII.GetString(arr, 89, 3);//ok
-      packet.UAVLatitude = float.Parse(Encoding.ASCII.GetString(arr, 110, 9).Replace(".", ","));//ok
-      packet.UAVLongitude = float.Parse(Encoding.ASCII.GetString(arr, 120, 9).Replace(".", ","));//ok
-      packet.UAVAltitude = float.Parse(Encoding.ASCII.GetString(arr, 141, 8).Replace(".", ","));//ok
-      packet.Direction = float.Parse(Encoding.ASCII.GetString(arr, 156, 5).Replace(".", ","));//ok
-      packet.Azimuth = float.Parse(Encoding.ASCII.GetString(arr, 168, 5).Replace(".", ","));//ok
-      packet.Zenith = float.Parse(Encoding.ASCII.GetString(arr, 174, 5).Replace(".", ","));//ok
-      packet.Temperature = float.Parse(Encoding.ASCII.GetString(arr, 183, 5).Replace(".", ","));//ok
-      arr[189] |= 0x80;
-      packet.WorkMode = Convert.ToString(arr[189], 2);
-      arr[191] |= 0x80;
-      packet.Error = Convert.ToString(arr[191], 2);
-      packet.UAVAzimuth = float.Parse(Encoding.ASCII.GetString(arr, 200, 5).Replace(".", ","));//ok
-      packet.UAVZenith = float.Parse(Encoding.ASCII.GetString(arr, 206, 5).Replace(".", ","));//ok
+      packet.time = QString(inputBytes.mid(6, 19));
+      packet.latitude = QString(inputBytes.mid(44, 9)).replace(".", ",").toFloat();
+      packet.longitude = QString(inputBytes.mid(54, 9)).replace(".", ",").toFloat();
+      packet.height = QString(inputBytes.mid(72, 8)).replace(".", ",").toFloat();
+      packet.status = QString(89, 3);
+      packet.uavLatitude = QString(inputBytes.mid(110, 9)).replace(".", ",").toFloat();
+      packet.uavLongitude = QString(inputBytes.mid(120, 9)).replace(".", ",").toFloat();
+      packet.uavAltitude = QString(inputBytes.mid(141, 8)).replace(".", ",").toFloat();
+      packet.direction = QString(inputBytes.mid(156, 5)).replace(".", ",").toFloat();
+      packet.azimuth = QString(inputBytes.mid(168, 5)).replace(".", ",").toFloat();
+      packet.zenith = QString(inputBytes.mid(174, 5)).replace(".", ",").toFloat();
+      packet.temperature = QString(inputBytes.mid(183, 5)).replace(".", ",").toFloat();
+      //arr[189] |= 0x80;
+      workmode - QString от int в двоичной системе координат;
+      packet.workMode = QString("%1").arg( inputBytes[189], 8, 2);
+      //arr[191] |= 0x80;
+      packet.error = QString(inputBytes[191], 2);
+      packet.uavAzimuth = QString(inputBytes.mid(200, 5)).replace(".", ",").toFloat();
+      packet.uavZenith = QString(inputBytes.mid(206, 5)).replace(".", ",").toFloat();
 
-      double dLatitude = qAbs(packet.Latitude - packet.UAVLatitude) / 180 * M_PI;
-      double dLongitude = Math.Abs(packet.Longitude - packet.UAVLongitude) / 180 * M_PI;
+      double dLatitude = qAbs(packet.latitude - packet.uavLatitude) / 180 * M_PI;
+      double dLongitude = Math.Abs(packet.longitude - packet.uavLongitude) / 180 * M_PI;
       double LatitudeUAV = packet.uavLatitude / 180 * M_PI;
       double LatitudeBase = packet.latitude / 180 * M_PI;
       double a = qPow(qSin(dLatitude / 2), 2) + qCos(LatitudeBase) * qCos(LatitudeUAV) * qPow(qSin(dLongitude / 2), 2);
