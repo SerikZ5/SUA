@@ -39,6 +39,9 @@
     <Filter Include="Network">
       <UniqueIdentifier>{805462d6-cda2-4bb2-8dae-81d5d1371c8e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Spoiler">
+      <UniqueIdentifier>{947a0cb4-b228-49b4-a6a3-15daec81404b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -74,11 +77,11 @@
     <ClCompile Include="TelemetryNetwork.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="TelemetryDecoder.cpp">
-      <Filter>ProtocolLogic</Filter>
+    <ClCompile Include="Spoiler.cpp">
+      <Filter>Spoiler</Filter>
     </ClCompile>
-    <ClCompile Include="RecievedArray.cpp">
-      <Filter>Network</Filter>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Spoiler.cpp">
+      <Filter>Generated Files\Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +96,9 @@
     </CustomBuild>
     <CustomBuild Include="NetworkBase.h">
       <Filter>Network</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Spoiler.h">
+      <Filter>Spoiler</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -113,15 +119,6 @@
     </ClInclude>
     <ClInclude Include="TelemetryPacket.h">
       <Filter>ProtocolLogic</Filter>
-    </ClInclude>
-    <ClInclude Include="TelemetryDecoder.h">
-      <Filter>ProtocolLogic</Filter>
-    </ClInclude>
-    <ClInclude Include="RecievedArray.h">
-      <Filter>Network</Filter>
-    </ClInclude>
-    <ClInclude Include="Spoiler.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

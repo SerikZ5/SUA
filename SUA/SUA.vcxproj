@@ -140,6 +140,7 @@
     <ClCompile Include="CommandAnswer.cpp" />
     <ClCompile Include="CommandNetwork.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_NetworkBase.cpp" />
+    <ClCompile Include="GeneratedFiles\Debug\moc_Spoiler.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_sua.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -161,9 +162,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkBase.cpp" />
     <ClCompile Include="Protocol.cpp" />
-    <ClCompile Include="RecievedArray.cpp" />
+    <ClCompile Include="Spoiler.cpp" />
     <ClCompile Include="sua.cpp" />
-    <ClCompile Include="TelemetryDecoder.cpp" />
     <ClCompile Include="TelemetryNetwork.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -210,9 +210,7 @@
     <ClInclude Include="CommandAnswer.h" />
     <ClInclude Include="CommandNetwork.h" />
     <ClInclude Include="GeneratedFiles\ui_sua.h" />
-    <ClInclude Include="RecievedArray.h" />
-    <ClInclude Include="TelemetryDecoder.h" />
-    <ClInclude Include="Spoiler.h" />
+    <CustomBuild Include="Spoiler.h" />
     <ClInclude Include="TelemetryNetwork.h" />
     <ClInclude Include="TelemetryPacket.h" />
     <CustomBuild Include="NetworkBase.h" />
