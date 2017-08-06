@@ -161,7 +161,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkBase.cpp" />
     <ClCompile Include="Protocol.cpp" />
+    <ClCompile Include="RecievedArray.cpp" />
     <ClCompile Include="sua.cpp" />
+    <ClCompile Include="TelemetryDecoder.cpp" />
     <ClCompile Include="TelemetryNetwork.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +210,8 @@
     <ClInclude Include="CommandAnswer.h" />
     <ClInclude Include="CommandNetwork.h" />
     <ClInclude Include="GeneratedFiles\ui_sua.h" />
+    <ClInclude Include="RecievedArray.h" />
+    <ClInclude Include="TelemetryDecoder.h" />
     <ClInclude Include="Spoiler.h" />
     <ClInclude Include="TelemetryNetwork.h" />
     <ClInclude Include="TelemetryPacket.h" />
