@@ -108,5 +108,8 @@
     <ClInclude Include="TelemetryPacket.h">
       <Filter>ProtocolLogic</Filter>
     </ClInclude>
+    <ClInclude Include="Spoiler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

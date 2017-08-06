@@ -208,6 +208,7 @@
     <ClInclude Include="CommandAnswer.h" />
     <ClInclude Include="CommandNetwork.h" />
     <ClInclude Include="GeneratedFiles\ui_sua.h" />
+    <ClInclude Include="Spoiler.h" />
     <ClInclude Include="TelemetryNetwork.h" />
     <ClInclude Include="TelemetryPacket.h" />
     <CustomBuild Include="NetworkBase.h" />
