@@ -13,6 +13,8 @@ public:
     ~SUA();
 
 private:
+    void addSpoilers();
+
     Ui::SUAClass ui;
 };
 

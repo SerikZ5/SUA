@@ -49,15 +49,15 @@ TelemetryPacket TelemetryDecored::GetTelemetryPacket()
       packet.zenith = QString(inputBytes.mid(174, 5)).replace(".", ",").toFloat();
       packet.temperature = QString(inputBytes.mid(183, 5)).replace(".", ",").toFloat();
       //arr[189] |= 0x80;
-      workmode - QString от int в двоичной системе координат;
-      packet.workMode = QString("%1").arg( inputBytes[189], 8, 2);
+      //workmode - QString от int в двоичной системе координат;
+      packet.workMode = QString("%1").arg((int)inputBytes[189], 8, 2);
       //arr[191] |= 0x80;
-      packet.error = QString(inputBytes[191], 2);
+      packet.error = QString("%1").arg((int)inputBytes[191], 8, 2);
       packet.uavAzimuth = QString(inputBytes.mid(200, 5)).replace(".", ",").toFloat();
       packet.uavZenith = QString(inputBytes.mid(206, 5)).replace(".", ",").toFloat();
 
       double dLatitude = qAbs(packet.latitude - packet.uavLatitude) / 180 * M_PI;
-      double dLongitude = Math.Abs(packet.longitude - packet.uavLongitude) / 180 * M_PI;
+      double dLongitude = qAbs(packet.longitude - packet.uavLongitude) / 180 * M_PI;
       double LatitudeUAV = packet.uavLatitude / 180 * M_PI;
       double LatitudeBase = packet.latitude / 180 * M_PI;
       double a = qPow(qSin(dLatitude / 2), 2) + qCos(LatitudeBase) * qCos(LatitudeUAV) * qPow(qSin(dLongitude / 2), 2);
