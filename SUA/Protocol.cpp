@@ -147,12 +147,12 @@ QByteArray Protocol::SetMovementOptions(RotatePlane plane, int acceleration, int
   arr.push_back(preambula);
   switch (plane)
   {
-  case RotatePlane.AZIMUTH:
+  case RotatePlane::AZIMUTH:
   {
     arr.push_back(QString("5").toLatin1());
     break;
   }
-  case RotatePlane.ZENITH:
+  case RotatePlane::ZENITH:
   {
     arr.push_back(QString("6").toLatin1());
     break;
@@ -198,12 +198,12 @@ QByteArray Protocol::SetPositioningOptions(RotatePlane plane, int speed, int zer
   arr.push_back(preambula);
   switch (plane)
   {
-  case RotatePlane.AZIMUTH:
+  case RotatePlane::AZIMUTH:
   {
     arr.push_back(QString("7").toLatin1());
     break;
   }
-  case RotatePlane.ZENITH:
+  case RotatePlane::ZENITH:
   {
     arr.push_back(QString("8").toLatin1());
     break;
