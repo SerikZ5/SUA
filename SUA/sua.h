@@ -13,7 +13,7 @@ public:
     ~SUA();
 
 private:
-    void addSpoilers();
+    //void addSpoilers();
 
     Ui::SUAClass ui;
 };

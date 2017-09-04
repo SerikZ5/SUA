@@ -16,13 +16,14 @@ public:
   explicit Spoiler(const QString & title = "", const int animationDuration = 300, QWidget *parent = 0);
 
   void setContentLayout(QLayout* contentLayout);
+  void setContentWidget(QWidget* content);
 
 private:
-  QGridLayout mainLayout;
+  void countAnimation(int collapsedHeight, int contentHeight);
+
   QToolButton toggleButton;
-  QFrame headerLine;
-  QParallelAnimationGroup toggleAnimation;
   QScrollArea contentArea;
+  QParallelAnimationGroup toggleAnimation;
   int animationDuration{ 300 };
 };
 

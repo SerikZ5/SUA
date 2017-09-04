@@ -3,7 +3,12 @@
 #include "Spoiler.h"
 
 Spoiler::Spoiler(const QString & title, const int animationDuration, QWidget *parent) : QWidget(parent), animationDuration(animationDuration) 
-{
+{  
+  QFrame* headerLine = new QFrame(this);
+  headerLine->setFrameShape(QFrame::HLine);
+  headerLine->setFrameShadow(QFrame::Sunken);
+  headerLine->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+
   toggleButton.setStyleSheet("QToolButton { border: none; }");
   toggleButton.setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
   toggleButton.setArrowType(Qt::ArrowType::RightArrow);
@@ -11,12 +16,9 @@ Spoiler::Spoiler(const QString & title, const int animationDuration, QWidget *pa
   toggleButton.setCheckable(true);
   toggleButton.setChecked(false);
 
-  headerLine.setFrameShape(QFrame::HLine);
-  headerLine.setFrameShadow(QFrame::Sunken);
-  headerLine.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
-
   contentArea.setStyleSheet("QScrollArea { border: none; }");
-  contentArea.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  contentArea.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Policy::Preferred);
+  contentArea.setWidgetResizable(true);
   // start out collapsed
   contentArea.setMaximumHeight(0);
   contentArea.setMinimumHeight(0);
@@ -25,13 +27,15 @@ Spoiler::Spoiler(const QString & title, const int animationDuration, QWidget *pa
   toggleAnimation.addAnimation(new QPropertyAnimation(this, "maximumHeight"));
   toggleAnimation.addAnimation(new QPropertyAnimation(&contentArea, "maximumHeight"));
   // don't waste space
-  mainLayout.setVerticalSpacing(0);
-  mainLayout.setContentsMargins(0, 0, 0, 0);
+
+  QGridLayout* mainLayout = new QGridLayout(this);
+  mainLayout->setVerticalSpacing(0);
+  mainLayout->setContentsMargins(0, 0, 0, 0);
   int row = 0;
-  mainLayout.addWidget(&toggleButton, row, 0, 1, 1, Qt::AlignLeft);
-  mainLayout.addWidget(&headerLine, row++, 2, 1, 1);
-  mainLayout.addWidget(&contentArea, row, 0, 1, 3);
-  setLayout(&mainLayout);
+  mainLayout->addWidget(&toggleButton, row, 0, 1, 1, Qt::AlignLeft);
+  mainLayout->addWidget(headerLine, row++, 2, 1, 1);
+  mainLayout->addWidget(&contentArea, row, 0, 1, 3);
+  setLayout(mainLayout);
   QObject::connect(&toggleButton, &QToolButton::clicked, [this](const bool checked)
   {
     toggleButton.setArrowType(checked ? Qt::ArrowType::DownArrow : Qt::ArrowType::RightArrow);
@@ -40,13 +44,27 @@ Spoiler::Spoiler(const QString & title, const int animationDuration, QWidget *pa
   });
 }
 
-void Spoiler::setContentLayout(QLayout* contentLayout) 
+void Spoiler::setContentLayout(QLayout* content) 
 {
   delete contentArea.layout();
-  contentArea.setLayout(contentLayout);
+  contentArea.setLayout(content);
   const auto collapsedHeight = sizeHint().height() - contentArea.maximumHeight();
-  auto contentHeight = contentLayout->sizeHint().height();
-  for (int i = 0; i < toggleAnimation.animationCount() - 1; ++i) 
+  auto contentHeight = content->sizeHint().height();
+  countAnimation(collapsedHeight, contentHeight);
+}
+
+void Spoiler::setContentWidget(QWidget* content)
+{
+  delete contentArea.layout();
+  contentArea.setWidget(content);
+  const auto collapsedHeight = sizeHint().height() - contentArea.maximumHeight();
+  auto contentHeight = content->sizeHint().height();
+  countAnimation(collapsedHeight, contentHeight);
+}
+
+void Spoiler::countAnimation(int collapsedHeight, int contentHeight)
+{
+  for (int i = 0; i < toggleAnimation.animationCount() - 1; ++i)
   {
     QPropertyAnimation * spoilerAnimation = static_cast<QPropertyAnimation *>(toggleAnimation.animationAt(i));
     spoilerAnimation->setDuration(animationDuration);
