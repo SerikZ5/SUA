@@ -13,9 +13,9 @@ SUA::~SUA()
 
 }
 
-/*void SUA::addSpoilers()
+void SUA::addSpoilers()
 {
-  Spoiler* control = new Spoiler(QString::fromLocal8Bit("Управление"), 300, this);
+  /*Spoiler* control = new Spoiler(QString::fromLocal8Bit("Управление"), 300, this);
   QVBoxLayout* controlSpoilerLayout = new QVBoxLayout(control);
   QPushButton* btnFollowCommand = new QPushButton(QString::fromLocal8Bit("Режим слежения"), control);
   QPushButton* btnOrientedAntennasCommand = new QPushButton(QString::fromLocal8Bit("Ориентация"), control);
@@ -66,37 +66,37 @@ SUA::~SUA()
   userControl->setContentLayout(userControlSpoilerLayout);
 
 
-  Spoiler* options = new Spoiler(QString::fromLocal8Bit("Опции"), 300, this);
+  Spoiler* options = new Spoiler(QString::fromLocal8Bit("Опции"), 300, this);*/
 
 
-  Spoiler* adjustment = new Spoiler(QString::fromLocal8Bit("Корректировка"), 300, options);
-  QVBoxLayout* adjustmentSpoilerLayout = new QVBoxLayout(adjustment);
+  QWidget* w = new QWidget(ui.tabWidget);
+  Spoiler* adjustment = new Spoiler(QString::fromLocal8Bit("Корректировка"), 300, w);
+  QVBoxLayout* adjustmentSpoilerLayout = new QVBoxLayout();
   adjustmentSpoilerLayout->setSpacing(6);
-  adjustmentSpoilerLayout->setContentsMargins(11, 11, 11, 11);
   QHBoxLayout* h1 = new QHBoxLayout();
   h1->setSpacing(6);
-  QPushButton* btnSetDNAUp = new QPushButton(adjustment);
+  QPushButton* btnSetDNAUp = new QPushButton(QString::fromLocal8Bit("f"),adjustment);
   h1->addWidget(btnSetDNAUp);
   adjustmentSpoilerLayout->addLayout(h1);
   QHBoxLayout* h2 = new QHBoxLayout();
   h2->setSpacing(6);
-  QPushButton* btnSetDNALeft = new QPushButton(adjustment);
+  QPushButton* btnSetDNALeft = new QPushButton(QString::fromLocal8Bit("f"), adjustment);
   h2->addWidget(btnSetDNALeft);
-  QPushButton* txbSuaDNA = new QPushButton(adjustment);
+  QPushButton* txbSuaDNA = new QPushButton(QString::fromLocal8Bit("f"), adjustment);
   h2->addWidget(txbSuaDNA);
-  QPushButton* btnSetDNARight = new QPushButton(adjustment);
+  QPushButton* btnSetDNARight = new QPushButton(QString::fromLocal8Bit("f"), adjustment);
   h2->addWidget(btnSetDNARight);
   adjustmentSpoilerLayout->addLayout(h2);
   QHBoxLayout* h3 = new QHBoxLayout();
   h3->setSpacing(6);
-  QPushButton* btnSetDNADown = new QPushButton(adjustment);
+  QPushButton* btnSetDNADown = new QPushButton(QString::fromLocal8Bit("f"), adjustment);
   h3->addWidget(btnSetDNADown);
   adjustmentSpoilerLayout->addLayout(h3);
   adjustment->setContentLayout(adjustmentSpoilerLayout);
 
 
 
-  Spoiler* azimuth = new Spoiler(QString::fromLocal8Bit("Азимут"), 300, options);
+  Spoiler* azimuth = new Spoiler(QString::fromLocal8Bit("Азимут"), 300, w);
   QVBoxLayout* azimuthSpoilerLayout = new QVBoxLayout(azimuth);
   QGroupBox* motionAzimuth = new QGroupBox(QString::fromLocal8Bit("Движение"), azimuth);
   QVBoxLayout* motionAzimuthLayout = new QVBoxLayout();
@@ -136,7 +136,7 @@ SUA::~SUA()
 
 
 
-  Spoiler* zenith = new Spoiler(QString::fromLocal8Bit("Угол места"), 300, options);
+  Spoiler* zenith = new Spoiler(QString::fromLocal8Bit("Угол места"), 300, w);
   QVBoxLayout* zenithSpoilerLayout = new QVBoxLayout(zenith);
   QGroupBox* motionZenith = new QGroupBox(QString::fromLocal8Bit("Движение"), zenith);
   QVBoxLayout* motionZenithLayout = new QVBoxLayout();
@@ -175,7 +175,7 @@ SUA::~SUA()
   zenith->setContentLayout(zenithSpoilerLayout);
 
 
-  Spoiler* heating = new Spoiler(QString::fromLocal8Bit("Подогрев"), 300, options);
+  Spoiler* heating = new Spoiler(QString::fromLocal8Bit("Подогрев"), 300, w);
   QVBoxLayout* heatingSpoilerLayout = new QVBoxLayout(zenith);
   QLabel* l11 = new QLabel(QString::fromLocal8Bit("Температура включения"), heating);
   QLineEdit* txbTempEnHeating = new QLineEdit("10", heating);
@@ -189,7 +189,7 @@ SUA::~SUA()
   heatingSpoilerLayout->addWidget(btnSetHeatingOptCommand);
   heating->setContentLayout(heatingSpoilerLayout);
 
-  Spoiler* ventilation = new Spoiler(QString::fromLocal8Bit("Подогрев"), 300, options);
+  Spoiler* ventilation = new Spoiler(QString::fromLocal8Bit("Подогрев"), 300, w);
   QVBoxLayout* ventilationSpoilerLayout = new QVBoxLayout(zenith);
   QLabel* l13 = new QLabel(QString::fromLocal8Bit("Температура включения"), ventilation);
   QLineEdit* txbTempEnVentilation = new QLineEdit("45", ventilation);
@@ -204,23 +204,15 @@ SUA::~SUA()
   ventilation->setContentLayout(ventilationSpoilerLayout);
 
 
-  QVBoxLayout* optionsSpoilerLayout = new QVBoxLayout(options);
+  QVBoxLayout* optionsSpoilerLayout = new QVBoxLayout();
   optionsSpoilerLayout->addWidget(adjustment);
   optionsSpoilerLayout->addWidget(azimuth);
   optionsSpoilerLayout->addWidget(zenith);
   optionsSpoilerLayout->addWidget(heating);
   optionsSpoilerLayout->addWidget(ventilation);
-  QWidget* w2 = new QWidget(this);
-  w2->setLayout(optionsSpoilerLayout);
-  options->setContentWidget(w2);
-
-  QVBoxLayout* vLayout = new QVBoxLayout(this);
-  vLayout->addWidget(control);
-  vLayout->addWidget(options);
-  vLayout->addWidget(userControl);
   QSpacerItem* verticalSpacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  vLayout->addItem(verticalSpacer);
-  QWidget* w = new QWidget(this);
-  w->setLayout(vLayout);
+  optionsSpoilerLayout->addItem(verticalSpacer);
+
+  w->setLayout(optionsSpoilerLayout);
   ui.scrollArea->setWidget(w);
-}*/
+}

@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>SUA</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color:</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
@@ -352,6 +355,9 @@
         <height>0</height>
        </size>
       </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -359,6 +365,21 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_13">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QFrame" name="frame_2">
          <property name="frameShape">
@@ -368,6 +389,21 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_7">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="topMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <property name="bottomMargin">
+           <number>9</number>
+          </property>
           <item>
            <widget class="QGroupBox" name="groupBox_6">
             <property name="title">
@@ -748,8 +784,14 @@
        </item>
        <item>
         <widget class="QTabWidget" name="tabWidget">
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="control">
           <attribute name="title">
@@ -821,6 +863,9 @@
            </item>
            <item>
             <widget class="QPushButton" name="btnResetCommand">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(255, 0, 0); </string>
+             </property>
              <property name="text">
               <string>Сброс</string>
              </property>
@@ -849,16 +894,35 @@
            <item>
             <widget class="QGroupBox" name="groupBox_11">
              <property name="title">
-              <string>GroupBox</string>
+              <string>Азимут</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_15">
               <item>
-               <widget class="QLineEdit" name="lineEdit"/>
+               <widget class="QLineEdit" name="txbSuaCommandAzimuth"/>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_6">
+               <widget class="QPushButton" name="btnSetAzimuthCommand">
                 <property name="text">
-                 <string>PushButton</string>
+                 <string>Ввод</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_12">
+             <property name="title">
+              <string>Угол места</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_16">
+              <item>
+               <widget class="QLineEdit" name="txbSuaCommandZenith"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnSetZenithCommand">
+                <property name="text">
+                 <string>Ввод</string>
                 </property>
                </widget>
               </item>
@@ -884,6 +948,28 @@
           <attribute name="title">
            <string>Опции</string>
           </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_18">
+           <item>
+            <widget class="QScrollArea" name="scrollArea">
+             <property name="styleSheet">
+              <string notr="true">QScrollArea { border: none; }</string>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>228</width>
+                <height>564</height>
+               </rect>
+              </property>
+             </widget>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </widget>
        </item>
