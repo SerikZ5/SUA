@@ -1,16 +1,30 @@
 ﻿#include "sua.h"
 #include "Spoiler.h"
 
+#define userWindowHeight 720
+#define userWindowWight 300
+#define mainWindowHeight 705
+#define mainWindowWight 720
+
 SUA::SUA(QWidget *parent)
     : QMainWindow(parent)
 {
   ui.setupUi(this);
+  ui.btnSetDNAUpUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowUp));
+  ui.btnSetDNAUpUsers->setIconSize(QSize(25, 25));
+  ui.btnSetDNADownUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowDown));
+  ui.btnSetDNADownUsers->setIconSize(QSize(25, 25));
+  ui.btnSetDNALeftUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowLeft));
+  ui.btnSetDNALeftUsers->setIconSize(QSize(25, 25));
+  ui.btnSetDNARightUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowRight));
+  ui.btnSetDNARightUsers->setIconSize(QSize(25, 25));
   addSpoilers();
+  activateFullMode(false);
+  resize(userWindowWight, userWindowHeight);
 }
 
 SUA::~SUA()
 {
-
 }
 
 void SUA::addSpoilers()
@@ -70,26 +84,49 @@ void SUA::addSpoilers()
 
 
   QWidget* w = new QWidget(ui.tabWidget);
+  w->setObjectName(QStringLiteral("w"));
   Spoiler* adjustment = new Spoiler(QString::fromLocal8Bit("Корректировка"), 300, w);
   QVBoxLayout* adjustmentSpoilerLayout = new QVBoxLayout();
   adjustmentSpoilerLayout->setSpacing(6);
   QHBoxLayout* h1 = new QHBoxLayout();
   h1->setSpacing(6);
-  QPushButton* btnSetDNAUp = new QPushButton(QString::fromLocal8Bit("f"),adjustment);
+  QPushButton* btnSetDNAUp = new QPushButton(adjustment);
+  btnSetDNAUp->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowUp));
+  btnSetDNAUp->setIconSize(QSize(25, 25));
+  btnSetDNAUp->setMinimumSize(QSize(30, 30));
+  btnSetDNAUp->setMaximumSize(QSize(30, 30));
   h1->addWidget(btnSetDNAUp);
   adjustmentSpoilerLayout->addLayout(h1);
   QHBoxLayout* h2 = new QHBoxLayout();
   h2->setSpacing(6);
-  QPushButton* btnSetDNALeft = new QPushButton(QString::fromLocal8Bit("f"), adjustment);
+  QSpacerItem* spacer1 = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  QSpacerItem* spacer2 = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  h2->addItem(spacer1);
+  QPushButton* btnSetDNALeft = new QPushButton(adjustment);
+  btnSetDNALeft->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowLeft));
+  btnSetDNALeft->setIconSize(QSize(25, 25));
+  btnSetDNALeft->setMinimumSize(QSize(30, 30));
+  btnSetDNALeft->setMaximumSize(QSize(30, 30));
   h2->addWidget(btnSetDNALeft);
-  QPushButton* txbSuaDNA = new QPushButton(QString::fromLocal8Bit("f"), adjustment);
+  QPushButton* txbSuaDNA = new QPushButton(adjustment);
+  txbSuaDNA->setMinimumSize(QSize(30, 30));
+  txbSuaDNA->setMaximumSize(QSize(30, 30));
   h2->addWidget(txbSuaDNA);
-  QPushButton* btnSetDNARight = new QPushButton(QString::fromLocal8Bit("f"), adjustment);
+  QPushButton* btnSetDNARight = new QPushButton(adjustment);
+  btnSetDNARight->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowRight));
+  btnSetDNARight->setIconSize(QSize(25, 25));
+  btnSetDNARight->setMinimumSize(QSize(30, 30));
+  btnSetDNARight->setMaximumSize(QSize(30, 30));
   h2->addWidget(btnSetDNARight);
+  h2->addItem(spacer2);
   adjustmentSpoilerLayout->addLayout(h2);
   QHBoxLayout* h3 = new QHBoxLayout();
   h3->setSpacing(6);
-  QPushButton* btnSetDNADown = new QPushButton(QString::fromLocal8Bit("f"), adjustment);
+  QPushButton* btnSetDNADown = new QPushButton(adjustment);
+  btnSetDNADown->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowDown));
+  btnSetDNADown->setIconSize(QSize(25, 25));
+  btnSetDNADown->setMinimumSize(QSize(30, 30));
+  btnSetDNADown->setMaximumSize(QSize(30, 30));
   h3->addWidget(btnSetDNADown);
   adjustmentSpoilerLayout->addLayout(h3);
   adjustment->setContentLayout(adjustmentSpoilerLayout);
@@ -214,5 +251,47 @@ void SUA::addSpoilers()
   optionsSpoilerLayout->addItem(verticalSpacer);
 
   w->setLayout(optionsSpoilerLayout);
+  w->setStyleSheet("#w { background-color:white; }");
   ui.scrollArea->setWidget(w);
+}
+
+void SUA::activateFullMode(bool value)
+{
+  ui.toolBar->setVisible(value);
+  ui.statusBar->setVisible(value);
+  ui.mainFrame->setVisible(value);
+  ui.tabWidget->setVisible(value);
+  ui.usersFrame->setVisible(!value);
+}
+
+void SUA::on_btnFullMode_clicked()
+{
+  activateFullMode(true);
+  resize(mainWindowWight, mainWindowHeight);
+}
+
+void SUA::on_actionUserMod_triggered(bool checked)
+{
+  activateFullMode(false);
+  resize(userWindowWight, userWindowHeight);
+}
+
+void SUA::on_btnReConnectUsers_clicked()
+{
+
+}
+
+void SUA::on_btnOrientedAntennasCommandUsers_clicked()
+{
+
+}
+
+void SUA::on_btnFollowCommandUsers_clicked()
+{
+
+}
+
+void SUA::on_btnStopEnginesCommandUsers_clicked()
+{
+
 }
