@@ -1,9 +1,10 @@
 ﻿#include "sua.h"
 #include "Spoiler.h"
+#include "ImageStatus.h"
 
-#define userWindowHeight 720
+#define userWindowHeight 560
 #define userWindowWight 300
-#define mainWindowHeight 705
+#define mainWindowHeight 560
 #define mainWindowWight 720
 
 SUA::SUA(QWidget *parent)
@@ -21,10 +22,18 @@ SUA::SUA(QWidget *parent)
   addSpoilers();
   activateFullMode(false);
   resize(userWindowWight, userWindowHeight);
+
+  imageStatus = new ImageStatus();
+  imageStatus->SetImage(ui.imgConnectState, SUAImages::GREY);
+  imageStatus->SetImage(ui.imgGPSState, SUAImages::GREY);
+  imageStatus->SetImage(ui.imgFollowState, SUAImages::GREY);
+  imageStatus->SetImage(ui.imgOrientationState, SUAImages::GREY);
+  imageStatus->SetImage(ui.imgStopState, SUAImages::GREY);
 }
 
 SUA::~SUA()
 {
+  delete imageStatus;
 }
 
 void SUA::addSpoilers()

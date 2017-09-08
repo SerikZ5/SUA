@@ -83,6 +83,9 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_Spoiler.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="ImageStatus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="sua.h">
@@ -119,6 +122,9 @@
     </ClInclude>
     <ClInclude Include="TelemetryPacket.h">
       <Filter>ProtocolLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageStatus.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

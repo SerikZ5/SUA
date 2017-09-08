@@ -1,4 +1,8 @@
 <RCC>
-    <qresource prefix="SUA">
+    <qresource prefix="/SUA">
+        <file>images/green.png</file>
+        <file>images/green_blink.gif</file>
+        <file>images/grey.png</file>
+        <file>images/yellow_blink.gif</file>
     </qresource>
 </RCC>

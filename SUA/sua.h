@@ -4,6 +4,8 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_sua.h"
 
+class ImageStatus;
+
 class SUA : public QMainWindow
 {
   Q_OBJECT
@@ -21,12 +23,12 @@ protected slots:
   void on_btnFollowCommandUsers_clicked();
   void on_btnStopEnginesCommandUsers_clicked();
 
-
-
 private:
   void addSpoilers();
   void activateFullMode(bool value);
   
+  ImageStatus* imageStatus;
+
   Ui::SUAClass ui;
 };
 
