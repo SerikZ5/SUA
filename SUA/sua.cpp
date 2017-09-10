@@ -1,6 +1,12 @@
-﻿#include "sua.h"
+﻿#include <QValidator>
+#include <QMessageBox>
+#include <QScrollBar>
+#include <QMetaEnum>
+
+#include "sua.h"
 #include "Spoiler.h"
-#include "ImageStatus.h"
+#include "Protocol.h"
+#include "NetworkSettings.h"
 
 #define userWindowHeight 560
 #define userWindowWight 300
@@ -11,6 +17,7 @@ SUA::SUA(QWidget *parent)
     : QMainWindow(parent)
 {
   ui.setupUi(this);
+
   ui.btnSetDNAUpUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowUp));
   ui.btnSetDNAUpUsers->setIconSize(QSize(25, 25));
   ui.btnSetDNADownUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowDown));
@@ -19,21 +26,41 @@ SUA::SUA(QWidget *parent)
   ui.btnSetDNALeftUsers->setIconSize(QSize(25, 25));
   ui.btnSetDNARightUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowRight));
   ui.btnSetDNARightUsers->setIconSize(QSize(25, 25));
+  ui.txbSuaDNAUsers->setValidator(new QDoubleValidator(0, 99, 2));
   addSpoilers();
+  addStatusBar();
   activateFullMode(false);
   resize(userWindowWight, userWindowHeight);
+    
+  commandNetwork = new NetworkBase(suaSettings.hostAddress, suaSettings.commandPort);
+  connect(commandNetwork, SIGNAL(NetworkStateChanged(int)), this, SLOT(updateCommSockLbl(int)));
+  connect(commandNetwork, SIGNAL(DataRecieved(RecievedArray)), this, SLOT(updateConsoleWindow(RecievedArray)));
 
-  imageStatus = new ImageStatus();
-  imageStatus->SetImage(ui.imgConnectState, SUAImages::GREY);
-  imageStatus->SetImage(ui.imgGPSState, SUAImages::GREY);
-  imageStatus->SetImage(ui.imgFollowState, SUAImages::GREY);
-  imageStatus->SetImage(ui.imgOrientationState, SUAImages::GREY);
-  imageStatus->SetImage(ui.imgStopState, SUAImages::GREY);
+  telemetryNetwork = new NetworkBase(suaSettings.hostAddress, suaSettings.telemetryPort);
+  connect(telemetryNetwork, SIGNAL(NetworkStateChanged(int)), this, SLOT(updateTelemSockLbl(int)));
+  connect(telemetryNetwork, SIGNAL(DataRecieved(RecievedArray)), this, SLOT(telelemtryRcvd(RecievedArray)));
+
+  modemNetwork = new NetworkBase(suaSettings.hostAddress, suaSettings.modemPort);
+  connect(modemNetwork, SIGNAL(NetworkStateChanged(int)), this, SLOT(updateModemSockLbl(int)));
+  connect(modemNetwork, SIGNAL(DataRecieved(RecievedArray)), this, SLOT(updateSUAModemConsole(RecievedArray)));
+
+  udpClient = new QUdpSocket(this);
+
+  imageStatus.SetImage(ui.imgConnectState, SUAImages::GREY);
+  imageStatus.SetImage(ui.imgGPSState, SUAImages::GREY);
+  imageStatus.SetImage(ui.imgFollowState, SUAImages::GREY);
+  imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREY);
+  imageStatus.SetImage(ui.imgStopState, SUAImages::GREY);
+  updateTextField();
 }
 
 SUA::~SUA()
 {
-  delete imageStatus;
+  disconnectAllSockets();
+  delete commandNetwork;
+  delete telemetryNetwork;
+  delete modemNetwork;
+  delete udpClient;
 }
 
 void SUA::addSpoilers()
@@ -117,9 +144,10 @@ void SUA::addSpoilers()
   btnSetDNALeft->setMinimumSize(QSize(30, 30));
   btnSetDNALeft->setMaximumSize(QSize(30, 30));
   h2->addWidget(btnSetDNALeft);
-  QPushButton* txbSuaDNA = new QPushButton(adjustment);
+  txbSuaDNA = new QLineEdit(adjustment);
   txbSuaDNA->setMinimumSize(QSize(30, 30));
   txbSuaDNA->setMaximumSize(QSize(30, 30));
+  txbSuaDNA->setValidator(new QDoubleValidator(0, 99, 2));
   h2->addWidget(txbSuaDNA);
   QPushButton* btnSetDNARight = new QPushButton(adjustment);
   btnSetDNARight->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowRight));
@@ -139,7 +167,10 @@ void SUA::addSpoilers()
   h3->addWidget(btnSetDNADown);
   adjustmentSpoilerLayout->addLayout(h3);
   adjustment->setContentLayout(adjustmentSpoilerLayout);
-
+  connect(btnSetDNAUp, SIGNAL(clicked()), this, SLOT(on_btnSetDNAUpUsers_clicked()));
+  connect(btnSetDNALeft, SIGNAL(clicked()), this, SLOT(on_btnSetDNALeftUsers_clicked()));
+  connect(btnSetDNARight, SIGNAL(clicked()), this, SLOT(on_btnSetDNARightUsers_clicked()));
+  connect(btnSetDNADown, SIGNAL(clicked()), this, SLOT(on_btnSetDNADownUsers_clicked()));
 
 
   Spoiler* azimuth = new Spoiler(QString::fromLocal8Bit("Азимут"), 300, w);
@@ -147,11 +178,14 @@ void SUA::addSpoilers()
   QGroupBox* motionAzimuth = new QGroupBox(QString::fromLocal8Bit("Движение"), azimuth);
   QVBoxLayout* motionAzimuthLayout = new QVBoxLayout();
   QLabel* l1 = new QLabel(QString::fromLocal8Bit("Ускорение"), motionAzimuth);
-  QLineEdit* txbAzimuthAcceleraion = new QLineEdit("15", motionAzimuth);
+  txbAzimuthAcceleraion = new QLineEdit("15", motionAzimuth);
+  txbAzimuthAcceleraion->setValidator(new QIntValidator());
   QLabel* l2 = new QLabel(QString::fromLocal8Bit("Постоянная скорость"), motionAzimuth);
-  QLineEdit* txbAzimuthSpeed = new QLineEdit("150", motionAzimuth);
+  txbAzimuthSpeed = new QLineEdit("150", motionAzimuth);
+  txbAzimuthSpeed->setValidator(new QIntValidator());
   QLabel* l3 = new QLabel(QString::fromLocal8Bit("Торможение"), motionAzimuth);
-  QLineEdit* txbAzimuthBraking = new QLineEdit("20", motionAzimuth);
+  txbAzimuthBraking = new QLineEdit("20", motionAzimuth);
+  txbAzimuthBraking->setValidator(new QIntValidator());
   QPushButton* btnSetAzimuthMovOptCommand = new QPushButton(QString::fromLocal8Bit("Ввод"), motionAzimuth);
   motionAzimuthLayout->addWidget(l1);
   motionAzimuthLayout->addWidget(txbAzimuthAcceleraion);
@@ -161,13 +195,19 @@ void SUA::addSpoilers()
   motionAzimuthLayout->addWidget(txbAzimuthBraking);
   motionAzimuthLayout->addWidget(btnSetAzimuthMovOptCommand);
   motionAzimuth->setLayout(motionAzimuthLayout);
+  connect(txbAzimuthAcceleraion, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetAzimuthMovOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(txbAzimuthSpeed, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetAzimuthMovOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(txbAzimuthBraking, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetAzimuthMovOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(btnSetAzimuthMovOptCommand, SIGNAL(clicked()), this, SLOT(on_btnSetAzimuthMovOptCommand_clicked()));
 
   QGroupBox* additionallyAzimuth = new QGroupBox(QString::fromLocal8Bit("Движение"), azimuth);
   QVBoxLayout* additionallyAzimuthLayout = new QVBoxLayout();
   QLabel* l4 = new QLabel(QString::fromLocal8Bit("Скорость поиска нуля"), additionallyAzimuth);
-  QLineEdit* txbAzimuthSlowSpeed = new QLineEdit("20", additionallyAzimuth);
+  txbAzimuthSlowSpeed = new QLineEdit("20", additionallyAzimuth);
+  txbAzimuthSlowSpeed->setValidator(new QIntValidator());
   QLabel* l5 = new QLabel(QString::fromLocal8Bit("Скорость подхода к точке"), additionallyAzimuth);
-  QLineEdit* txbAzimuthZeroSeek = new QLineEdit("50", additionallyAzimuth);
+  txbAzimuthZeroSeek = new QLineEdit("50", additionallyAzimuth);
+  txbAzimuthZeroSeek->setValidator(new QIntValidator());
   QPushButton* btnSetAzimuthZerSOptCommand = new QPushButton(QString::fromLocal8Bit("Ввод"), additionallyAzimuth);
   additionallyAzimuthLayout->addWidget(l4);
   additionallyAzimuthLayout->addWidget(txbAzimuthSlowSpeed);
@@ -175,23 +215,28 @@ void SUA::addSpoilers()
   additionallyAzimuthLayout->addWidget(txbAzimuthZeroSeek);
   additionallyAzimuthLayout->addWidget(btnSetAzimuthZerSOptCommand);
   additionallyAzimuth->setLayout(additionallyAzimuthLayout);
+  connect(txbAzimuthSlowSpeed, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetAzimuthZerSOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(txbAzimuthZeroSeek, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetAzimuthZerSOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(btnSetAzimuthZerSOptCommand, SIGNAL(clicked()), this, SLOT(on_btnSetAzimuthZerSOptCommand_cliked()));
 
   azimuthSpoilerLayout->addWidget(motionAzimuth);
   azimuthSpoilerLayout->addWidget(additionallyAzimuth);
   azimuth->setContentLayout(azimuthSpoilerLayout);
 
-
-
+  
   Spoiler* zenith = new Spoiler(QString::fromLocal8Bit("Угол места"), 300, w);
   QVBoxLayout* zenithSpoilerLayout = new QVBoxLayout(zenith);
   QGroupBox* motionZenith = new QGroupBox(QString::fromLocal8Bit("Движение"), zenith);
   QVBoxLayout* motionZenithLayout = new QVBoxLayout();
   QLabel* l6 = new QLabel(QString::fromLocal8Bit("Ускорение"), motionZenith);
-  QLineEdit* txbZenithAcceleraion = new QLineEdit("15", motionZenith);
+  txbZenithAcceleraion = new QLineEdit("15", motionZenith);
+  txbZenithAcceleraion->setValidator(new QIntValidator());
   QLabel* l7 = new QLabel(QString::fromLocal8Bit("Постоянная скорость"), motionZenith);
-  QLineEdit* txbZenithSpeed = new QLineEdit("150", motionZenith);
+  txbZenithSpeed = new QLineEdit("150", motionZenith);
+  txbZenithSpeed->setValidator(new QIntValidator());
   QLabel* l8 = new QLabel(QString::fromLocal8Bit("Торможение"), motionZenith);
-  QLineEdit* txbZenithBraking = new QLineEdit("20", motionZenith);
+  txbZenithBraking = new QLineEdit("20", motionZenith);
+  txbZenithBraking->setValidator(new QIntValidator());
   QPushButton* btnSetZenithMovOptCommand = new QPushButton(QString::fromLocal8Bit("Ввод"), motionZenith);
   motionZenithLayout->addWidget(l6);
   motionZenithLayout->addWidget(txbZenithAcceleraion);
@@ -201,13 +246,19 @@ void SUA::addSpoilers()
   motionZenithLayout->addWidget(txbZenithBraking);
   motionZenithLayout->addWidget(btnSetZenithMovOptCommand);
   motionZenith->setLayout(motionZenithLayout);
+  connect(txbZenithAcceleraion, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetZenithMovOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(txbZenithSpeed, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetZenithMovOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(txbZenithBraking, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetZenithMovOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(btnSetZenithMovOptCommand, SIGNAL(clicked()), this, SLOT(on_btnSetZenithMovOptCommand_clicked()));
 
   QGroupBox* additionallyZenith = new QGroupBox(QString::fromLocal8Bit("Движение"), azimuth);
   QVBoxLayout* additionallyZenithLayout = new QVBoxLayout();
   QLabel* l9 = new QLabel(QString::fromLocal8Bit("Скорость поиска нуля"), additionallyZenith);
-  QLineEdit* txbZenithSlowSpeed = new QLineEdit("20", additionallyZenith);
+  txbZenithSlowSpeed = new QLineEdit("20", additionallyZenith);
+  txbZenithSlowSpeed->setValidator(new QIntValidator());
   QLabel* l10 = new QLabel(QString::fromLocal8Bit("Скорость подхода к точке"), additionallyZenith);
-  QLineEdit* txbZenithZeroSeek = new QLineEdit("50", additionallyZenith);
+  txbZenithZeroSeek = new QLineEdit("50", additionallyZenith);
+  txbZenithZeroSeek->setValidator(new QIntValidator());
   QPushButton* btnSetZenithZerSOptCommand = new QPushButton(QString::fromLocal8Bit("Ввод"), additionallyZenith);
   additionallyZenithLayout->addWidget(l9);
   additionallyZenithLayout->addWidget(txbZenithSlowSpeed);
@@ -215,6 +266,9 @@ void SUA::addSpoilers()
   additionallyZenithLayout->addWidget(txbZenithZeroSeek);
   additionallyZenithLayout->addWidget(btnSetZenithZerSOptCommand);
   additionallyZenith->setLayout(additionallyZenithLayout);
+  connect(txbZenithSlowSpeed, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetZenithZerSOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(txbZenithZeroSeek, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetZenithZerSOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(btnSetZenithZerSOptCommand, SIGNAL(clicked()), this, SLOT(on_btnSetZenithZerSOptCommand_clicked()));
 
   zenithSpoilerLayout->addWidget(motionZenith);
   zenithSpoilerLayout->addWidget(additionallyZenith);
@@ -224,9 +278,11 @@ void SUA::addSpoilers()
   Spoiler* heating = new Spoiler(QString::fromLocal8Bit("Подогрев"), 300, w);
   QVBoxLayout* heatingSpoilerLayout = new QVBoxLayout(zenith);
   QLabel* l11 = new QLabel(QString::fromLocal8Bit("Температура включения"), heating);
-  QLineEdit* txbTempEnHeating = new QLineEdit("10", heating);
+  txbTempEnHeating = new QLineEdit("10", heating);
+  txbTempEnHeating->setValidator(new QIntValidator());
   QLabel* l12 = new QLabel(QString::fromLocal8Bit("Температура выключения"), heating);
-  QLineEdit* txbTempDisHeating = new QLineEdit("18", heating);
+  txbTempDisHeating = new QLineEdit("18", heating);
+  txbTempDisHeating->setValidator(new QIntValidator());
   QPushButton* btnSetHeatingOptCommand = new QPushButton(QString::fromLocal8Bit("Ввод"), heating);
   heatingSpoilerLayout->addWidget(l11);
   heatingSpoilerLayout->addWidget(txbTempEnHeating);
@@ -234,13 +290,18 @@ void SUA::addSpoilers()
   heatingSpoilerLayout->addWidget(txbTempDisHeating);
   heatingSpoilerLayout->addWidget(btnSetHeatingOptCommand);
   heating->setContentLayout(heatingSpoilerLayout);
+  connect(txbTempEnHeating, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetHeatingOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(txbTempDisHeating, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetHeatingOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(btnSetHeatingOptCommand, SIGNAL(clicked()), this, SLOT(on_btnSetHeatingOptCommand_clicked()));
 
   Spoiler* ventilation = new Spoiler(QString::fromLocal8Bit("Подогрев"), 300, w);
   QVBoxLayout* ventilationSpoilerLayout = new QVBoxLayout(zenith);
   QLabel* l13 = new QLabel(QString::fromLocal8Bit("Температура включения"), ventilation);
-  QLineEdit* txbTempEnVentilation = new QLineEdit("45", ventilation);
+  txbTempEnVentilation = new QLineEdit("45", ventilation);
+  txbTempEnVentilation->setValidator(new QIntValidator());
   QLabel* l14 = new QLabel(QString::fromLocal8Bit("Температура выключения"), ventilation);
-  QLineEdit* txbTempDisVentilation = new QLineEdit("35", ventilation);
+  txbTempDisVentilation = new QLineEdit("35", ventilation);
+  txbTempDisVentilation->setValidator(new QIntValidator());
   QPushButton* btnSetVentilationOptCommand = new QPushButton(QString::fromLocal8Bit("Ввод"), ventilation);
   ventilationSpoilerLayout->addWidget(l13);
   ventilationSpoilerLayout->addWidget(txbTempEnVentilation);
@@ -248,7 +309,9 @@ void SUA::addSpoilers()
   ventilationSpoilerLayout->addWidget(txbTempDisVentilation);
   ventilationSpoilerLayout->addWidget(btnSetVentilationOptCommand);
   ventilation->setContentLayout(ventilationSpoilerLayout);
-
+  connect(txbTempEnVentilation, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetVentilationOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(txbTempDisVentilation, SIGNAL(keyPressEvent(QKeyEvent* event)), this, SLOT(txbSetVentilationOptCommand_keyPressEvent(QKeyEvent* event)));
+  connect(btnSetVentilationOptCommand, SIGNAL(clicked()), this, SLOT(on_btnSetVentilationOptCommand_clicked()));
 
   QVBoxLayout* optionsSpoilerLayout = new QVBoxLayout();
   optionsSpoilerLayout->addWidget(adjustment);
@@ -264,19 +327,49 @@ void SUA::addSpoilers()
   ui.scrollArea->setWidget(w);
 }
 
+void SUA::addStatusBar()
+{
+  QLabel* l = new QLabel(QString::fromLocal8Bit("Состояние"), this);
+  l->setStyleSheet("font-weight: bold;");
+  QLabel* modem = new QLabel(QString::fromLocal8Bit("Порт модема"), this);
+  QLabel* telemetry = new QLabel(QString::fromLocal8Bit("Порт телеметрии"), this);
+  QLabel* command = new QLabel(QString::fromLocal8Bit("Порт управления"), this);
+  lblModemSocketState = new QLabel(this);
+  lblTelemetrySocketState = new QLabel(this);
+  lblCommandSocketState = new QLabel(this);
+  statusBar()->addWidget(l);
+  statusBar()->addWidget(modem);
+  statusBar()->addWidget(lblModemSocketState);
+  statusBar()->addWidget(telemetry);
+  statusBar()->addWidget(lblTelemetrySocketState);
+  statusBar()->addWidget(command);
+  statusBar()->addWidget(lblCommandSocketState);
+}
+
 void SUA::activateFullMode(bool value)
 {
   ui.toolBar->setVisible(value);
+  statusBar()->setVisible(value);
   ui.statusBar->setVisible(value);
   ui.mainFrame->setVisible(value);
   ui.tabWidget->setVisible(value);
   ui.usersFrame->setVisible(!value);
 }
 
-void SUA::on_btnFullMode_clicked()
+void SUA::on_actionReConnect_triggered(bool checked)
 {
-  activateFullMode(true);
-  resize(mainWindowWight, mainWindowHeight);
+  reconnectAllSockets();
+}
+
+void SUA::on_actionDisconnect_triggered(bool checked)
+{
+  disconnectAllSockets();
+}
+
+void SUA::on_actionNetworkSettings_triggered(bool checked)
+{
+  NetworkSettings networkSettings(&suaSettings, this);
+  networkSettings.exec();
 }
 
 void SUA::on_actionUserMod_triggered(bool checked)
@@ -285,22 +378,796 @@ void SUA::on_actionUserMod_triggered(bool checked)
   resize(userWindowWight, userWindowHeight);
 }
 
+void SUA::on_actionAll_changed()
+{
+  bool value = ui.actionAll->isChecked();
+  ui.actionModem->setChecked(value);
+  ui.actionTelemetry->setChecked(value);
+  ui.actionCommand->setChecked(value);
+}
+
+void SUA::on_btnFullMode_clicked()
+{
+  activateFullMode(true);
+  resize(mainWindowWight, mainWindowHeight);
+}
+
 void SUA::on_btnReConnectUsers_clicked()
 {
-
+  reconnectAllSockets();
 }
 
 void SUA::on_btnOrientedAntennasCommandUsers_clicked()
 {
-
+  on_btnOrientedAntennasCommand_clicked();
 }
 
 void SUA::on_btnFollowCommandUsers_clicked()
 {
-
+  on_btnFollowCommand_clicked();
 }
 
 void SUA::on_btnStopEnginesCommandUsers_clicked()
 {
+  on_btnStopEnginesCommand_clicked();
+}
 
+void SUA::on_btnSetDNAUpUsers_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    try
+    {
+      QString text;
+      if (userWindows == true)
+      {
+        text = ui.txbSuaDNAUsers->text();
+      }
+      else
+      {
+        text = txbSuaDNA->text();
+      }
+      text = text.replace(".", ",");
+      suaSettings.zenithDNA = text.toFloat();
+      QByteArray comm = Protocol::SetDNAZenith(suaSettings.zenithDNA);
+      commandNetwork->Send(comm);
+      setConsoleCommand(comm);
+    }
+    catch (...)
+    {
+      QMessageBox::warning(this, "Warning!", QString::fromLocal8Bit("Некорректное значение!"));
+    }
+  }
+}
+
+void SUA::on_btnSetDNADownUsers_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    try
+    {
+      QString text;
+      if (userWindows == true)
+      {
+        text = ui.txbSuaDNAUsers->text();
+      }
+      else
+      {
+        text = txbSuaDNA->text();
+      }
+      text = text.replace(".", ",");
+      suaSettings.zenithDNA = text.toFloat();
+      suaSettings.zenithDNA *= (-1);
+      QByteArray comm = Protocol::SetDNAZenith(suaSettings.zenithDNA);
+      commandNetwork->Send(comm);
+      setConsoleCommand(comm);
+    }
+    catch (...)
+    {
+      QMessageBox::warning(this, "Warning!", QString::fromLocal8Bit("Некорректное значение!"));
+    }
+  }
+}
+
+void SUA::on_btnSetDNALeftUsers_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    try
+    {
+      QString text;
+      if (userWindows == true)
+      {
+        text = ui.txbSuaDNAUsers->text();
+      }
+      else
+      {
+        text = txbSuaDNA->text();
+      }
+      text = text.replace(".", ",");
+      suaSettings.azimuthDNA = text.toFloat();
+      suaSettings.azimuthDNA *= (-1);
+      QByteArray comm = Protocol::SetDNAAzimuth(suaSettings.azimuthDNA);
+      commandNetwork->Send(comm);
+      setConsoleCommand(comm);
+    }
+    catch (...)
+    {
+      QMessageBox::warning(this, "Warning!", QString::fromLocal8Bit("Некорректное значение!"));
+    }
+  }
+}
+
+void SUA::on_btnSetDNARightUsers_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    try
+    {
+      QString text;
+      if (userWindows == true)
+      {
+        text = ui.txbSuaDNAUsers->text();
+      }
+      else
+      {
+        text = txbSuaDNA->text();
+      }
+      text = text.replace(".", ",");
+      suaSettings.azimuthDNA = text.toFloat();
+      QByteArray comm = Protocol::SetDNAAzimuth(suaSettings.azimuthDNA);
+      commandNetwork->Send(comm);
+      setConsoleCommand(comm);
+    }
+    catch (...)
+    {
+      QMessageBox::warning(this, "Warning!", QString::fromLocal8Bit("Некорректное значение!"));
+    }
+  }
+}
+
+void SUA::on_btnSetAzimuthCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    try
+    {
+      QString text;
+      if (userWindows == true)
+      {
+        text = ui.txbSuaCommandAzimuthUsers->text();
+      }
+      else
+      {
+        text = ui.txbSuaCommandAzimuth->text();
+      }
+      text = text.replace(".", ",");
+      float arg = text.toFloat();
+      QByteArray comm = Protocol::SetAzimuth(arg);
+      commandNetwork->Send(comm);
+      setConsoleCommand(comm);
+    }
+    catch (...)
+    {
+      QMessageBox::warning(this, "Warning!", QString::fromLocal8Bit("Некорректное значение!"));
+    }
+  }
+}
+
+void SUA::on_btnSetZenithCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    try
+    {
+      QString text;
+      if (userWindows == true)
+      {
+        text = ui.txbSuaCommandZenithUsers->text();
+      }
+      else
+      {
+        text = ui.txbSuaCommandZenith->text();
+      }
+      text = text.replace(".", ",");
+      float arg = text.toFloat();
+      QByteArray comm = Protocol::SetZenith(arg);
+      commandNetwork->Send(comm);
+      setConsoleCommand(comm);
+    }
+    catch (...)
+    {
+      QMessageBox::warning(this, "Warning!", QString::fromLocal8Bit("Некорректное значение!"));
+    }
+  }
+}
+
+void SUA::on_txbSuaCommandAzimuth_keyPressEvent(QKeyEvent* event)
+{
+  if(event->key() == Qt::Key::Key_Enter)
+    on_btnSetAzimuthCommand_clicked();
+}
+
+void SUA::on_txbSuaCommandZenith_keyPressEvent(QKeyEvent* event)
+{
+  if (event->key() == Qt::Key::Key_Enter)
+    on_btnSetZenithCommand_clicked();
+}
+
+void SUA::on_txbSuaCommandAzimuthUsers_keyPressEvent(QKeyEvent* event)
+{
+  if (event->key() == Qt::Key::Key_Enter)
+    on_btnSetAzimuthCommand_clicked();
+}
+
+void SUA::on_txbSuaCommandZenithUsers_keyPressEvent(QKeyEvent* event)
+{
+  if (event->key() == Qt::Key::Key_Enter)
+    on_btnSetZenithCommand_clicked();
+}
+
+void SUA::on_SLZen_valueChanged(int value)
+{
+  QByteArray comm = Protocol::SetZenith(value);
+  commandNetwork->Send(comm);
+}
+
+void SUA::on_SLAzim_valueChanged(int value)
+{
+  QByteArray comm = Protocol::SetAzimuth(value);
+  commandNetwork->Send(comm);
+}
+
+void SUA::on_btnFollowCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QByteArray comm = Protocol::FollowCmnd();
+    commandNetwork->Send(comm);
+    setConsoleCommand(comm);
+  }
+}
+
+void SUA::on_btnOrientedAntennasCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QByteArray comm = Protocol::OrientedAntennas();
+    commandNetwork->Send(comm);
+    setConsoleCommand(comm);
+  }
+}
+
+void SUA::on_btnSetZeroPositionCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QByteArray comm = Protocol::SetZeroPos();
+    commandNetwork->Send(comm);
+    setConsoleCommand(comm);
+  }
+}
+
+void SUA::on_btnStopEnginesCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QByteArray comm = Protocol::StopEngines();
+    commandNetwork->Send(comm);
+    setConsoleCommand(comm);
+  }
+}
+
+void SUA::on_btnEnableHeatingCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QByteArray comm = Protocol::EnableHeating(true);
+    commandNetwork->Send(comm);
+    setConsoleCommand(comm);
+  }
+}
+
+void SUA::on_btnDisableHeatingCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QByteArray comm = Protocol::EnableHeating(false);
+    commandNetwork->Send(comm);
+    setConsoleCommand(comm);
+  }
+}
+
+void SUA::on_btnEnableVentilationCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QByteArray comm = Protocol::EnableVentilation(true);
+    commandNetwork->Send(comm);
+    setConsoleCommand(comm);
+  }
+}
+
+void SUA::on_btnDisableVentilationCommand_clicked() 
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QByteArray comm = Protocol::EnableVentilation(false);
+    commandNetwork->Send(comm);
+    setConsoleCommand(comm);
+  }
+}
+
+void SUA::on_btnTestCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QByteArray comm = Protocol::TestCmnd();
+    commandNetwork->Send(comm);
+    setConsoleCommand(comm);
+  }
+}
+
+void SUA::on_btnResetCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QByteArray comm = Protocol::ResetCommand();
+    udpClient->writeDatagram(comm, QHostAddress(suaSettings.hostAddress), 69);
+    setConsoleCommand(comm);
+  }
+}
+
+void SUA::on_btnSetAzimuthMovOptCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    try
+    {
+      QString text = txbAzimuthAcceleraion->text();
+      text = text.replace(".", ",");
+      suaSettings.azimuthAcceleraion = text.toInt();
+      text = txbAzimuthSpeed->text();
+      text = text.replace(".", ",");
+      suaSettings.azimuthSpeed = text.toInt();
+      text = txbAzimuthBraking->text();
+      text = text.replace(".", ",");
+      suaSettings.azimuthBraking = text.toInt();
+      QByteArray comm = Protocol::SetMovementOptions(RotatePlane::AZIMUTH, suaSettings.azimuthAcceleraion, suaSettings.azimuthSpeed, suaSettings.azimuthBraking);
+      commandNetwork->Send(comm);
+      setConsoleCommand(comm);
+    }
+    catch (...)
+    {
+      QMessageBox::warning(this, "Warning!", "Uncorrect values!");
+    }
+  }
+}
+
+void SUA::txbSetAzimuthMovOptCommand_keyPressEvent(QKeyEvent* event)
+{
+  if (event->key() == Qt::Key::Key_Enter)
+  {
+    on_btnSetAzimuthMovOptCommand_clicked();
+  }
+}
+
+void SUA::on_btnSetAzimuthZerSOptCommand_cliked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    try
+    {
+      QString text = txbAzimuthSlowSpeed->text();
+      text = text.replace(".", ",");
+      suaSettings.azimuthSlowSpeed = text.toInt();
+      text = txbAzimuthZeroSeek->text();
+      text = text.replace(".", ",");
+      suaSettings.azimuthZeroSeek = text.toInt();
+      QByteArray comm = Protocol::SetPositioningOptions(RotatePlane::AZIMUTH, suaSettings.azimuthSlowSpeed, suaSettings.azimuthZeroSeek);
+      commandNetwork->Send(comm);
+      setConsoleCommand(comm);
+    }
+    catch (...)
+    {
+      QMessageBox::warning(this, "Warning!", "Uncorrect values!");
+    }
+  }
+}
+
+void SUA::txbSetAzimuthZerSOptCommand_keyPressEvent(QKeyEvent* event)
+{
+  if (event->key() == Qt::Key::Key_Enter)
+  {
+    on_btnSetAzimuthZerSOptCommand_cliked();
+  }
+}
+
+void SUA::on_btnSetZenithMovOptCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    try
+    {
+      QString text = txbZenithAcceleraion->text();
+      text = text.replace(".", ",");
+      suaSettings.zenithAcceleraion = text.toInt();
+      text = txbZenithSpeed->text();
+      text = text.replace(".", ",");
+      suaSettings.zenithSpeed = text.toInt();
+      text = txbZenithBraking->text();
+      text = text.replace(".", ",");
+      suaSettings.zenithBraking = text.toInt();
+      QByteArray comm = Protocol::SetMovementOptions(RotatePlane::ZENITH, suaSettings.zenithAcceleraion, suaSettings.zenithSpeed, suaSettings.zenithBraking);
+      commandNetwork->Send(comm);
+      setConsoleCommand(comm);
+    }
+    catch (...)
+    {
+      QMessageBox::warning(this, "Warning!", "Uncorrect values!");
+    }
+  }
+}
+
+void SUA::txbSetZenithMovOptCommand_keyPressEvent(QKeyEvent* event)
+{
+
+  if (event->key() == Qt::Key::Key_Enter)
+  {
+    on_btnSetZenithMovOptCommand_clicked();
+  }
+}
+
+void SUA::on_btnSetZenithZerSOptCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    try
+    {
+      QString text = txbZenithSlowSpeed->text();
+      text = text.replace(".", ",");
+      suaSettings.zenithSlowSpeed = text.toInt();
+      text = txbZenithZeroSeek->text();
+      text = text.replace(".", ",");
+      suaSettings.zenithZeroSeek = text.toInt();
+      QByteArray comm = Protocol::SetPositioningOptions(RotatePlane::ZENITH, suaSettings.zenithSlowSpeed, suaSettings.zenithZeroSeek);
+      commandNetwork->Send(comm);
+      setConsoleCommand(comm);
+    }
+    catch (...)
+    {
+      QMessageBox::warning(this, "Warning!", "Uncorrect values!");
+    }
+  }
+}
+
+void SUA::txbSetZenithZerSOptCommand_keyPressEvent(QKeyEvent* event)
+{
+
+  if (event->key() == Qt::Key::Key_Enter)
+  {
+    on_btnSetZenithZerSOptCommand_clicked();
+  }
+}
+
+void SUA::on_btnSetHeatingOptCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    try
+    {
+      QString text = txbTempEnHeating->text();
+      text = text.replace(".", ",");
+      suaSettings.tempEnHeating = text.toInt();
+      text = txbTempDisHeating->text();
+      text = text.replace(".", ",");
+      suaSettings.tempDisHeating = text.toInt();
+      QByteArray comm = Protocol::SetTempHeating(suaSettings.tempEnHeating, suaSettings.tempDisHeating);
+      commandNetwork->Send(comm);
+      setConsoleCommand(comm);
+    }
+    catch (...)
+    {
+      QMessageBox::warning(this, "Warning!", "Uncorrect values!");
+    }
+  }
+}
+
+void SUA::txbSetHeatingOptCommand_keyPressEvent(QKeyEvent* event)
+{
+  if (event->key() == Qt::Key::Key_Enter)
+  {
+    on_btnSetHeatingOptCommand_clicked();
+  }
+}
+
+void SUA::on_btnSetVentilationOptCommand_clicked()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    try
+    {
+      QString text = txbTempEnVentilation->text();
+      text = text.replace(".", ",");
+      suaSettings.tempEnVentilation = text.toInt();
+      text = txbTempDisVentilation->text();
+      text = text.replace(".", ",");
+      suaSettings.tempDisVentilation = text.toInt();
+      QByteArray comm = Protocol::SetTempVentilation(suaSettings.tempEnVentilation, suaSettings.tempDisVentilation);
+      commandNetwork->Send(comm);
+      setConsoleCommand(comm);
+    }
+    catch (...)
+    {
+      QMessageBox::warning(this, "Warning!", "Uncorrect values!");
+    }
+  }
+}
+
+void SUA::txbSetVentilationOptCommand_keyPressEvent(QKeyEvent* event)
+{
+  if (event->key() == Qt::Key::Key_Enter)
+  {
+    on_btnSetVentilationOptCommand_clicked();
+  }
+}
+
+void SUA::on_txbSuaControlPacket_keyPressEvent(QKeyEvent* event)
+{
+  if (event->key() == Qt::Key::Key_Enter)
+  {
+    on_btnSendSUAControlPacketCommand_clicked();
+  }
+}
+
+void SUA::on_btnSendSUAControlPacketCommand_clicked()
+{
+  if (ui.txbSuaControlPacket->text().length() > 0 && commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QString text = ui.txbSuaControlPacket->text();
+    QByteArray comm(text.toLatin1());
+    commandNetwork->Send(comm);
+    setConsoleCommand(comm);
+  }
+}
+
+void SUA::updateTextField()
+{
+  txbAzimuthAcceleraion->text() = QString::number(suaSettings.azimuthAcceleraion);
+  txbAzimuthBraking->text() = QString::number(suaSettings.azimuthBraking);
+  txbAzimuthSlowSpeed->text() = QString::number(suaSettings.azimuthSlowSpeed);
+  txbAzimuthSpeed->text() = QString::number(suaSettings.azimuthSpeed);
+  txbAzimuthZeroSeek->text() = QString::number(suaSettings.azimuthZeroSeek);
+
+  txbZenithAcceleraion->text() = QString::number(suaSettings.zenithAcceleraion);
+  txbZenithBraking->text() = QString::number(suaSettings.zenithBraking);
+  txbZenithSlowSpeed->text() = QString::number(suaSettings.zenithSlowSpeed);
+  txbZenithSpeed->text() = QString::number(suaSettings.zenithSpeed);
+  txbZenithZeroSeek->text() = QString::number(suaSettings.zenithZeroSeek);
+
+  txbTempEnHeating->text() = QString::number(suaSettings.tempEnHeating);
+  txbTempDisHeating->text() = QString::number(suaSettings.tempDisHeating);
+
+  txbTempEnVentilation->text() = QString::number(suaSettings.tempEnVentilation);
+  txbTempDisVentilation->text() = QString::number(suaSettings.tempDisVentilation);
+}
+
+void SUA::updateSUAStateLeds(QString workModeString, QString statusGPSString)
+{
+  try
+  {
+    if (statusGPSString.length() == 2)
+    {
+      statusGPSString[2] = '0';
+    }
+
+    if (statusGPSString[0] == '1' && (statusGPSString[1] == 'A' || statusGPSString[2] == 'A'))
+    {
+      imageStatus.SetImage(ui.imgGPSState, SUAImages::GREEN);
+      ui.btnFollowCommandUsers->setEnabled(true);
+    }
+    else if (statusGPSString[0] == '0' || statusGPSString[1] == 'V')
+    {
+      imageStatus.SetImage(ui.imgGPSState, SUAImages::YELLOW_BLINK);
+      ui.btnFollowCommandUsers->setEnabled(false);
+    }
+    else
+    {
+      imageStatus.SetImage(ui.imgGPSState, SUAImages::GREY);
+      ui.btnFollowCommandUsers->setEnabled(false);
+    }
+
+    //Idle mode (STOP lable is GREEN)
+    if (workModeString[7] == '1')
+    {
+      imageStatus.SetImage(ui.imgStopState, SUAImages::GREEN);
+      //imageStatus.SetImage(ref imgMoveState, "GREY");
+    }
+    else
+    {
+      imageStatus.SetImage(ui.imgStopState, SUAImages::GREY);
+    }
+
+    //Orientation Mode (Orientation lable is GREEN_BLINK)
+    if (workModeString[6] == '1' || workModeString[5] == '1')
+    {
+      imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREEN_BLINK);
+    }
+    else
+    {
+      imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREY);
+    }
+
+    //Following Mode (Follow lable is GREEN)
+    if (workModeString[4] == '0')
+    {
+      imageStatus.SetImage(ui.imgFollowState, SUAImages::GREEN);
+    }
+    else
+    {
+      imageStatus.SetImage(ui.imgFollowState, SUAImages::GREY);
+    }
+  }
+  catch (...)
+  {
+    QMessageBox::warning(this, "Warning!", QString::fromLocal8Bit("Не корректные входные данные!\n"));
+  }
+}
+
+void SUA::updateSUAStateLabels(TelemetryPacket packet)
+{
+  ui.lblSUATime->setText(packet.time);
+  ui.lblLatitude->setText(QString::number(packet.latitude));
+  ui.lblLongitude->setText(QString::number(packet.longitude));
+  ui.lblAltitude->setText(QString::number(packet.height));
+  ui.lblStatus->setText(packet.status);
+  ui.lblUAVLatitude->setText(QString::number(packet.uavLatitude));
+  ui.lblUAVLongitude->setText(QString::number(packet.uavLongitude));
+  ui.lblUAVAltitude->setText(QString::number(packet.uavAltitude));
+  ui.lblDirection->setText(QString::number(packet.direction));
+  ui.lblAzimuth->setText(QString::number(packet.azimuth));
+  /**/
+  ui.txbSuaCommandAzimuthUsers->setText(QString::number(packet.azimuth));
+  ui.txbSuaCommandZenithUsers->setText(QString::number(packet.zenith));
+  if (!userWindows)
+  {
+    ui.SLZen->setValue(packet.zenith);
+    ui.SLAzim->setValue(packet.azimuth);
+  }
+  /**/
+  ui.lblZenith->setText(QString::number(packet.zenith));
+  ui.lblUAVAzimuth->setText(QString::number(packet.uavAzimuth));
+  ui.lblUAVZenith->setText(QString::number(packet.uavZenith));
+  ui.lblTemp->setText(QString::number(packet.temperature));
+  ui.lblWorkMode->setText(packet.workMode);
+  ui.lblError->setText(packet.error);
+  ui.lblDistanceUser->setText(QString::number(packet.distance) + " м");
+  ui.lblDistance->setText(QString::number(packet.distance) + " м");
+  ui.lblHeightGPSUser->setText(QString::number(packet.heightGPS) + " м");
+  ui.lblHeightGPS->setText(QString::number(packet.heightGPS) + " м");
+}
+
+void SUA::telelemtryRcvd(RecievedArray arr)
+{
+  updateSUATelemetryConsole(arr);
+  telemetryDecoder.AddBytesToQueue(arr);
+  bool ok;
+  TelemetryPacket packet = telemetryDecoder.GetTelemetryPacket(&ok);
+  if (ok)
+  {
+    updateSUAStateLabels(packet);
+    updateSUAStateLeds(packet.workMode, packet.status);
+  }
+}
+
+void SUA::updateSUATelemetryConsole(RecievedArray arr)
+{
+  ui.txbTelemetryWindow->append(arr.ToString());
+  QScrollBar* scroll = ui.txbTelemetryWindow->verticalScrollBar();
+  scroll->setValue(scroll->maximum());
+}
+
+void SUA::updateSUAModemConsole(RecievedArray arr)
+{
+  ui.txbModemConsole->append("----------------------\n");
+  ui.txbModemConsole->append(arr.ToHexString());
+  ui.txbModemConsole->append("\n");
+  QScrollBar* scroll = ui.txbModemConsole->verticalScrollBar();
+  scroll->setValue(scroll->maximum());
+}
+
+void SUA::updateConsoleWindow(RecievedArray arr)
+{
+  ui.txbConsoleWindow->append(">>>" + arr.ToString() + "\n");
+  QScrollBar* scroll = ui.txbConsoleWindow->verticalScrollBar();
+  scroll->setValue(scroll->maximum());
+  txbSuaDNA->setText("");
+  ui.txbSuaDNAUsers->setText("");
+}
+
+void SUA::updateCommSockLbl(int state)
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<NetworkBase::SocketState>();
+  lblCommandSocketState->setText(metaEnum.valueToKey(state));
+
+  switch (state)
+  {
+  case NetworkBase::SocketState::CONNECTED:
+    ui.widget->setEnabled(true);
+    imageStatus.SetImage(ui.imgConnectState, SUAImages::GREEN);
+    break;
+  case NetworkBase::SocketState::NOT_CONNECTED:
+    ui.widget->setEnabled(false);
+  default:
+    imageStatus.SetImage(ui.imgConnectState, SUAImages::GREY);
+    imageStatus.SetImage(ui.imgFollowState, SUAImages::GREY);
+    imageStatus.SetImage(ui.imgGPSState, SUAImages::GREY);
+    //imageStatus.SetImage(ui.imgMoveState, "GREY");
+    imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREY);
+    imageStatus.SetImage(ui.imgStopState, SUAImages::GREY);
+    break;
+  }
+}
+
+void SUA::updateModemSockLbl(int state)
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<NetworkBase::SocketState>();
+  lblModemSocketState->setText(metaEnum.valueToKey(state));
+}
+
+void SUA::updateTelemSockLbl(int state)
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<NetworkBase::SocketState>();
+  lblTelemetrySocketState->setText(metaEnum.valueToKey(state));
+}
+
+void SUA::reconnectAllSockets()
+{
+  imageStatus.SetImage(ui.imgConnectState, SUAImages::YELLOW_BLINK);
+  if (ui.usersFrame->isVisible())
+  {
+    ui.actionAll->setChecked(true);
+  }
+  disconnectAllSockets();
+  if (ui.actionCommand->isChecked())
+  {
+    lblCommandSocketState->setText("Connecting... Wait!");
+    commandNetwork->ConnectToHost(suaSettings.hostAddress, suaSettings.commandPort);
+  }
+  if (ui.actionTelemetry->isChecked())
+  {
+    lblTelemetrySocketState->setText("Connecting... Wait!");
+    telemetryNetwork->ConnectToHost(suaSettings.hostAddress, suaSettings.telemetryPort);
+  }
+  if (ui.actionModem->isChecked())
+  {
+    lblModemSocketState->setText("Connecting... Wait");
+    modemNetwork->ConnectToHost(suaSettings.hostAddress, suaSettings.modemPort);
+  }
+}
+
+void SUA::disconnectAllSockets()
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    lblCommandSocketState->setText("Disconnecting... Wait!");
+    commandNetwork->DisconnectFromHost();
+  }
+  if (modemNetwork->State() == NetworkBase::CONNECTED)
+  {
+    lblModemSocketState->setText("Disconnecting... Wait!");
+    modemNetwork->DisconnectFromHost();
+  }
+  if (telemetryNetwork->State() == NetworkBase::CONNECTED)
+  {
+    lblTelemetrySocketState->setText("Disconnecting... Wait!");
+    telemetryNetwork->DisconnectFromHost();
+  }
+}
+
+void SUA::setConsoleCommand(QByteArray command)
+{
+  ui.txbConsoleWindow->append("<<< " + QString(command));
+  QScrollBar* scroll = ui.txbConsoleWindow->verticalScrollBar();
+  scroll->setValue(scroll->maximum());
 }

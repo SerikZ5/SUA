@@ -3,11 +3,11 @@
 
 #include "NetworkBase.h"
 
-class CommandNetwok : public NetworkBase
+class CommandNetwork : public NetworkBase
 {
 public:
-  CommandNetwok(QString address, int port);
-  virtual ~CommandNetwok();
+  CommandNetwork(QString address, int port);
+  virtual ~CommandNetwork();
 
 private:
 

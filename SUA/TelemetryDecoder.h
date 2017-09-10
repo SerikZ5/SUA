@@ -4,18 +4,17 @@
 #include <QByteArray>
 
 #include "RecievedArray.h"
+#include "TelemetryPacket.h"
 
-class TelemetryPacket;
-
-class TelemetryDecored
+class TelemetryDecoder
 {
 public:
-  TelemetryDecored();
-  virtual ~TelemetryDecored();
+  TelemetryDecoder();
+  virtual ~TelemetryDecoder();
 
   void AddBytesToQueue(RecievedArray bytes); 
   int Avaible();
-  TelemetryPacket GetTelemetryPacket();
+  TelemetryPacket GetTelemetryPacket(bool* ok);
 
 protected:
   void Synchronize();

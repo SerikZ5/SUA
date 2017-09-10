@@ -140,6 +140,7 @@
     <ClCompile Include="CommandAnswer.cpp" />
     <ClCompile Include="CommandNetwork.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_NetworkBase.cpp" />
+    <ClCompile Include="GeneratedFiles\Debug\moc_NetworkSettings.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_Spoiler.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_sua.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -162,9 +163,13 @@
     <ClCompile Include="ImageStatus.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkBase.cpp" />
+    <ClCompile Include="NetworkSettings.cpp" />
     <ClCompile Include="Protocol.cpp" />
+    <ClCompile Include="RecievedArray.cpp" />
     <ClCompile Include="Spoiler.cpp" />
     <ClCompile Include="sua.cpp" />
+    <ClCompile Include="SUASettings.cpp" />
+    <ClCompile Include="TelemetryDecoder.cpp" />
     <ClCompile Include="TelemetryNetwork.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -218,6 +223,15 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
     <ClInclude Include="ImageStatus.h" />
+    <CustomBuild Include="NetworkSettings.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB  "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtNetwork"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing %(Filename).h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+    </CustomBuild>
+    <ClInclude Include="RecievedArray.h" />
+    <ClInclude Include="SUASettings.h" />
+    <ClInclude Include="TelemetryDecoder.h" />
     <ClInclude Include="TelemetryNetwork.h" />
     <ClInclude Include="TelemetryPacket.h" />
     <CustomBuild Include="NetworkBase.h">

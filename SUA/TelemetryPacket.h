@@ -1,5 +1,5 @@
-#ifndef TELEMETRY_NETWORK
-#define TELEMETRY_NETWORK
+#ifndef TelemetryPacket_H
+#define TelemetryPacket_H
 
 #include <QString>
 

@@ -1,5 +1,6 @@
 #include "sua.h"
 #include <QtWidgets/QApplication>
+#include <QNetworkAccessManager>
 
 int main(int argc, char *argv[])
 {

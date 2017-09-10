@@ -86,6 +86,21 @@
     <ClCompile Include="ImageStatus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TelemetryDecoder.cpp">
+      <Filter>ProtocolLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="RecievedArray.cpp">
+      <Filter>ProtocolLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="SUASettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkSettings.cpp">
+      <Filter>Form Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_NetworkSettings.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="sua.h">
@@ -102,6 +117,9 @@
     </CustomBuild>
     <CustomBuild Include="Spoiler.h">
       <Filter>Spoiler</Filter>
+    </CustomBuild>
+    <CustomBuild Include="NetworkSettings.h">
+      <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -120,11 +138,20 @@
     <ClInclude Include="TelemetryNetwork.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="TelemetryPacket.h">
-      <Filter>ProtocolLogic</Filter>
-    </ClInclude>
     <ClInclude Include="ImageStatus.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SUASettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TelemetryDecoder.h">
+      <Filter>ProtocolLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="RecievedArray.h">
+      <Filter>ProtocolLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="TelemetryPacket.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

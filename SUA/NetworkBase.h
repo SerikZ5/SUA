@@ -5,20 +5,23 @@
 #include <QByteArray>
 #include <QTcpSocket>
 
-enum SocketState
-{
-  NOT_CONNECTED = 0,
-  CONNECTED = 1,
-  PAUSED = 2,
-  CONNECTING = 3,
-  DISCONNECTING = 4,
-  ERROR = 5
-};
+#include "RecievedArray.h"
 
 class NetworkBase: public QObject
 {
   Q_OBJECT
 public:
+  enum SocketState
+  {
+    NOT_CONNECTED = 0,
+    CONNECTED = 1,
+    PAUSED = 2,
+    CONNECTING = 3,
+    DISCONNECTING = 4,
+    ERROR = 5
+  };
+  Q_ENUM(SocketState)
+
   NetworkBase(QString address, int port);
   virtual ~NetworkBase();
 
@@ -36,13 +39,15 @@ public slots:
   void SlotError(QAbstractSocket::SocketError);
 
 signals:
-  void NetworkStateChanged(SocketState);
+  void NetworkStateChanged(int);
+  void DataRecieved(RecievedArray arr);
 
 protected:
   QString address;
   int port;
   QTcpSocket* clientSocket;
   SocketState state;
+  quint16 m_nNextBlockSize;
 };
 
 #endif

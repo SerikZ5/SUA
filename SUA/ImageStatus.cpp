@@ -31,9 +31,13 @@ void ImageStatus::SetImage(QLabel* label, SUAImages color)
     label->setPixmap(grey->scaled(ImageSize, ImageSize, Qt::KeepAspectRatio));
     break;
   case GREEN_BLINK:
+    greenBlink->setScaledSize(label->size());
+    greenBlink->start();
     label->setMovie(greenBlink);
     break;
   case YELLOW_BLINK:
+    yellowBlink->setScaledSize(label->size());
+    yellowBlink->start();
     label->setMovie(yellowBlink);
     break;
   default:

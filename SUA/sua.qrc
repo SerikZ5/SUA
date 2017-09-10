@@ -4,5 +4,7 @@
         <file>images/green_blink.gif</file>
         <file>images/grey.png</file>
         <file>images/yellow_blink.gif</file>
+        <file>images/icon.ico</file>
+        <file>images/icon.png</file>
     </qresource>
 </RCC>

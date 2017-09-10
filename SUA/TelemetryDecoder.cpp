@@ -1,39 +1,60 @@
 #include <QtMath>
 
 #include "TelemetryDecoder.h"
-#include "TelemetryPacket.h"
 
-TelemetryDecored::TelemetryDecored()
+TelemetryDecoder::TelemetryDecoder()
 {
 }
 
-TelemetryDecored::~TelemetryDecored()
+TelemetryDecoder::~TelemetryDecoder()
 {
-
 }
 
-void TelemetryDecored::AddBytesToQueue(RecievedArray bytes)
+int TelemetryDecoder::Avaible()
 {
-
+  return inputBytes.count();
 }
 
-int TelemetryDecored::Avaible()
+void TelemetryDecoder::AddBytesToQueue(RecievedArray bytes)
 {
-  inputBytes.count();
+  inputBytes.append(bytes.arr);
+  if (!isSynchonized && inputBytes.count() > 360)
+  {
+    Synchronize();
+  }
 }
 
-TelemetryPacket TelemetryDecored::GetTelemetryPacket()
+void TelemetryDecoder::Synchronize()
 {
-  QByteArray arr;
+  isSynchonized = false;
+  while (!isSynchonized)
+  {
+    if (inputBytes.count() < 5)
+    {
+      break;
+    }
+    else
+    {
+      QByteArray arr = inputBytes.left(5);
+      if (QString(arr) == "Time:")
+      {
+        isSynchonized = true;
+      }
+      else
+      {
+        inputBytes.remove(0, 1);
+      }
+    }
+  }
+}
+
+TelemetryPacket TelemetryDecoder::GetTelemetryPacket(bool* ok)
+{
   TelemetryPacket packet;
   if (isSynchonized && inputBytes.count() > 214)
   {
-    arr = inputBytes. .Take(215).ToArray();
-
-    for (int i = 0; i < 215; i++)
-    {
-      inputBytes.Dequeue();
-    }
+    QByteArray arr = inputBytes.left(215);
+    inputBytes.remove(0, 215);
     try
     {
       packet.time = QString(inputBytes.mid(6, 19));
@@ -48,11 +69,13 @@ TelemetryPacket TelemetryDecored::GetTelemetryPacket()
       packet.azimuth = QString(inputBytes.mid(168, 5)).replace(".", ",").toFloat();
       packet.zenith = QString(inputBytes.mid(174, 5)).replace(".", ",").toFloat();
       packet.temperature = QString(inputBytes.mid(183, 5)).replace(".", ",").toFloat();
-      //arr[189] |= 0x80;
+      int workMode = (int)inputBytes[189];
+      workMode |= 0x80;
       //workmode - QString от int в двоичной системе координат;
-      packet.workMode = QString("%1").arg((int)inputBytes[189], 8, 2);
-      //arr[191] |= 0x80;
-      packet.error = QString("%1").arg((int)inputBytes[191], 8, 2);
+      packet.workMode = QString("%1").arg(workMode, 8, 2);
+      int error = (int)inputBytes[191];
+      error |= 0x80;
+      packet.error = QString("%1").arg(error, 8, 2);
       packet.uavAzimuth = QString(inputBytes.mid(200, 5)).replace(".", ",").toFloat();
       packet.uavZenith = QString(inputBytes.mid(206, 5)).replace(".", ",").toFloat();
 
@@ -65,17 +88,15 @@ TelemetryPacket TelemetryDecored::GetTelemetryPacket()
       packet.distance = (uint)(6371000 * c);
       packet.heightGPS = (int)(packet.uavAltitude - packet.height);
 
+      *ok = true;
       return packet;
     }
-    catch
+    catch(...)
     {
       isSynchonized = false;
     }
   }
-  return NULL;
-}
 
-void TelemetryDecored::Synchronize()
-{
-
+  *ok = false;
+  return packet;
 }

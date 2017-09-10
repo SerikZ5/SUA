@@ -1,10 +1,10 @@
 #include "CommandNetwork.h"
 
-CommandNetwok::CommandNetwok(QString address, int port)
+CommandNetwork::CommandNetwork(QString address, int port)
   : NetworkBase(address, port)
 {
 }
 
-CommandNetwok::~CommandNetwok()
+CommandNetwork::~CommandNetwork()
 {
 }
