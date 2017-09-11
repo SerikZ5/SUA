@@ -75,7 +75,7 @@ void MyServer::sendToClient(QTcpSocket* pSocket, const QString& str)
   QByteArray  arrBlock;
   QDataStream out(&arrBlock, QIODevice::WriteOnly);
   out.setVersion(QDataStream::Qt_4_2);
-  out << quint16(0) << QTime::currentTime() << str;
+  out << quint16(0) << str;
 
   out.device()->seek(0);
   out << quint16(arrBlock.size() - sizeof(quint16));
