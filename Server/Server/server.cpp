@@ -66,7 +66,7 @@ void MyServer::slotReadClient()
     QString strMessage = "Client has sended - " + QString(str);
     m_ptxt->append(strMessage);
     m_nNextBlockSize = 0;
-    sendToClient(pClientSocket, "Server Response: Received \"" + str + "\"");
+    sendToClient(pClientSocket, str);
   }
 }
 
@@ -75,7 +75,7 @@ void MyServer::sendToClient(QTcpSocket* pSocket, const QString& str)
   QByteArray  arrBlock;
   QDataStream out(&arrBlock, QIODevice::WriteOnly);
   out.setVersion(QDataStream::Qt_4_2);
-  out << quint16(0) << str;
+  out << quint16(0) << str.toLatin1();
 
   out.device()->seek(0);
   out << quint16(arrBlock.size() - sizeof(quint16));

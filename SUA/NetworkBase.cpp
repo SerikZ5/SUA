@@ -52,25 +52,11 @@ void NetworkBase::SlotReadyRead()
     QByteArray buffer;
     in >> buffer;
 
-    //Send(pClientSocket, "dsgsdg");
-    //RecievedArray arr(str);
-    //DataRecieved(arr);
+    RecievedArray arr(buffer);
+    DataRecieved(arr);
 
     m_nNextBlockSize = 0;
   }
-}
-
-void NetworkBase::Send(QTcpSocket* clientSocket, QByteArray data)
-{
-  QByteArray arrBlock;
-  QDataStream out(&arrBlock, QIODevice::WriteOnly);
-  out.setVersion(QDataStream::Qt_4_2);
-  out << quint16(0) << data;
-
-  out.device()->seek(0);
-  out << quint16(arrBlock.size() - sizeof(quint16));
-
-  clientSocket->write(arrBlock);
 }
 
 void NetworkBase::Send(QByteArray data)

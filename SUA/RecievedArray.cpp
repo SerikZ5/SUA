@@ -13,7 +13,8 @@ RecievedArray::~RecievedArray()
 
 QString RecievedArray::ToString()
 {
-  return QString(arr);
+  QString str = QString::fromLatin1(arr);
+  return str;
 }
 
 QString RecievedArray::ToHexString()

@@ -31,7 +31,6 @@ public:
   void ConnectToHost(QString hostAddress, int hostPort); 
   void DisconnectFromHost();
 
-  void Send(QTcpSocket* clientSocket, QByteArray data);
   void Send(QByteArray data);
 
 public slots:

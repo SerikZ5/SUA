@@ -1078,7 +1078,8 @@ void SUA::updateSUAModemConsole(RecievedArray arr)
 
 void SUA::updateConsoleWindow(RecievedArray arr)
 {
-  ui.txbConsoleWindow->append(">>>" + arr.ToString() + "\n");
+  QString str = arr.ToString();
+  ui.txbConsoleWindow->append(">>>" + str + "\n");
   QScrollBar* scroll = ui.txbConsoleWindow->verticalScrollBar();
   scroll->setValue(scroll->maximum());
   txbSuaDNA->setText("");
