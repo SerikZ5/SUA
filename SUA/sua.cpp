@@ -2,16 +2,20 @@
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QMetaEnum>
+#include <QDateTime>
+#include <QDir>
 
 #include "sua.h"
 #include "Spoiler.h"
 #include "Protocol.h"
 #include "NetworkSettings.h"
+#include "SUASerializer.h"
 
 #define userWindowHeight 560
 #define userWindowWight 300
 #define mainWindowHeight 560
 #define mainWindowWight 720
+#define configFilePath "config.conf"
 
 SUA::SUA(QWidget *parent)
     : QMainWindow(parent)
@@ -31,6 +35,12 @@ SUA::SUA(QWidget *parent)
   addStatusBar();
   activateFullMode(false);
   resize(userWindowWight, userWindowHeight);
+
+  if (!SUASerializer::Deserialize(configFilePath, &suaSettings))
+  {
+    SUASerializer::Serialize(configFilePath, &suaSettings);
+  }
+  telemetryLogFile = "";
     
   commandNetwork = new NetworkBase(suaSettings.hostAddress, suaSettings.commandPort);
   connect(commandNetwork, SIGNAL(NetworkStateChanged(int)), this, SLOT(updateCommSockLbl(int)));
@@ -337,6 +347,9 @@ void SUA::addStatusBar()
   lblModemSocketState = new QLabel(this);
   lblTelemetrySocketState = new QLabel(this);
   lblCommandSocketState = new QLabel(this);
+  lblCommandSocketState->setText("NOTCONNECTED");
+  lblTelemetrySocketState->setText("NOTCONNECTED");
+  lblModemSocketState->setText("NOTCONNECTED");
   statusBar()->addWidget(l);
   statusBar()->addWidget(modem);
   statusBar()->addWidget(lblModemSocketState);
@@ -368,7 +381,7 @@ void SUA::on_actionDisconnect_triggered(bool checked)
 
 void SUA::on_actionNetworkSettings_triggered(bool checked)
 {
-  NetworkSettings networkSettings(&suaSettings, this);
+  NetworkSettings networkSettings(&suaSettings, configFilePath, this);
   networkSettings.exec();
 }
 
@@ -736,6 +749,7 @@ void SUA::on_btnSetAzimuthMovOptCommand_clicked()
       QByteArray comm = Protocol::SetMovementOptions(RotatePlane::AZIMUTH, suaSettings.azimuthAcceleraion, suaSettings.azimuthSpeed, suaSettings.azimuthBraking);
       commandNetwork->Send(comm);
       setConsoleCommand(comm);
+      SUASerializer::Serialize(configFilePath, &suaSettings);
     }
     catch (...)
     {
@@ -767,6 +781,7 @@ void SUA::on_btnSetAzimuthZerSOptCommand_cliked()
       QByteArray comm = Protocol::SetPositioningOptions(RotatePlane::AZIMUTH, suaSettings.azimuthSlowSpeed, suaSettings.azimuthZeroSeek);
       commandNetwork->Send(comm);
       setConsoleCommand(comm);
+      SUASerializer::Serialize(configFilePath, &suaSettings);
     }
     catch (...)
     {
@@ -801,6 +816,7 @@ void SUA::on_btnSetZenithMovOptCommand_clicked()
       QByteArray comm = Protocol::SetMovementOptions(RotatePlane::ZENITH, suaSettings.zenithAcceleraion, suaSettings.zenithSpeed, suaSettings.zenithBraking);
       commandNetwork->Send(comm);
       setConsoleCommand(comm);
+      SUASerializer::Serialize(configFilePath, &suaSettings);
     }
     catch (...)
     {
@@ -833,6 +849,7 @@ void SUA::on_btnSetZenithZerSOptCommand_clicked()
       QByteArray comm = Protocol::SetPositioningOptions(RotatePlane::ZENITH, suaSettings.zenithSlowSpeed, suaSettings.zenithZeroSeek);
       commandNetwork->Send(comm);
       setConsoleCommand(comm);
+      SUASerializer::Serialize(configFilePath, &suaSettings);
     }
     catch (...)
     {
@@ -865,6 +882,7 @@ void SUA::on_btnSetHeatingOptCommand_clicked()
       QByteArray comm = Protocol::SetTempHeating(suaSettings.tempEnHeating, suaSettings.tempDisHeating);
       commandNetwork->Send(comm);
       setConsoleCommand(comm);
+      SUASerializer::Serialize(configFilePath, &suaSettings);
     }
     catch (...)
     {
@@ -896,6 +914,7 @@ void SUA::on_btnSetVentilationOptCommand_clicked()
       QByteArray comm = Protocol::SetTempVentilation(suaSettings.tempEnVentilation, suaSettings.tempDisVentilation);
       commandNetwork->Send(comm);
       setConsoleCommand(comm);
+      SUASerializer::Serialize(configFilePath, &suaSettings);
     }
     catch (...)
     {
@@ -1057,6 +1076,8 @@ void SUA::telelemtryRcvd(RecievedArray arr)
   {
     updateSUAStateLabels(packet);
     updateSUAStateLeds(packet.workMode, packet.status);
+    if (telemetryLogFile != "")
+      printTelemetryLogFile(telemetryLogFile, packet);
   }
 }
 
@@ -1139,6 +1160,10 @@ void SUA::reconnectAllSockets()
   {
     lblTelemetrySocketState->setText("Connecting... Wait!");
     telemetryNetwork->ConnectToHost(suaSettings.hostAddress, suaSettings.telemetryPort);
+    QString timeSystem = QDateTime::currentDateTime().toString("yyyy.MM.dd_HH-mm-ss");
+    QDir().mkdir("LogFilesSUA");
+    telemetryLogFile = QString("LogFilesSUA/LogFile_%1.txt").arg(timeSystem);
+    printTelemetryLogFileBegin(telemetryLogFile);
   }
   if (ui.actionModem->isChecked())
   {
@@ -1163,6 +1188,8 @@ void SUA::disconnectAllSockets()
   {
     lblTelemetrySocketState->setText("Disconnecting... Wait!");
     telemetryNetwork->DisconnectFromHost();
+
+    telemetryLogFile = "";
   }
 }
 
@@ -1171,4 +1198,29 @@ void SUA::setConsoleCommand(QByteArray command)
   ui.txbConsoleWindow->append("<<< " + QString(command));
   QScrollBar* scroll = ui.txbConsoleWindow->verticalScrollBar();
   scroll->setValue(scroll->maximum());
+}
+
+void SUA::printTelemetryLogFileBegin(QString path)
+{
+  QFile data(path);
+  if (data.open(QFile::WriteOnly | QFile::Truncate)) 
+  {
+    QTextStream out(&data);
+    out << "time_date;base_lat;base_long;base_alt;base_status;uav_lat;uav_long;uav_alt;dir;enc_az;enc_zen;temp;calc_az;calc_zen;work;error;distance;height_GPS/n";
+    out << "/n";
+  }
+}
+
+void SUA::printTelemetryLogFile(QString path, TelemetryPacket packet)
+{
+  QFile data(path);
+  if (data.open(QFile::WriteOnly | QFile::Truncate))
+  {
+    QTextStream out(&data);
+    out << packet.time + ';' + packet.latitude + ';' + packet.longitude + ';' + packet.height + ';' + packet.status + ';' +
+      packet.uavLatitude + ';' + packet.uavLongitude + ';' + packet.uavAltitude + ';' + packet.direction + ';' +
+      packet.azimuth + ';' + packet.zenith + ';' + packet.temperature + ';' + packet.uavAzimuth + ';' + packet.uavZenith + ';' +
+      packet.workMode + ';' + packet.error + ';' + packet.distance + ';' + packet.heightGPS;
+    out << "/n";
+  }
 }

@@ -4,11 +4,13 @@
 #include <QMessageBox>
 
 #include "NetworkSettings.h"
+#include "SUASerializer.h"
 
 
-NetworkSettings::NetworkSettings(SUASettings* settings, QWidget* parent) : QDialog(parent)
+NetworkSettings::NetworkSettings(SUASettings* settings, QString configFilePath, QWidget* parent) : QDialog(parent)
 {
   this->settings = settings;
+  this->configFilePath = configFilePath;
   setWindowTitle(QString::fromLocal8Bit("Настройки сети"));
   QGridLayout* layout = new QGridLayout();
 
@@ -71,7 +73,8 @@ void NetworkSettings::buttonOk_click()
       settings->telemetryPort = value;
     else
       throw QString("Uncorrect values!");
-
+    
+    SUASerializer::Serialize(configFilePath, settings);
     done(1);
   }
   catch (QString s)

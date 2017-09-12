@@ -101,6 +101,9 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_NetworkSettings.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="SUASerializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="sua.h">
@@ -152,6 +155,9 @@
     </ClInclude>
     <ClInclude Include="TelemetryPacket.h">
       <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="SUASerializer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

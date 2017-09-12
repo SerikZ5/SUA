@@ -325,6 +325,13 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
+          <widget class="QPushButton" name="btnFullMode">
+           <property name="text">
+            <string>Расширенный режим</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="btnReConnectUsers">
            <property name="text">
             <string>Подключиться</string>
@@ -556,13 +563,6 @@
                 </layout>
                </item>
               </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnFullMode">
-              <property name="text">
-               <string>Расширенный режим</string>
-              </property>
              </widget>
             </item>
             <item>
@@ -1301,8 +1301,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>206</width>
-             <height>497</height>
+             <width>65</width>
+             <height>16</height>
             </rect>
            </property>
           </widget>

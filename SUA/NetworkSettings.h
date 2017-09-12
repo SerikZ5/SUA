@@ -10,7 +10,7 @@ class NetworkSettings : public QDialog
 {
   Q_OBJECT
 public:
-  NetworkSettings(SUASettings* settings, QWidget* parent = NULL);
+  NetworkSettings(SUASettings* settings, QString configFilePath, QWidget* parent = NULL);
   virtual ~NetworkSettings();
 
 private slots:
@@ -24,6 +24,7 @@ private:
   QLineEdit* txtCommandPort;
 
   SUASettings* settings;
+  QString configFilePath;
 };
 
 #endif

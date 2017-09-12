@@ -102,11 +102,15 @@ private:
 
   void reconnectAllSockets();
   void disconnectAllSockets();
+
+  void printTelemetryLogFileBegin(QString path);
+  void printTelemetryLogFile(QString path, TelemetryPacket packet);
     
   ImageStatus imageStatus;
 
   SUASettings suaSettings;
   TelemetryDecoder telemetryDecoder;
+  QString telemetryLogFile;
 
   NetworkBase* commandNetwork;
   NetworkBase* telemetryNetwork;

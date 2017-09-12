@@ -4,7 +4,9 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QTcpSocket>
-#include <QTime>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QIntValidator>
 
 #include "server.h"
 
@@ -12,7 +14,29 @@ MyServer::MyServer(int nPort, QWidget* pwgt /*=0*/) : QWidget(pwgt)
 , m_nNextBlockSize(0)
 {
   m_ptcpServer = new QTcpServer(this);
-  if (!m_ptcpServer->listen(QHostAddress::Any, nPort)) 
+  setPort(nPort);
+  connect(m_ptcpServer, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
+  m_ptxt = new QTextEdit;
+  m_ptxt->setReadOnly(true);
+
+  //Layout setup
+  QHBoxLayout* portLayout = new QHBoxLayout;
+  port = new QLineEdit(QString::number(nPort), this);
+  port->setValidator(new QIntValidator());
+  QPushButton* button = new QPushButton("change", this);
+  portLayout->addWidget(port);
+  portLayout->addWidget(button);
+  connect(button, SIGNAL(clicked()), this, SLOT(changePort()));
+  QVBoxLayout* pvbxLayout = new QVBoxLayout;
+  pvbxLayout->addLayout(portLayout);
+  pvbxLayout->addWidget(new QLabel("<H1>Server</H1>"));
+  pvbxLayout->addWidget(m_ptxt);
+  setLayout(pvbxLayout);
+}
+
+void MyServer::setPort(int port)
+{
+  if (!m_ptcpServer->listen(QHostAddress::Any, port))
   {
     QMessageBox::critical(0,
       "Server Error",
@@ -21,15 +45,12 @@ MyServer::MyServer(int nPort, QWidget* pwgt /*=0*/) : QWidget(pwgt)
     m_ptcpServer->close();
     return;
   }
-  connect(m_ptcpServer, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
-  m_ptxt = new QTextEdit;
-  m_ptxt->setReadOnly(true);
+}
 
-  //Layout setup
-  QVBoxLayout* pvbxLayout = new QVBoxLayout;
-  pvbxLayout->addWidget(new QLabel("<H1>Server</H1>"));
-  pvbxLayout->addWidget(m_ptxt);
-  setLayout(pvbxLayout);
+void MyServer::changePort()
+{
+  int i = port->text().toInt();
+  setPort(i);
 }
 
 /*virtual*/ void MyServer::slotNewConnection()

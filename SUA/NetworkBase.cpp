@@ -13,6 +13,8 @@ NetworkBase::NetworkBase(QString address, int port)
 
 NetworkBase::~NetworkBase()
 {
+  if (clientSocket)
+    delete clientSocket;
 }
 
 void NetworkBase::ConnectToHost()
@@ -74,8 +76,6 @@ void NetworkBase::Send(QByteArray data)
 
 void NetworkBase::SlotError(QAbstractSocket::SocketError error)
 {
-  delete clientSocket;
-  clientSocket = NULL;
   state = ERROR;
   NetworkStateChanged(state);
 }
