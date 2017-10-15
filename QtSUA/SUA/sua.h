@@ -4,6 +4,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QUdpSocket>
 #include <QKeyEvent>
+#include <QTranslator>
 
 #include "ui_sua.h"
 
@@ -91,6 +92,8 @@ private:
   void addSpoilers();
   void addStatusBar();
   void activateFullMode(bool value);
+
+  void tranlate(QString lng);
   
   void updateTextField();
 
@@ -118,6 +121,8 @@ private:
   QUdpSocket* udpClient;
 
   bool userWindows;
+
+  QTranslator qtLanguageTranslator;
 
   Ui::SUAClass ui;
 

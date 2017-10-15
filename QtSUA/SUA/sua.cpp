@@ -16,6 +16,7 @@
 #define mainWindowHeight 560
 #define mainWindowWight 720
 #define configFilePath "config.conf"
+#define languageFile "SUA_"
 
 SUA::SUA(QWidget *parent)
     : QMainWindow(parent)
@@ -34,6 +35,7 @@ SUA::SUA(QWidget *parent)
   addSpoilers();
   addStatusBar();
   activateFullMode(false);
+  tranlate("en");
   resize(userWindowWight, userWindowHeight);
 
   if (!SUASerializer::Deserialize(configFilePath, &suaSettings))
@@ -132,7 +134,7 @@ void SUA::addSpoilers()
 
   QWidget* w = new QWidget(ui.tabWidget);
   w->setObjectName(QStringLiteral("w"));
-  Spoiler* adjustment = new Spoiler("Корректировка", 300, w);
+  Spoiler* adjustment = new Spoiler(tr("Корректировка"), 300, w); // Adjustment
   QVBoxLayout* adjustmentSpoilerLayout = new QVBoxLayout();
   adjustmentSpoilerLayout->setSpacing(6);
   QHBoxLayout* h1 = new QHBoxLayout();
@@ -184,20 +186,20 @@ void SUA::addSpoilers()
   connect(btnSetDNADown, SIGNAL(clicked()), this, SLOT(on_btnSetDNADownUsers_clicked()));
 
 
-  Spoiler* azimuth = new Spoiler("Азимут", 300, w);
+  Spoiler* azimuth = new Spoiler(tr("Азимут"), 300, w); // Azimuth
   QVBoxLayout* azimuthSpoilerLayout = new QVBoxLayout(azimuth);
-  QGroupBox* motionAzimuth = new QGroupBox("Движение", azimuth);
+  QGroupBox* motionAzimuth = new QGroupBox(tr("Движение"), azimuth);
   QVBoxLayout* motionAzimuthLayout = new QVBoxLayout();
-  QLabel* l1 = new QLabel("Ускорение", motionAzimuth);
+  QLabel* l1 = new QLabel(tr("Ускорение"), motionAzimuth);
   txbAzimuthAcceleraion = new QLineEdit("15", motionAzimuth);
   txbAzimuthAcceleraion->setValidator(new QIntValidator());
-  QLabel* l2 = new QLabel("Постоянная скорость", motionAzimuth);
+  QLabel* l2 = new QLabel(tr("Постоянная скорость"), motionAzimuth);
   txbAzimuthSpeed = new QLineEdit("150", motionAzimuth);
   txbAzimuthSpeed->setValidator(new QIntValidator());
-  QLabel* l3 = new QLabel("Торможение", motionAzimuth);
+  QLabel* l3 = new QLabel(tr("Торможение"), motionAzimuth);
   txbAzimuthBraking = new QLineEdit("20", motionAzimuth);
   txbAzimuthBraking->setValidator(new QIntValidator());
-  QPushButton* btnSetAzimuthMovOptCommand = new QPushButton("Ввод", motionAzimuth);
+  QPushButton* btnSetAzimuthMovOptCommand = new QPushButton(tr("Ввод"), motionAzimuth);
   motionAzimuthLayout->addWidget(l1);
   motionAzimuthLayout->addWidget(txbAzimuthAcceleraion);
   motionAzimuthLayout->addWidget(l2);
@@ -211,15 +213,15 @@ void SUA::addSpoilers()
   connect(txbAzimuthBraking, SIGNAL(returnPressed()), this, SLOT(txbSetAzimuthMovOptCommand_returnPressed()));
   connect(btnSetAzimuthMovOptCommand, SIGNAL(pressed()), this, SLOT(btnSetAzimuthMovOptCommand_clicked()));
 
-  QGroupBox* additionallyAzimuth = new QGroupBox("Дополнительно", azimuth);
+  QGroupBox* additionallyAzimuth = new QGroupBox(tr("Дополнительно"), azimuth);
   QVBoxLayout* additionallyAzimuthLayout = new QVBoxLayout();
-  QLabel* l4 = new QLabel("Скорость поиска нуля", additionallyAzimuth);
+  QLabel* l4 = new QLabel(tr("Скорость поиска нуля"), additionallyAzimuth);
   txbAzimuthSlowSpeed = new QLineEdit("20", additionallyAzimuth);
   txbAzimuthSlowSpeed->setValidator(new QIntValidator());
-  QLabel* l5 = new QLabel("Скорость подхода к точке", additionallyAzimuth);
+  QLabel* l5 = new QLabel(tr("Скорость подхода к точке"), additionallyAzimuth);
   txbAzimuthZeroSeek = new QLineEdit("50", additionallyAzimuth);
   txbAzimuthZeroSeek->setValidator(new QIntValidator());
-  QPushButton* btnSetAzimuthZerSOptCommand = new QPushButton("Ввод", additionallyAzimuth);
+  QPushButton* btnSetAzimuthZerSOptCommand = new QPushButton(tr("Ввод"), additionallyAzimuth);
   additionallyAzimuthLayout->addWidget(l4);
   additionallyAzimuthLayout->addWidget(txbAzimuthSlowSpeed);
   additionallyAzimuthLayout->addWidget(l5);
@@ -235,20 +237,20 @@ void SUA::addSpoilers()
   azimuth->setContentLayout(azimuthSpoilerLayout);
 
   
-  Spoiler* zenith = new Spoiler("Угол места", 300, w);
+  Spoiler* zenith = new Spoiler(tr("Угол места"), 300, w);
   QVBoxLayout* zenithSpoilerLayout = new QVBoxLayout(zenith);
-  QGroupBox* motionZenith = new QGroupBox("Движение", zenith);
+  QGroupBox* motionZenith = new QGroupBox(tr("Движение"), zenith);
   QVBoxLayout* motionZenithLayout = new QVBoxLayout();
-  QLabel* l6 = new QLabel("Ускорение", motionZenith);
+  QLabel* l6 = new QLabel(tr("Ускорение"), motionZenith);
   txbZenithAcceleraion = new QLineEdit("15", motionZenith);
   txbZenithAcceleraion->setValidator(new QIntValidator());
-  QLabel* l7 = new QLabel("Постоянная скорость", motionZenith);
+  QLabel* l7 = new QLabel(tr("Постоянная скорость"), motionZenith);
   txbZenithSpeed = new QLineEdit("150", motionZenith);
   txbZenithSpeed->setValidator(new QIntValidator());
-  QLabel* l8 = new QLabel("Торможение", motionZenith);
+  QLabel* l8 = new QLabel(tr("Торможение"), motionZenith);
   txbZenithBraking = new QLineEdit("20", motionZenith);
   txbZenithBraking->setValidator(new QIntValidator());
-  QPushButton* btnSetZenithMovOptCommand = new QPushButton("Ввод", motionZenith);
+  QPushButton* btnSetZenithMovOptCommand = new QPushButton(tr("Ввод"), motionZenith);
   motionZenithLayout->addWidget(l6);
   motionZenithLayout->addWidget(txbZenithAcceleraion);
   motionZenithLayout->addWidget(l7);
@@ -262,15 +264,15 @@ void SUA::addSpoilers()
   connect(txbZenithBraking, SIGNAL(returnPressed()), this, SLOT(txbSetZenithMovOptCommand_returnPressed()));
   connect(btnSetZenithMovOptCommand, SIGNAL(pressed()), this, SLOT(btnSetZenithMovOptCommand_clicked()));
 
-  QGroupBox* additionallyZenith = new QGroupBox("Дополнительно", azimuth);
+  QGroupBox* additionallyZenith = new QGroupBox(tr("Дополнительно"), azimuth);
   QVBoxLayout* additionallyZenithLayout = new QVBoxLayout();
-  QLabel* l9 = new QLabel("Скорость поиска нуля", additionallyZenith);
+  QLabel* l9 = new QLabel(tr("Скорость поиска нуля"), additionallyZenith);
   txbZenithSlowSpeed = new QLineEdit("20", additionallyZenith);
   txbZenithSlowSpeed->setValidator(new QIntValidator());
-  QLabel* l10 = new QLabel("Скорость подхода к точке", additionallyZenith);
+  QLabel* l10 = new QLabel(tr("Скорость подхода к точке"), additionallyZenith);
   txbZenithZeroSeek = new QLineEdit("50", additionallyZenith);
   txbZenithZeroSeek->setValidator(new QIntValidator());
-  QPushButton* btnSetZenithZerSOptCommand = new QPushButton("Ввод", additionallyZenith);
+  QPushButton* btnSetZenithZerSOptCommand = new QPushButton(tr("Ввод"), additionallyZenith);
   additionallyZenithLayout->addWidget(l9);
   additionallyZenithLayout->addWidget(txbZenithSlowSpeed);
   additionallyZenithLayout->addWidget(l10);
@@ -286,15 +288,15 @@ void SUA::addSpoilers()
   zenith->setContentLayout(zenithSpoilerLayout);
 
 
-  Spoiler* heating = new Spoiler("Подогрев", 300, w);
+  Spoiler* heating = new Spoiler(tr("Подогрев"), 300, w);
   QVBoxLayout* heatingSpoilerLayout = new QVBoxLayout(zenith);
-  QLabel* l11 = new QLabel("Температура включения", heating);
+  QLabel* l11 = new QLabel(tr("Температура включения"), heating);
   txbTempEnHeating = new QLineEdit("10", heating);
   txbTempEnHeating->setValidator(new QIntValidator());
-  QLabel* l12 = new QLabel("Температура выключения", heating);
+  QLabel* l12 = new QLabel(tr("Температура выключения"), heating);
   txbTempDisHeating = new QLineEdit("18", heating);
   txbTempDisHeating->setValidator(new QIntValidator());
-  QPushButton* btnSetHeatingOptCommand = new QPushButton("Ввод", heating);
+  QPushButton* btnSetHeatingOptCommand = new QPushButton(tr("Ввод"), heating);
   heatingSpoilerLayout->addWidget(l11);
   heatingSpoilerLayout->addWidget(txbTempEnHeating);
   heatingSpoilerLayout->addWidget(l12);
@@ -305,15 +307,15 @@ void SUA::addSpoilers()
   connect(txbTempDisHeating, SIGNAL(returnPressed()), this, SLOT(txbSetHeatingOptCommand_returnPressed()));
   connect(btnSetHeatingOptCommand, SIGNAL(pressed()), this, SLOT(btnSetHeatingOptCommand_clicked()));
 
-  Spoiler* ventilation = new Spoiler("Охлаждение", 300, w);
+  Spoiler* ventilation = new Spoiler(tr("Охлаждение"), 300, w);
   QVBoxLayout* ventilationSpoilerLayout = new QVBoxLayout(zenith);
-  QLabel* l13 = new QLabel("Температура включения", ventilation);
+  QLabel* l13 = new QLabel(tr("Температура включения"), ventilation);
   txbTempEnVentilation = new QLineEdit("45", ventilation);
   txbTempEnVentilation->setValidator(new QIntValidator());
-  QLabel* l14 = new QLabel("Температура выключения", ventilation);
+  QLabel* l14 = new QLabel(tr("Температура выключения"), ventilation);
   txbTempDisVentilation = new QLineEdit("35", ventilation);
   txbTempDisVentilation->setValidator(new QIntValidator());
-  QPushButton* btnSetVentilationOptCommand = new QPushButton("Ввод", ventilation);
+  QPushButton* btnSetVentilationOptCommand = new QPushButton(tr("Ввод"), ventilation);
   ventilationSpoilerLayout->addWidget(l13);
   ventilationSpoilerLayout->addWidget(txbTempEnVentilation);
   ventilationSpoilerLayout->addWidget(l14);
@@ -340,11 +342,11 @@ void SUA::addSpoilers()
 
 void SUA::addStatusBar()
 {
-  QLabel* l = new QLabel("Состояние", this);
+  QLabel* l = new QLabel(tr("Состояние"), this);
   l->setStyleSheet("font-weight: bold;");
-  QLabel* modem = new QLabel("Порт модема", this);
-  QLabel* telemetry = new QLabel("Порт телеметрии", this);
-  QLabel* command = new QLabel("Порт управления", this);
+  QLabel* modem = new QLabel(tr("Порт модема"), this);
+  QLabel* telemetry = new QLabel(tr("Порт телеметрии"), this);
+  QLabel* command = new QLabel(tr("Порт управления"), this);
   lblModemSocketState = new QLabel(this);
   lblTelemetrySocketState = new QLabel(this);
   lblCommandSocketState = new QLabel(this);
@@ -358,6 +360,13 @@ void SUA::addStatusBar()
   statusBar()->addWidget(lblTelemetrySocketState);
   statusBar()->addWidget(command);
   statusBar()->addWidget(lblCommandSocketState);
+}
+
+void SUA::tranlate(QString lng)
+{
+  qtLanguageTranslator.load(languageFile + lng);
+  qApp->installTranslator(&qtLanguageTranslator);
+  ui.retranslateUi(this);
 }
 
 void SUA::activateFullMode(bool value)
@@ -449,7 +458,7 @@ void SUA::on_btnSetDNAUpUsers_clicked()
     }
     catch (...)
     {
-      QMessageBox::warning(this, "Warning!", "Некорректное значение!");
+      QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректное значение!"));
     }
   }
 }
@@ -478,7 +487,7 @@ void SUA::on_btnSetDNADownUsers_clicked()
     }
     catch (...)
     {
-      QMessageBox::warning(this, "Warning!", "Некорректное значение!");
+      QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректное значение!"));
     }
   }
 }
@@ -507,7 +516,7 @@ void SUA::on_btnSetDNALeftUsers_clicked()
     }
     catch (...)
     {
-      QMessageBox::warning(this, "Warning!", "Некорректное значение!");
+      QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректное значение!"));
     }
   }
 }
@@ -535,7 +544,7 @@ void SUA::on_btnSetDNARightUsers_clicked()
     }
     catch (...)
     {
-      QMessageBox::warning(this, "Warning!", "Некорректное значение!");
+      QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректное значение!"));
     }
   }
 }
@@ -563,7 +572,7 @@ void SUA::on_btnSetAzimuthCommand_clicked()
     }
     catch (...)
     {
-      QMessageBox::warning(this, "Warning!", "Некорректное значение!");
+      QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректное значение!"));
     }
   }
 }
@@ -591,7 +600,7 @@ void SUA::on_btnSetZenithCommand_clicked()
     }
     catch (...)
     {
-      QMessageBox::warning(this, "Warning!", "Некорректное значение!");
+      QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректное значение!"));
     }
   }
 }
@@ -750,7 +759,7 @@ void SUA::btnSetAzimuthMovOptCommand_clicked()
     }
     catch (...)
     {
-      QMessageBox::warning(this, "Warning!", "Uncorrect values!");
+      QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректное значение!"));
     }
   }
 }
@@ -779,7 +788,7 @@ void SUA::btnSetAzimuthZerSOptCommand_cliked()
     }
     catch (...)
     {
-      QMessageBox::warning(this, "Warning!", "Uncorrect values!");
+      QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректное значение!"));
     }
   }
 }
@@ -811,7 +820,7 @@ void SUA::btnSetZenithMovOptCommand_clicked()
     }
     catch (...)
     {
-      QMessageBox::warning(this, "Warning!", "Uncorrect values!");
+      QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректное значение!"));
     }
   }
 }
@@ -840,7 +849,7 @@ void SUA::btnSetZenithZerSOptCommand_clicked()
     }
     catch (...)
     {
-      QMessageBox::warning(this, "Warning!", "Uncorrect values!");
+      QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректное значение!"));
     }
   }
 }
@@ -869,7 +878,7 @@ void SUA::btnSetHeatingOptCommand_clicked()
     }
     catch (...)
     {
-      QMessageBox::warning(this, "Warning!", "Uncorrect values!");
+      QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректное значение!"));
     }
   }
 }
@@ -898,7 +907,7 @@ void SUA::btnSetVentilationOptCommand_clicked()
     }
     catch (...)
     {
-      QMessageBox::warning(this, "Warning!", "Uncorrect values!");
+      QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректное значение!"));
     }
   }
 }
@@ -1003,7 +1012,7 @@ void SUA::updateSUAStateLeds(QString workModeString, QString statusGPSString)
   }
   catch (...)
   {
-    QMessageBox::warning(this, "Warning!", "Не корректные входные данные!\n");
+    QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректные входные данные!\n"));
   }
 }
 

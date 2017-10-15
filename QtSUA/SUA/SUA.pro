@@ -13,6 +13,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = SUA
 TEMPLATE = app
 
+TRANSLATIONS = SUA_ru.ts \
+               SUA_en.ts \
+
+CODECFORTR   = Windows-1251
 
 SOURCES += \
     CommandAnswer.cpp \

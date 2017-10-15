@@ -1,5 +1,6 @@
 #include <QString>
 #include <QStringBuilder>
+#include <QObject>
 
 #include "Protocol.h"
 
@@ -51,7 +52,7 @@ QByteArray Protocol::SetAzimuth(float azimuth)
   }
   else
   {
-    throw QString("Argument azimuth is out of range");
+    throw QObject::tr("Азимут выходит за допустимые пределы"); //Argument azimuth is out of range");
   }
   return arr;
 }
@@ -79,7 +80,7 @@ QByteArray Protocol::SetZenith(float zenith)
   }
   else
   {
-    throw QString("Argument zenith is out of range");
+    throw QObject::tr("Зенит выходит за допустимые пределы"); //Argument zenith is out of range");
   }
   return arr;
 }
@@ -107,7 +108,7 @@ QByteArray Protocol::SetDNAAzimuth(float dnaAzimuth)
   }
   else
   {
-    throw QString("Argument azimuth is out of range");
+    throw QObject::tr("Азимут выходит за допустимые пределы");
   }
   return arr;
 }
@@ -135,7 +136,7 @@ QByteArray Protocol::SetDNAZenith(float dnaZenith)
   }
   else
   {
-    throw QString("Argument zenith is out of range");
+    throw QObject::tr("Зенит выходит за допустимые пределы");
   }
   return arr;
 }
@@ -158,7 +159,7 @@ QByteArray Protocol::SetMovementOptions(RotatePlane plane, int acceleration, int
     break;
   }
   default:
-    throw QString("Invalid rotation rplane");
+    throw QObject::tr("Недопустимая плоскость вращения"); //Invalid rotation rplane"));
   }
   arr.push_back(QString("7").toLatin1());
   if (acceleration >= 1 && acceleration <= 24)
@@ -168,7 +169,7 @@ QByteArray Protocol::SetMovementOptions(RotatePlane plane, int acceleration, int
   }
   else
   {
-    throw QString("Argument acceleration is out of range");
+    throw QObject::tr("Ускорение выходит за допустимые пределы");//"Argument acceleration is out of range");
   }
   if (velocity >= 0 && velocity <= 250)
   {
@@ -177,7 +178,7 @@ QByteArray Protocol::SetMovementOptions(RotatePlane plane, int acceleration, int
   }
   else
   {
-    throw QString("Argument velocity is out of range");
+    throw QObject::tr("Cкорость выходит за допустимые пределы");//Argument velocity is out of range");
   }
   if (braking >= 1 && braking <= 24)
   {
@@ -186,7 +187,7 @@ QByteArray Protocol::SetMovementOptions(RotatePlane plane, int acceleration, int
   }
   else
   {
-    throw QString("Argument braking is out of range");
+    throw QObject::tr("Торможение выходит за допустимые пределы");//Argument braking is out of range");
   }
   arr.push_back(QString("\r\n").toLatin1());
   return arr;
@@ -209,7 +210,7 @@ QByteArray Protocol::SetPositioningOptions(RotatePlane plane, int speed, int zer
     break;
   }
   default:
-    throw QString("Invalid rotation rplane");
+    throw QObject::tr("Недопустимая плоскость вращения");
   }
   arr.push_back(QString("6").toLatin1());
   if (speed >= 0 && speed <= 250)
@@ -219,7 +220,7 @@ QByteArray Protocol::SetPositioningOptions(RotatePlane plane, int speed, int zer
   }
   else
   {
-    throw QString("Argument speed is out of range");
+    throw QObject::tr("Cкорость выходит за допустимые пределы");//"Argument speed is out of range");
   }
   if (zeroSeek >= 0 && zeroSeek <= 250)
   {
@@ -228,7 +229,7 @@ QByteArray Protocol::SetPositioningOptions(RotatePlane plane, int speed, int zer
   }
   else
   {
-    throw QString("Argument acceleration is out of range");
+    throw QObject::tr("Ускорение выходит за допустимые пределы");//Argument acceleration is out of range");
   }
   arr.push_back(QString("\r\n").toLatin1());
   return arr;
@@ -246,7 +247,7 @@ QByteArray Protocol::SetTempHeating(int heatOnTemp, int heatOffTemp)
   }
   else
   {
-    throw QString("Argument heat on temperature is out of range");
+    throw QObject::tr("Температура включения подогрева выходит за допустимые пределы");//"Argument heat on temperature is out of range");
   }
   if (heatOffTemp >= 0 && heatOffTemp <= 99)
   {
@@ -255,7 +256,7 @@ QByteArray Protocol::SetTempHeating(int heatOnTemp, int heatOffTemp)
   }
   else
   {
-    throw QString("Argument heat off temperature is out of range");
+    throw QObject::tr("Температура выключения подогрева выходит за допустимые пределы");//"Argument heat off temperature is out of range");
   }
   arr.push_back(QString("\r\n").toLatin1());
   return arr;
@@ -273,7 +274,7 @@ QByteArray Protocol::SetTempVentilation(int ventOnTemp, int ventOffTemp)
   }
   else
   {
-    throw QString("Argument ventilation on temperature is out of range");
+    throw QObject::tr("Температура включения охлаждения выходит за допустимые пределы"); //"Argument ventilation on temperature is out of range"));
   }
   if (ventOffTemp >= 0 && ventOffTemp <= 99)
   {
@@ -282,7 +283,7 @@ QByteArray Protocol::SetTempVentilation(int ventOnTemp, int ventOffTemp)
   }
   else
   {
-    throw QString("Argument ventilation off temperature is out of range");
+    throw QObject::tr("Температура выключения охлаждения выходит за допустимые пределы");//"Argument ventilation off temperature is out of range");
   }
   arr.push_back(QString("\r\n").toLatin1());
   return arr;
