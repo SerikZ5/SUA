@@ -27,4 +27,6 @@ SUASettings::SUASettings()
   telemetryPort = 8876;
   modemPort = 9876;
   commandPort = 9875;
+
+  language = "ru";
 }

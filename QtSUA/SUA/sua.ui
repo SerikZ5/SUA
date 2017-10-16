@@ -271,7 +271,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox">
             <property name="title">
-             <string>Дальность</string>
+             <string>Удаление</string>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_7">
              <item>
@@ -290,7 +290,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_2">
             <property name="title">
-             <string>Высота GPS</string>
+             <string>Высота БЛА</string>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_8">
              <item>
@@ -572,7 +572,11 @@
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
                <item>
-                <widget class="QLineEdit" name="txbSuaCommandAzimuthUsers"/>
+                <widget class="QLineEdit" name="txbSuaCommandAzimuthUsers">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -584,7 +588,11 @@
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
                <item>
-                <widget class="QLineEdit" name="txbSuaCommandZenithUsers"/>
+                <widget class="QLineEdit" name="txbSuaCommandZenithUsers">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>

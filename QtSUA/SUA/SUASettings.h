@@ -32,7 +32,9 @@ public:
   QString hostAddress;
   int modemPort;
   int commandPort;
-  int telemetryPort;  
+  int telemetryPort;
+
+  QString language;
 };
 
 #endif

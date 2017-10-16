@@ -23,6 +23,12 @@ SUA::SUA(QWidget *parent)
 {
   ui.setupUi(this);
 
+  if (!SUASerializer::Deserialize(configFilePath, &suaSettings))
+  {
+    SUASerializer::Serialize(configFilePath, &suaSettings);
+  }
+  tranlate(suaSettings.language);
+
   ui.btnSetDNAUpUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowUp));
   ui.btnSetDNAUpUsers->setIconSize(QSize(25, 25));
   ui.btnSetDNADownUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowDown));
@@ -35,13 +41,8 @@ SUA::SUA(QWidget *parent)
   addSpoilers();
   addStatusBar();
   activateFullMode(false);
-  tranlate("en");
   resize(userWindowWight, userWindowHeight);
 
-  if (!SUASerializer::Deserialize(configFilePath, &suaSettings))
-  {
-    SUASerializer::Serialize(configFilePath, &suaSettings);
-  }
   telemetryLogFile = "";
     
   commandNetwork = new NetworkBase(suaSettings.hostAddress, suaSettings.commandPort);
@@ -353,6 +354,9 @@ void SUA::addStatusBar()
   lblCommandSocketState->setText("NOT_CONNECTED");
   lblTelemetrySocketState->setText("NOT_CONNECTED");
   lblModemSocketState->setText("NOT_CONNECTED");
+  lblCommandSocketState->setStyleSheet("background-color:red;");
+  lblTelemetrySocketState->setStyleSheet("background-color:red;");
+  lblModemSocketState->setStyleSheet("background-color:red;");
   statusBar()->addWidget(l);
   statusBar()->addWidget(modem);
   statusBar()->addWidget(lblModemSocketState);
@@ -1098,10 +1102,13 @@ void SUA::updateCommSockLbl(int state)
   switch (state)
   {
   case NetworkBase::SocketState::CONNECTED:
+    lblCommandSocketState->setStyleSheet("background-color:green;");
     ui.widget->setEnabled(true);
     imageStatus.SetImage(ui.imgConnectState, SUAImages::GREEN);
     break;
+  case NetworkBase::ERROR:
   case NetworkBase::SocketState::NOT_CONNECTED:
+    lblCommandSocketState->setStyleSheet("background-color:red;");
     ui.widget->setEnabled(false);
   default:
     imageStatus.SetImage(ui.imgConnectState, SUAImages::GREY);
@@ -1117,13 +1124,35 @@ void SUA::updateCommSockLbl(int state)
 void SUA::updateModemSockLbl(int state)
 {
   QMetaEnum metaEnum = QMetaEnum::fromType<NetworkBase::SocketState>();
-  lblModemSocketState->setText(metaEnum.valueToKey(state));
+  lblModemSocketState->setText(metaEnum.valueToKey(state));  
+  switch (state)
+  {
+  case NetworkBase::SocketState::CONNECTED:
+    lblModemSocketState->setStyleSheet("background-color:green;");
+    break;
+  case NetworkBase::ERROR:
+  case NetworkBase::SocketState::NOT_CONNECTED:
+  default:
+    lblModemSocketState->setStyleSheet("background-color:red;");
+    break;
+  }
 }
 
 void SUA::updateTelemSockLbl(int state)
 {
   QMetaEnum metaEnum = QMetaEnum::fromType<NetworkBase::SocketState>();
   lblTelemetrySocketState->setText(metaEnum.valueToKey(state));
+  switch (state)
+  {
+  case NetworkBase::SocketState::CONNECTED:
+    lblTelemetrySocketState->setStyleSheet("background-color:green;");
+    break;
+  case NetworkBase::ERROR:
+  case NetworkBase::SocketState::NOT_CONNECTED:
+  default:
+    lblTelemetrySocketState->setStyleSheet("background-color:red;");
+    break;
+  }
 }
 
 void SUA::reconnectAllSockets()
