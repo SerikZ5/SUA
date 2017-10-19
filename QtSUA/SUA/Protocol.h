@@ -28,8 +28,6 @@ public:
   static QByteArray EnableHeating(bool heat);
   static QByteArray EnableVentilation(bool ventilation);
   static QByteArray ResetCommand();
-  static int DecodeAnsver(QByteArray arr);
-  static void DecodeTelemetry(QByteArray arr);
 
 private:
   static QByteArray preambula;

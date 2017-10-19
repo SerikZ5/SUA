@@ -15,11 +15,10 @@ private:
   QLineEdit*  port;
   QTcpServer* m_ptcpServer;
   QTextEdit*  m_ptxt;
-  quint16     m_nNextBlockSize;
 
 private:
   void setPort(int port);
-  void sendToClient(QTcpSocket* pSocket, const QString& str);
+  void sendToClient(QTcpSocket* pSocket, QByteArray str);
 
 public:
   MyServer(int nPort, QWidget* pwgt = 0);

@@ -11,7 +11,6 @@
 #include "server.h"
 
 MyServer::MyServer(int nPort, QWidget* pwgt /*=0*/) : QWidget(pwgt)
-, m_nNextBlockSize(0)
 {
   m_ptcpServer = new QTcpServer(this);
   setPort(nPort);
@@ -58,48 +57,27 @@ void MyServer::changePort()
   QTcpSocket* pClientSocket = m_ptcpServer->nextPendingConnection();
   connect(pClientSocket, SIGNAL(disconnected()), pClientSocket, SLOT(deleteLater()));
   connect(pClientSocket, SIGNAL(readyRead()), this, SLOT(slotReadClient()));
-  sendToClient(pClientSocket, "Server Response: Connected!");
+  sendToClient(pClientSocket, QString("Server Response: Connected!").toLatin1());
 }
 
 void MyServer::slotReadClient()
 {
   QTcpSocket* pClientSocket = (QTcpSocket*)sender();
-  QDataStream in(pClientSocket);
-  in.setVersion(QDataStream::Qt_4_2);
   for (;;)
   {
-    if (!m_nNextBlockSize)
-    {
-      if (pClientSocket->bytesAvailable() < sizeof(quint16)) 
-      {
-        break;
-      }
-      in >> m_nNextBlockSize;
-    }
-
-    if (pClientSocket->bytesAvailable() < m_nNextBlockSize) 
+    quint16 m_nNextBlockSize = pClientSocket->bytesAvailable();
+    if (m_nNextBlockSize < 1)
     {
       break;
     }
-    QByteArray str;
-    in >> str;
-
-    QString strMessage = "Client has sended - " + QString(str);
+    QByteArray array = pClientSocket->read(m_nNextBlockSize);
+    QString strMessage = "Client has sended - " + QString(array);
     m_ptxt->append(strMessage);
-    m_nNextBlockSize = 0;
-    sendToClient(pClientSocket, str);
-  }
+    sendToClient(pClientSocket, array);
+  }  
 }
 
-void MyServer::sendToClient(QTcpSocket* pSocket, const QString& str)
+void MyServer::sendToClient(QTcpSocket* pSocket, QByteArray arrBlock)
 {
-  QByteArray  arrBlock;
-  QDataStream out(&arrBlock, QIODevice::WriteOnly);
-  out.setVersion(QDataStream::Qt_4_2);
-  out << quint16(0) << str.toLatin1();
-
-  out.device()->seek(0);
-  out << quint16(arrBlock.size() - sizeof(quint16));
-
   pSocket->write(arrBlock);
 }

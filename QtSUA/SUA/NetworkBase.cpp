@@ -34,44 +34,26 @@ void NetworkBase::ConnectToHost(QString hostAddress, int hostPort)
 
 void NetworkBase::SlotReadyRead()
 {
-  QDataStream in(clientSocket);
-  in.setVersion(QDataStream::Qt_4_2);
   for (;;) 
   {
     if (!m_nNextBlockSize)
     {
-      if (clientSocket->bytesAvailable() < sizeof(quint16))
+      m_nNextBlockSize = clientSocket->bytesAvailable();
+      if (m_nNextBlockSize < 1)
       {
         break;
       }
-      in >> m_nNextBlockSize;
     }
-
-    if (clientSocket->bytesAvailable() < m_nNextBlockSize)
-    {
-      break;
-    }
-    QByteArray buffer;
-    in >> buffer;
-
-    RecievedArray arr(buffer);
+    QByteArray array = clientSocket->read(m_nNextBlockSize);
+    RecievedArray arr(array);
     DataRecieved(arr);
-
     m_nNextBlockSize = 0;
   }
 }
 
 void NetworkBase::Send(QByteArray data)
 {
-  QByteArray arrBlock;
-  QDataStream out(&arrBlock, QIODevice::WriteOnly);
-  out.setVersion(QDataStream::Qt_4_2);
-  out << quint16(0) << data;
-
-  out.device()->seek(0);
-  out << quint16(arrBlock.size() - sizeof(quint16));
-
-  clientSocket->write(arrBlock);
+  clientSocket->write(data);
 }
 
 void NetworkBase::SlotError(QAbstractSocket::SocketError error)

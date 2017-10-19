@@ -327,12 +327,3 @@ QByteArray Protocol::ResetCommand()
 {
   return QString("R").toLatin1();
 }
-
-int Protocol::DecodeAnsver(QByteArray arr)
-{
-  return (int)arr[3];
-}
-
-void Protocol::DecodeTelemetry(QByteArray arr)
-{
-}
