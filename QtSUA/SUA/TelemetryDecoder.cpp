@@ -1,9 +1,11 @@
 #include <QtMath>
+#include <QObject>
 
 #include "TelemetryDecoder.h"
 
 TelemetryDecoder::TelemetryDecoder()
 {
+  isSynchonized = false;
 }
 
 TelemetryDecoder::~TelemetryDecoder()
@@ -48,6 +50,11 @@ void TelemetryDecoder::Synchronize()
   }
 }
 
+float QByteArrayToFloat(QByteArray array)
+{
+  return QString(array).replace(".", ",").remove(' ').toFloat();
+}
+
 TelemetryPacket TelemetryDecoder::GetTelemetryPacket(bool* ok)
 {
   TelemetryPacket packet;
@@ -57,27 +64,27 @@ TelemetryPacket TelemetryDecoder::GetTelemetryPacket(bool* ok)
     inputBytes.remove(0, 215);
     try
     {
-      packet.time = QString(inputBytes.mid(6, 19));
-      packet.latitude = QString(inputBytes.mid(44, 9)).replace(".", ",").toFloat();
-      packet.longitude = QString(inputBytes.mid(54, 9)).replace(".", ",").toFloat();
-      packet.height = QString(inputBytes.mid(72, 8)).replace(".", ",").toFloat();
-      packet.status = QString(89, 3);
-      packet.uavLatitude = QString(inputBytes.mid(110, 9)).replace(".", ",").toFloat();
-      packet.uavLongitude = QString(inputBytes.mid(120, 9)).replace(".", ",").toFloat();
-      packet.uavAltitude = QString(inputBytes.mid(141, 8)).replace(".", ",").toFloat();
-      packet.direction = QString(inputBytes.mid(156, 5)).replace(".", ",").toFloat();
-      packet.azimuth = QString(inputBytes.mid(168, 5)).replace(".", ",").toFloat();
-      packet.zenith = QString(inputBytes.mid(174, 5)).replace(".", ",").toFloat();
-      packet.temperature = QString(inputBytes.mid(183, 5)).replace(".", ",").toFloat();
-      int workMode = (int)inputBytes[189];
+      packet.time = QString(arr.mid(6, 19));
+      packet.latitude = QByteArrayToFloat(arr.mid(44, 9));
+      packet.longitude = QByteArrayToFloat(arr.mid(54, 9));
+      packet.height = QByteArrayToFloat(arr.mid(72, 8));
+      packet.status = QString(arr.mid(89, 3));
+      packet.uavLatitude = QByteArrayToFloat(arr.mid(110, 9));
+      packet.uavLongitude = QByteArrayToFloat(arr.mid(120, 9));
+      packet.uavAltitude = QByteArrayToFloat(arr.mid(141, 8));
+      packet.direction = QByteArrayToFloat(arr.mid(156, 5));
+      packet.azimuth = QByteArrayToFloat(arr.mid(168, 5));
+      packet.zenith = QByteArrayToFloat(arr.mid(174, 5));
+      packet.temperature = QString(arr.mid(183, 5));
+      int workMode = (int)arr[189];
       workMode |= 0x80;
       //workmode - QString от int в двоичной системе координат;
-      packet.workMode = QString("%1").arg(workMode, 8, 2);
-      int error = (int)inputBytes[191];
+      packet.workMode = QString::number(workMode, 2);
+      int error = (int)arr[191];
       error |= 0x80;
-      packet.error = QString("%1").arg(error, 8, 2);
-      packet.uavAzimuth = QString(inputBytes.mid(200, 5)).replace(".", ",").toFloat();
-      packet.uavZenith = QString(inputBytes.mid(206, 5)).replace(".", ",").toFloat();
+      packet.error = QString::number(error, 2);
+      packet.uavAzimuth = QByteArrayToFloat(arr.mid(200, 5));
+      packet.uavZenith = QByteArrayToFloat(arr.mid(206, 5));
 
       double dLatitude = qAbs(packet.latitude - packet.uavLatitude) / 180 * M_PI;
       double dLongitude = qAbs(packet.longitude - packet.uavLongitude) / 180 * M_PI;
@@ -99,4 +106,32 @@ TelemetryPacket TelemetryDecoder::GetTelemetryPacket(bool* ok)
 
   *ok = false;
   return packet;
+}
+
+bool TelemetryDecoder::IsVentilationEnable(QString workMode)
+{
+  if(workMode[7] == '1')
+    return true;
+  return false;
+}
+
+bool TelemetryDecoder::IsHeatingEnable(QString workMode)
+{
+  if(workMode[6] == '1')
+    return true;
+  return false;
+}
+
+QString TelemetryDecoder::GetErrors(QString error)
+{
+  QString result;
+  int charCount = error.count();
+  if(error[charCount-1] == '1')
+    result += QObject::tr("ќшибка 1Wire   ");
+  if(error[charCount-2] == '1')
+    result +=  QObject::tr("ќшибка BMSD2   ");
+  if(error[charCount-3] == '1')
+    result +=  QObject::tr("ќшибка BMSD1   ");
+  if(error[charCount-1] == '1')
+    result +=  QObject::tr("ќшибка эмул€ции EEPROM");
 }

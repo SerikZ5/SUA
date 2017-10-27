@@ -57,16 +57,16 @@ protected slots:
   void on_txbSuaCommandZenith_returnPressed();
 
   void on_SLZen_valueChanged(int value);
+  void on_SLZen_sliderReleased();
   void on_SLAzim_valueChanged(int value);
+  void on_SLAzim_sliderReleased();
 
   void on_btnFollowCommand_clicked();
   void on_btnOrientedAntennasCommand_clicked();
   void on_btnSetZeroPositionCommand_clicked();
   void on_btnStopEnginesCommand_clicked();
-  void on_btnEnableHeatingCommand_clicked();
-  void on_btnDisableHeatingCommand_clicked();
-  void on_btnEnableVentilationCommand_clicked();
-  void on_btnDisableVentilationCommand_clicked();
+  void on_btnHeatingCommand_clicked(bool checked);
+  void on_btnVentilationCommand_clicked(bool checked);
   void on_btnTestCommand_clicked();
   void on_btnResetCommand_clicked();
 
@@ -98,7 +98,9 @@ private:
   void updateTextField();
 
   void updateSUATelemetryConsole(RecievedArray arr);
-  void updateSUAStateLeds(QString workModeString, QString statusGPSString);
+  void updateTelemetryWorkMode(QString workModeString);
+  void updateTelemetryErrors(QString errors);
+  void updateTelemetryStatus(QString statusGPSString);
   void updateSUAStateLabels(TelemetryPacket decodedPacket);
   
   void setConsoleCommand(QByteArray command);

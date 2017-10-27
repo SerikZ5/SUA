@@ -28,6 +28,7 @@ public:
   static QByteArray EnableHeating(bool heat);
   static QByteArray EnableVentilation(bool ventilation);
   static QByteArray ResetCommand();
+  static QByteArray MoveCommand(RotatePlane plane, int value);
 
 private:
   static QByteArray preambula;

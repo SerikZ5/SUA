@@ -16,6 +16,10 @@ public:
   int Avaible();
   TelemetryPacket GetTelemetryPacket(bool* ok);
 
+  bool IsVentilationEnable(QString workMode);
+  bool IsHeatingEnable(QString workMode);
+  QString GetErrors(QString error);
+
 protected:
   void Synchronize();
 

@@ -19,8 +19,6 @@ TRANSLATIONS = SUA_ru.ts \
 CODECFORTR   = Windows-1251
 
 SOURCES += \
-    CommandAnswer.cpp \
-    CommandNetwork.cpp \
     ImageStatus.cpp \
     main.cpp \
     NetworkBase.cpp \
@@ -31,12 +29,9 @@ SOURCES += \
     sua.cpp \
     SUASerializer.cpp \
     SUASettings.cpp \
-    TelemetryDecoder.cpp \
-    TelemetryNetwork.cpp
+    TelemetryDecoder.cpp
 
 HEADERS  += \
-    CommandAnswer.h \
-    CommandNetwork.h \
     ImageStatus.h \
     NetworkBase.h \
     NetworkSettings.h \
@@ -47,7 +42,6 @@ HEADERS  += \
     SUASerializer.h \
     SUASettings.h \
     TelemetryDecoder.h \
-    TelemetryNetwork.h \
     TelemetryPacket.h
 
 FORMS    += \
@@ -55,3 +49,5 @@ FORMS    += \
 
 RESOURCES += \
     sua.qrc
+
+RC_ICONS = images\icon.ico

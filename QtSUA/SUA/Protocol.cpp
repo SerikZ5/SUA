@@ -101,7 +101,7 @@ QByteArray Protocol::SetDNAAzimuth(float dnaAzimuth)
   {
     arr.push_back(QString("M5-").toLatin1());
     dnaAzimuth *= (-1);
-    QString arg = QString("%1").arg(dnaAzimuth, 4, 'f', 1, QChar('0'));
+    QString arg = QString("%1").arg(dnaAzimuth, 5, 'f', 1, QChar('0'));
     arg.replace(",", ".");
     arr.push_back(QString(arg).toLatin1());
     arr.push_back(QString("\r\n").toLatin1());
@@ -120,7 +120,7 @@ QByteArray Protocol::SetDNAZenith(float dnaZenith)
   if (dnaZenith >= 0 && dnaZenith <= 99.9f)
   {
     arr.push_back(QString("N4").toLatin1());
-    QString arg = QString("%1").arg(dnaZenith, 3, 'f', 1, QChar('0'));
+    QString arg = QString("%1").arg(dnaZenith, 4, 'f', 1, QChar('0'));
     arg.replace(",", ".");
     arr.push_back(arg.toLatin1());
     arr.push_back(QString("\r\n").toLatin1());
@@ -129,7 +129,7 @@ QByteArray Protocol::SetDNAZenith(float dnaZenith)
   {
     arr.push_back(QString("N5-").toLatin1());
     dnaZenith *= (-1);
-    QString arg = QString("%1").arg(dnaZenith, 3, 'f', 1, QChar('0'));
+    QString arg = QString("%1").arg(dnaZenith, 5, 'f', 1, QChar('0'));
     arg.replace(",", ".");
     arr.push_back(QString(arg).toLatin1());
     arr.push_back(QString("\r\n").toLatin1());
@@ -326,4 +326,24 @@ QByteArray Protocol::EnableVentilation(bool ventilation)
 QByteArray Protocol::ResetCommand()
 {
   return QString("R").toLatin1();
+}
+
+QByteArray Protocol::MoveCommand(RotatePlane plane, int value)
+{
+  QByteArray arr;
+  arr.push_back(preambula);
+  arr.push_back(QString("O%1").arg((int)plane, 1, 10, QChar('0')).toLatin1());
+  if (value >= 0)
+  {
+    arr.push_back(QString("3").toLatin1());
+    arr.push_back(QString("%1").arg(value, 3, 10, QChar('0')).toLatin1());
+  }
+  else
+  {
+    arr.push_back(QString("4-").toLatin1());
+    value *= (-1);
+    arr.push_back(QString("%1").arg(value, 3, 10, QChar('0')).toLatin1());
+  }
+  arr.push_back(QString("\r\n").toLatin1());
+  return arr;
 }

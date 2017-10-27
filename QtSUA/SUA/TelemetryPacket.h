@@ -16,7 +16,7 @@ struct TelemetryPacket
   float direction;
   float azimuth;
   float zenith;
-  float temperature;
+  QString temperature;
   QString workMode;
   QString error;
   float uavAzimuth;

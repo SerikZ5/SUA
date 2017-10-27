@@ -354,9 +354,9 @@ void SUA::addStatusBar()
   lblCommandSocketState->setText("NOT_CONNECTED");
   lblTelemetrySocketState->setText("NOT_CONNECTED");
   lblModemSocketState->setText("NOT_CONNECTED");
-  lblCommandSocketState->setStyleSheet("background-color:red;");
-  lblTelemetrySocketState->setStyleSheet("background-color:red;");
-  lblModemSocketState->setStyleSheet("background-color:red;");
+  lblCommandSocketState->setStyleSheet("background-color:pink;");
+  lblTelemetrySocketState->setStyleSheet("background-color:pink;");
+  lblModemSocketState->setStyleSheet("background-color:pink;");
   statusBar()->addWidget(l);
   statusBar()->addWidget(modem);
   statusBar()->addWidget(lblModemSocketState);
@@ -375,6 +375,7 @@ void SUA::tranlate(QString lng)
 
 void SUA::activateFullMode(bool value)
 {
+  userWindows = !value;
   ui.toolBar->setVisible(value);
   statusBar()->setVisible(value);
   ui.statusBar->setVisible(value);
@@ -631,14 +632,24 @@ void SUA::on_txbSuaCommandZenithUsers_returnPressed()
 
 void SUA::on_SLZen_valueChanged(int value)
 {
-  QByteArray comm = Protocol::SetZenith(value);
+  QByteArray comm = Protocol::MoveCommand(RotatePlane::ZENITH, value);
   commandNetwork->Send(comm);
+}
+
+void SUA::on_SLZen_sliderReleased()
+{
+  ui.SLZen->setValue(0);
 }
 
 void SUA::on_SLAzim_valueChanged(int value)
 {
-  QByteArray comm = Protocol::SetAzimuth(value);
+  QByteArray comm = Protocol::MoveCommand(RotatePlane::AZIMUTH, value);
   commandNetwork->Send(comm);
+}
+
+void SUA::on_SLAzim_sliderReleased()
+{
+  ui.SLAzim->setValue(0);
 }
 
 void SUA::on_btnFollowCommand_clicked()
@@ -681,43 +692,31 @@ void SUA::on_btnStopEnginesCommand_clicked()
   }
 }
 
-void SUA::on_btnEnableHeatingCommand_clicked()
+void SUA::on_btnHeatingCommand_clicked(bool checked)
 {
   if (commandNetwork->State() == NetworkBase::CONNECTED)
   {
-    QByteArray comm = Protocol::EnableHeating(true);
+    QByteArray comm = Protocol::EnableHeating(checked);
     commandNetwork->Send(comm);
     setConsoleCommand(comm);
   }
-}
-
-void SUA::on_btnDisableHeatingCommand_clicked()
-{
-  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  else
   {
-    QByteArray comm = Protocol::EnableHeating(false);
-    commandNetwork->Send(comm);
-    setConsoleCommand(comm);
+    ui.btnHeatingCommand->setChecked(false);
   }
 }
 
-void SUA::on_btnEnableVentilationCommand_clicked()
+void SUA::on_btnVentilationCommand_clicked(bool checked)
 {
   if (commandNetwork->State() == NetworkBase::CONNECTED)
   {
-    QByteArray comm = Protocol::EnableVentilation(true);
+    QByteArray comm = Protocol::EnableVentilation(checked);
     commandNetwork->Send(comm);
     setConsoleCommand(comm);
   }
-}
-
-void SUA::on_btnDisableVentilationCommand_clicked() 
-{
-  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  else
   {
-    QByteArray comm = Protocol::EnableVentilation(false);
-    commandNetwork->Send(comm);
-    setConsoleCommand(comm);
+    ui.btnVentilationCommand->setChecked(false);
   }
 }
 
@@ -958,7 +957,68 @@ void SUA::updateTextField()
   txbTempDisVentilation->text() = QString::number(suaSettings.tempDisVentilation);
 }
 
-void SUA::updateSUAStateLeds(QString workModeString, QString statusGPSString)
+void SUA::updateTelemetryWorkMode(QString workModeString)
+{
+  try
+  {
+    //Idle mode (STOP lable is GREEN)
+    if (workModeString[0] == '1')
+    {
+      imageStatus.SetImage(ui.imgStopState, SUAImages::GREEN);
+      //imageStatus.SetImage(ref imgMoveState, "GREY");
+    }
+    else
+    {
+      imageStatus.SetImage(ui.imgStopState, SUAImages::GREY);
+    }
+
+    //Orientation Mode (Orientation lable is GREEN_BLINK)
+    if (workModeString[1] == '1' || workModeString[2] == '1')
+    {
+      imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREEN_BLINK);
+    }
+    else
+    {
+      imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREY);
+    }
+
+    //Following Mode (Follow lable is GREEN)
+    if (workModeString[3] == '0')
+    {
+      imageStatus.SetImage(ui.imgFollowState, SUAImages::GREEN);
+    }
+    else
+    {
+      imageStatus.SetImage(ui.imgFollowState, SUAImages::GREY);
+    }
+
+    ui.btnHeatingCommand->blockSignals(true);
+    ui.btnHeatingCommand->setChecked(workModeString[6] == '1');
+    ui.btnHeatingCommand->blockSignals(false);
+
+    ui.btnVentilationCommand->blockSignals(true);
+    ui.btnVentilationCommand->setChecked(workModeString[7] == '1');
+    ui.btnVentilationCommand->blockSignals(false);
+
+  }
+  catch (...)
+  {
+    QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректные входные данные!\n"));
+  }
+}
+
+void SUA::updateTelemetryErrors(QString errors)
+{
+  try
+  {
+  }
+  catch (...)
+  {
+    QMessageBox::warning(this, tr("Предупреждение!"), tr("Некорректные входные данные!\n"));
+  }
+}
+
+void SUA::updateTelemetryStatus(QString statusGPSString)
 {
   try
   {
@@ -966,7 +1026,6 @@ void SUA::updateSUAStateLeds(QString workModeString, QString statusGPSString)
     {
       statusGPSString[2] = '0';
     }
-
     if (statusGPSString[0] == '1' && (statusGPSString[1] == 'A' || statusGPSString[2] == 'A'))
     {
       imageStatus.SetImage(ui.imgGPSState, SUAImages::GREEN);
@@ -981,37 +1040,6 @@ void SUA::updateSUAStateLeds(QString workModeString, QString statusGPSString)
     {
       imageStatus.SetImage(ui.imgGPSState, SUAImages::GREY);
       ui.btnFollowCommandUsers->setEnabled(false);
-    }
-
-    //Idle mode (STOP lable is GREEN)
-    if (workModeString[7] == '1')
-    {
-      imageStatus.SetImage(ui.imgStopState, SUAImages::GREEN);
-      //imageStatus.SetImage(ref imgMoveState, "GREY");
-    }
-    else
-    {
-      imageStatus.SetImage(ui.imgStopState, SUAImages::GREY);
-    }
-
-    //Orientation Mode (Orientation lable is GREEN_BLINK)
-    if (workModeString[6] == '1' || workModeString[5] == '1')
-    {
-      imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREEN_BLINK);
-    }
-    else
-    {
-      imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREY);
-    }
-
-    //Following Mode (Follow lable is GREEN)
-    if (workModeString[4] == '0')
-    {
-      imageStatus.SetImage(ui.imgFollowState, SUAImages::GREEN);
-    }
-    else
-    {
-      imageStatus.SetImage(ui.imgFollowState, SUAImages::GREY);
     }
   }
   catch (...)
@@ -1044,7 +1072,7 @@ void SUA::updateSUAStateLabels(TelemetryPacket packet)
   ui.lblZenith->setText(QString::number(packet.zenith));
   ui.lblUAVAzimuth->setText(QString::number(packet.uavAzimuth));
   ui.lblUAVZenith->setText(QString::number(packet.uavZenith));
-  ui.lblTemp->setText(QString::number(packet.temperature));
+  ui.lblTemp->setText(packet.temperature);
   ui.lblWorkMode->setText(packet.workMode);
   ui.lblError->setText(packet.error);
   ui.lblDistanceUser->setText(QString::number(packet.distance) + " м");
@@ -1062,7 +1090,9 @@ void SUA::telelemtryRcvd(RecievedArray arr)
   if (ok)
   {
     updateSUAStateLabels(packet);
-    updateSUAStateLeds(packet.workMode, packet.status);
+    updateTelemetryStatus(packet.status);
+    updateTelemetryWorkMode(packet.workMode);
+    updateTelemetryErrors(packet.error);
     if (telemetryLogFile != "")
       printTelemetryLogFile(telemetryLogFile, packet);
   }
@@ -1102,13 +1132,13 @@ void SUA::updateCommSockLbl(int state)
   switch (state)
   {
   case NetworkBase::SocketState::CONNECTED:
-    lblCommandSocketState->setStyleSheet("background-color:green;");
+    lblCommandSocketState->setStyleSheet("background-color:rgb(0,255,128);");
     ui.widget->setEnabled(true);
     imageStatus.SetImage(ui.imgConnectState, SUAImages::GREEN);
     break;
   case NetworkBase::ERROR:
   case NetworkBase::SocketState::NOT_CONNECTED:
-    lblCommandSocketState->setStyleSheet("background-color:red;");
+    lblCommandSocketState->setStyleSheet("background-color:pink;");
     ui.widget->setEnabled(false);
   default:
     imageStatus.SetImage(ui.imgConnectState, SUAImages::GREY);
@@ -1128,12 +1158,12 @@ void SUA::updateModemSockLbl(int state)
   switch (state)
   {
   case NetworkBase::SocketState::CONNECTED:
-    lblModemSocketState->setStyleSheet("background-color:green;");
+    lblModemSocketState->setStyleSheet("background-color:rgb(0,255,128);");
     break;
   case NetworkBase::ERROR:
   case NetworkBase::SocketState::NOT_CONNECTED:
   default:
-    lblModemSocketState->setStyleSheet("background-color:red;");
+    lblModemSocketState->setStyleSheet("background-color:pink;");
     break;
   }
 }
@@ -1145,12 +1175,12 @@ void SUA::updateTelemSockLbl(int state)
   switch (state)
   {
   case NetworkBase::SocketState::CONNECTED:
-    lblTelemetrySocketState->setStyleSheet("background-color:green;");
+    lblTelemetrySocketState->setStyleSheet("background-color:rgb(0,255,128);");
     break;
   case NetworkBase::ERROR:
   case NetworkBase::SocketState::NOT_CONNECTED:
   default:
-    lblTelemetrySocketState->setStyleSheet("background-color:red;");
+    lblTelemetrySocketState->setStyleSheet("background-color:pink;");
     break;
   }
 }

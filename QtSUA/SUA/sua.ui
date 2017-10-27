@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>789</width>
+    <width>883</width>
     <height>602</height>
    </rect>
   </property>
@@ -607,8 +607,11 @@
                   <height>70</height>
                  </size>
                 </property>
+                <property name="minimum">
+                 <number>-250</number>
+                </property>
                 <property name="maximum">
-                 <number>100</number>
+                 <number>250</number>
                 </property>
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -619,8 +622,14 @@
             </item>
             <item>
              <widget class="QSlider" name="SLAzim">
+              <property name="minimum">
+               <number>-250</number>
+              </property>
               <property name="maximum">
-               <number>360</number>
+               <number>250</number>
+              </property>
+              <property name="singleStep">
+               <number>5</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -667,6 +676,12 @@
        </property>
        <item>
         <widget class="QFrame" name="frame_2">
+         <property name="maximumSize">
+          <size>
+           <width>180</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -1068,10 +1083,20 @@
         </widget>
        </item>
        <item>
-        <layout class="QGridLayout" name="gridLayout" rowminimumheight="0,0,0,0,0,0" columnminimumwidth="0,0,0,0">
+        <layout class="QGridLayout" name="gridLayout">
          <property name="sizeConstraint">
           <enum>QLayout::SetDefaultConstraint</enum>
          </property>
+         <item row="0" column="0" colspan="4">
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Окно данных телеметрии</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLineEdit" name="txbSuaControlPacket"/>
+         </item>
          <item row="4" column="0" colspan="2">
           <widget class="QTextEdit" name="txbConsoleWindow"/>
          </item>
@@ -1082,9 +1107,6 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="0">
-          <widget class="QLineEdit" name="txbSuaControlPacket"/>
-         </item>
          <item row="5" column="1">
           <widget class="QPushButton" name="btnSendSUAControlPacketCommand">
            <property name="text">
@@ -1092,18 +1114,24 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0" colspan="4">
-          <widget class="QTextEdit" name="txbTelemetryWindow"/>
-         </item>
-         <item row="0" column="0" colspan="4">
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>Окно данных телеметрии</string>
-           </property>
-          </widget>
-         </item>
          <item row="4" column="2" rowspan="2" colspan="2">
           <widget class="QTextEdit" name="txbModemConsole"/>
+         </item>
+         <item row="2" column="0" colspan="4">
+          <widget class="QTextEdit" name="txbTelemetryWindow">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>150</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>150</height>
+            </size>
+           </property>
+          </widget>
          </item>
          <item row="3" column="2" colspan="2">
           <widget class="QLabel" name="label_25">
@@ -1132,7 +1160,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="control">
        <attribute name="title">
@@ -1164,41 +1192,6 @@
          <widget class="QPushButton" name="btnStopEnginesCommand">
           <property name="text">
            <string>Стоп</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnEnableHeatingCommand">
-          <property name="text">
-           <string>Вкл. подогрев</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnDisableHeatingCommand">
-          <property name="text">
-           <string>Выкл. подогрев</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnEnableVentilationCommand">
-          <property name="text">
-           <string>Вкл. охлаждение</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnDisableVentilationCommand">
-          <property name="text">
-           <string>Выкл. охлаждение</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnTestCommand">
-          <property name="text">
-           <string>Тестовый режим</string>
           </property>
          </widget>
         </item>
@@ -1268,6 +1261,33 @@
             </widget>
            </item>
           </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnHeatingCommand">
+          <property name="text">
+           <string>Подогрев</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnVentilationCommand">
+          <property name="text">
+           <string>Охлаждение</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnTestCommand">
+          <property name="text">
+           <string>Тестовый режим</string>
+          </property>
          </widget>
         </item>
         <item>
