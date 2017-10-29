@@ -5,6 +5,7 @@
 #include <QUdpSocket>
 #include <QKeyEvent>
 #include <QTranslator>
+#include <QComboBox>
 
 #include "ui_sua.h"
 
@@ -13,6 +14,7 @@
 #include "TelemetryDecoder.h"
 #include "NetworkBase.h"
 
+class Spoiler;
 
 class SUA : public QMainWindow
 {
@@ -88,12 +90,16 @@ protected slots:
   void btnSetVentilationOptCommand_clicked();
   void txbSetVentilationOptCommand_returnPressed();
 
+  void btnSelectLanguage_clicked();
+  void chooseLogDir();
+
 private:
+  void activateFullMode(bool value);
   void addSpoilers();
   void addStatusBar();
-  void activateFullMode(bool value);
-
-  void tranlate(QString lng);
+  void tranlate(SUASettings::Languages lng);
+  void translateSatatusBar();
+  void translateSpoilers();
   
   void updateTextField();
 
@@ -116,6 +122,7 @@ private:
   SUASettings suaSettings;
   TelemetryDecoder telemetryDecoder;
   QString telemetryLogFile;
+  QString telemetryLogDir;
 
   NetworkBase* commandNetwork;
   NetworkBase* telemetryNetwork;
@@ -128,24 +135,67 @@ private:
 
   Ui::SUAClass ui;
 
+  QLabel* lblState;
+  QLabel* modem;
+  QLabel* telemetry;
+  QLabel* command;
   QLabel* lblModemSocketState;
   QLabel* lblTelemetrySocketState;
   QLabel* lblCommandSocketState;
+
+  Spoiler* adjustment;
   QLineEdit* txbSuaDNA;
+  Spoiler* azimuth;
+  QGroupBox* motionAzimuth;
+  QLabel* lblAzimuthAcceleraion;
+  QLabel* lblAzimuthSpeed;
+  QLabel* lblAzimuthBraking;
   QLineEdit* txbAzimuthAcceleraion;
   QLineEdit* txbAzimuthSpeed;
   QLineEdit* txbAzimuthBraking;
+  QPushButton* btnSetAzimuthMovOptCommand;
+  QGroupBox* additionallyAzimuth;
+  QLabel* lblAzimuthSlowSpeed;
+  QLabel* lblAzimuthZeroSeek;
   QLineEdit* txbAzimuthSlowSpeed;
-  QLineEdit* txbAzimuthZeroSeek; 
+  QLineEdit* txbAzimuthZeroSeek;
+  QPushButton* btnSetAzimuthZerSOptCommand;
+  Spoiler* zenith;
+  QGroupBox* motionZenith;
+  QLabel* lblZenithAcceleraion;
+  QLabel* lblZenithSpeed;
+  QLabel* lblZenithBraking;
   QLineEdit* txbZenithAcceleraion;
   QLineEdit* txbZenithSpeed;
   QLineEdit* txbZenithBraking;
+  QPushButton* btnSetZenithMovOptCommand;
+  QGroupBox* additionallyZenith;
+  QLabel* lblZenithSlowSpeed;
+  QLabel* lblZenithZeroSeek;
   QLineEdit* txbZenithSlowSpeed;
   QLineEdit* txbZenithZeroSeek;
+  QPushButton* btnSetZenithZerSOptCommand;
+  Spoiler* heating;
+  QLabel* lblTempEnHeating;
+  QLabel* lblTempDisHeating;
   QLineEdit* txbTempEnHeating;
   QLineEdit* txbTempDisHeating;
+  QPushButton* btnSetHeatingOptCommand;
+  Spoiler* ventilation;
+  QLabel* lblTempEnVentilation;
+  QLabel* lblTempDisVentilation;
   QLineEdit* txbTempEnVentilation;
   QLineEdit* txbTempDisVentilation;
+  QPushButton* btnSetVentilationOptCommand;
+  Spoiler* language;
+  QLabel* lblLanguage;
+  QComboBox* cmbLanguage;
+  QPushButton* btnLanguageSelect;
+  Spoiler* logFile;
+  QLabel* lblLogFile;
+  QLineEdit* txbLogFile;
+  QPushButton* btnSetLogFile;
+
 };
 
 #endif // SUA_H

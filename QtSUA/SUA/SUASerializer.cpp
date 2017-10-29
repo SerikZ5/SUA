@@ -27,7 +27,7 @@ bool SUASerializer::Serialize(QString path, SUASettings* settings)
   root.appendChild(createElement(document, "ModemPort", QString::number(settings->modemPort)));
   root.appendChild(createElement(document, "CommandPort", QString::number(settings->commandPort)));
   root.appendChild(createElement(document, "TelemetryPort", QString::number(settings->telemetryPort)));
-  root.appendChild(createElement(document, "Language", settings->language));
+  root.appendChild(createElement(document, "Language", QString(settings->language)));
   document.appendChild(root);
   // Writing to a file
   QFile file(path);
@@ -94,7 +94,7 @@ bool SUASerializer::Deserialize(QString path, SUASettings* settings)
   settings->modemPort = parseElemet(root, "ModemPort").toInt();
   settings->commandPort = parseElemet(root, "CommandPort").toInt();
   settings->telemetryPort = parseElemet(root, "TelemetryPort").toInt();
-  settings->language = parseElemet(root, "Language");
+  settings->language = (SUASettings::Languages)parseElemet(root, "Language").toInt();
 
   return true;
 }

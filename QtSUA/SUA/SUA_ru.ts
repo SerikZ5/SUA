@@ -104,155 +104,235 @@
         <source>Температура выключения охлаждения выходит за допустимые пределы</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="TelemetryDecoder.cpp" line="130"/>
+        <source>������ 1Wire 
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="TelemetryDecoder.cpp" line="132"/>
+        <source>������ BMSD2 
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="TelemetryDecoder.cpp" line="134"/>
+        <source>������ BMSD1 
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="TelemetryDecoder.cpp" line="136"/>
+        <source>������ �������� EEPROM</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SUA</name>
     <message>
-        <location filename="sua.cpp" line="138"/>
+        <location filename="sua.cpp" line="140"/>
+        <location filename="sua.cpp" line="371"/>
         <source>Корректировка</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="190"/>
+        <location filename="sua.cpp" line="192"/>
+        <location filename="sua.cpp" line="372"/>
         <source>Азимут</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="192"/>
-        <location filename="sua.cpp" line="243"/>
+        <location filename="sua.cpp" line="331"/>
+        <location filename="sua.cpp" line="400"/>
+        <source>Язык</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="sua.cpp" line="342"/>
+        <location filename="sua.cpp" line="416"/>
+        <source>Файл логирования</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="sua.cpp" line="373"/>
+        <location filename="sua.cpp" line="383"/>
         <source>Движение</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="194"/>
-        <location filename="sua.cpp" line="245"/>
+        <location filename="sua.cpp" line="374"/>
+        <location filename="sua.cpp" line="384"/>
         <source>Ускорение</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="197"/>
-        <location filename="sua.cpp" line="248"/>
+        <location filename="sua.cpp" line="375"/>
+        <location filename="sua.cpp" line="385"/>
         <source>Постоянная скорость</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="200"/>
-        <location filename="sua.cpp" line="251"/>
+        <location filename="sua.cpp" line="376"/>
+        <location filename="sua.cpp" line="386"/>
         <source>Торможение</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="203"/>
-        <location filename="sua.cpp" line="225"/>
-        <location filename="sua.cpp" line="254"/>
-        <location filename="sua.cpp" line="276"/>
-        <location filename="sua.cpp" line="300"/>
-        <location filename="sua.cpp" line="319"/>
+        <location filename="sua.cpp" line="377"/>
+        <location filename="sua.cpp" line="381"/>
+        <location filename="sua.cpp" line="387"/>
+        <location filename="sua.cpp" line="391"/>
+        <location filename="sua.cpp" line="395"/>
+        <location filename="sua.cpp" line="399"/>
         <source>Ввод</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="217"/>
-        <location filename="sua.cpp" line="268"/>
+        <location filename="sua.cpp" line="378"/>
+        <location filename="sua.cpp" line="388"/>
         <source>Дополнительно</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="219"/>
-        <location filename="sua.cpp" line="270"/>
+        <location filename="sua.cpp" line="379"/>
+        <location filename="sua.cpp" line="389"/>
         <source>Скорость поиска нуля</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="222"/>
-        <location filename="sua.cpp" line="273"/>
+        <location filename="sua.cpp" line="380"/>
+        <location filename="sua.cpp" line="390"/>
         <source>Скорость подхода к точке</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="241"/>
+        <location filename="sua.cpp" line="243"/>
+        <location filename="sua.cpp" line="382"/>
         <source>Угол места</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="292"/>
+        <location filename="sua.cpp" line="293"/>
+        <location filename="sua.cpp" line="392"/>
         <source>Подогрев</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="294"/>
-        <location filename="sua.cpp" line="313"/>
+        <location filename="sua.cpp" line="393"/>
+        <location filename="sua.cpp" line="397"/>
         <source>Температура включения</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="297"/>
-        <location filename="sua.cpp" line="316"/>
+        <location filename="sua.cpp" line="394"/>
+        <location filename="sua.cpp" line="398"/>
         <source>Температура выключения</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="311"/>
+        <location filename="sua.cpp" line="312"/>
+        <location filename="sua.cpp" line="396"/>
         <source>Охлаждение</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="346"/>
+        <location filename="sua.cpp" line="401"/>
+        <source>Выберите язык</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="sua.cpp" line="403"/>
+        <source>Русский</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="sua.cpp" line="403"/>
+        <source>Английский</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="sua.cpp" line="415"/>
+        <source>Установить</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="sua.cpp" line="417"/>
+        <source>Выберите папку для файлов</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="sua.cpp" line="418"/>
+        <source>Выбрать</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="sua.cpp" line="448"/>
         <source>Состояние</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="348"/>
+        <location filename="sua.cpp" line="449"/>
         <source>Порт модема</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="349"/>
+        <location filename="sua.cpp" line="450"/>
         <source>Порт телеметрии</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="350"/>
+        <location filename="sua.cpp" line="451"/>
         <source>Порт управления</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="465"/>
-        <location filename="sua.cpp" line="494"/>
-        <location filename="sua.cpp" line="523"/>
-        <location filename="sua.cpp" line="551"/>
-        <location filename="sua.cpp" line="579"/>
-        <location filename="sua.cpp" line="607"/>
-        <location filename="sua.cpp" line="766"/>
-        <location filename="sua.cpp" line="795"/>
-        <location filename="sua.cpp" line="827"/>
-        <location filename="sua.cpp" line="856"/>
-        <location filename="sua.cpp" line="885"/>
+        <location filename="sua.cpp" line="554"/>
+        <location filename="sua.cpp" line="583"/>
+        <location filename="sua.cpp" line="612"/>
+        <location filename="sua.cpp" line="640"/>
+        <location filename="sua.cpp" line="668"/>
+        <location filename="sua.cpp" line="696"/>
+        <location filename="sua.cpp" line="853"/>
+        <location filename="sua.cpp" line="882"/>
         <location filename="sua.cpp" line="914"/>
-        <location filename="sua.cpp" line="1019"/>
+        <location filename="sua.cpp" line="943"/>
+        <location filename="sua.cpp" line="972"/>
+        <location filename="sua.cpp" line="1001"/>
+        <location filename="sua.cpp" line="1101"/>
+        <location filename="sua.cpp" line="1113"/>
+        <location filename="sua.cpp" line="1143"/>
         <source>Предупреждение!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="465"/>
-        <location filename="sua.cpp" line="494"/>
-        <location filename="sua.cpp" line="523"/>
-        <location filename="sua.cpp" line="551"/>
-        <location filename="sua.cpp" line="579"/>
-        <location filename="sua.cpp" line="607"/>
-        <location filename="sua.cpp" line="766"/>
-        <location filename="sua.cpp" line="795"/>
-        <location filename="sua.cpp" line="827"/>
-        <location filename="sua.cpp" line="856"/>
-        <location filename="sua.cpp" line="885"/>
+        <location filename="sua.cpp" line="554"/>
+        <location filename="sua.cpp" line="583"/>
+        <location filename="sua.cpp" line="612"/>
+        <location filename="sua.cpp" line="640"/>
+        <location filename="sua.cpp" line="668"/>
+        <location filename="sua.cpp" line="696"/>
+        <location filename="sua.cpp" line="853"/>
+        <location filename="sua.cpp" line="882"/>
         <location filename="sua.cpp" line="914"/>
+        <location filename="sua.cpp" line="943"/>
+        <location filename="sua.cpp" line="972"/>
+        <location filename="sua.cpp" line="1001"/>
         <source>Некорректное значение!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.cpp" line="1019"/>
+        <location filename="sua.cpp" line="1101"/>
+        <location filename="sua.cpp" line="1113"/>
+        <location filename="sua.cpp" line="1143"/>
         <source>Некорректные входные данные!
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="sua.cpp" line="1381"/>
+        <source>Выберите путь для сохранения файла</source>
+        <oldsource>Выберите путь для сохранения пакета</oldsource>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -265,7 +345,7 @@
     </message>
     <message>
         <location filename="sua.ui" line="64"/>
-        <location filename="sua.ui" line="1007"/>
+        <location filename="sua.ui" line="1028"/>
         <source>Состояние</source>
         <translation type="unfinished"></translation>
     </message>
@@ -286,7 +366,7 @@
     </message>
     <message>
         <location filename="sua.ui" line="223"/>
-        <location filename="sua.ui" line="1145"/>
+        <location filename="sua.ui" line="1190"/>
         <source>Режим слежения</source>
         <translation type="unfinished"></translation>
     </message>
@@ -296,7 +376,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="970"/>
+        <location filename="sua.ui" line="991"/>
         <source>Дальность</source>
         <translation type="unfinished"></translation>
     </message>
@@ -307,7 +387,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="988"/>
+        <location filename="sua.ui" line="1009"/>
         <source>Высота GPS</source>
         <translation type="unfinished"></translation>
     </message>
@@ -317,14 +397,24 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="sua.ui" line="274"/>
+        <source>Удаление</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="sua.ui" line="293"/>
+        <source>Высота БЛА</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="sua.ui" line="337"/>
-        <location filename="sua.ui" line="1384"/>
+        <location filename="sua.ui" line="1421"/>
         <source>Подключиться</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="sua.ui" line="359"/>
-        <location filename="sua.ui" line="1152"/>
+        <location filename="sua.ui" line="1197"/>
         <source>Ориентация</source>
         <translation type="unfinished"></translation>
     </message>
@@ -335,7 +425,7 @@
     </message>
     <message>
         <location filename="sua.ui" line="373"/>
-        <location filename="sua.ui" line="1166"/>
+        <location filename="sua.ui" line="1211"/>
         <source>Стоп</source>
         <translation type="unfinished"></translation>
     </message>
@@ -346,193 +436,183 @@
     </message>
     <message>
         <location filename="sua.ui" line="571"/>
-        <location filename="sua.ui" line="889"/>
-        <location filename="sua.ui" line="934"/>
-        <location filename="sua.ui" line="1238"/>
+        <location filename="sua.ui" line="910"/>
+        <location filename="sua.ui" line="955"/>
+        <location filename="sua.ui" line="1248"/>
         <source>Азимут</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="sua.ui" line="587"/>
-        <location filename="sua.ui" line="907"/>
-        <location filename="sua.ui" line="952"/>
-        <location filename="sua.ui" line="1257"/>
+        <location filename="sua.ui" line="928"/>
+        <location filename="sua.ui" line="973"/>
+        <location filename="sua.ui" line="1267"/>
         <source>Угол места</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="695"/>
+        <location filename="sua.ui" line="716"/>
         <source>Gps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="709"/>
+        <location filename="sua.ui" line="730"/>
         <source>Время</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="727"/>
-        <location filename="sua.ui" line="808"/>
+        <location filename="sua.ui" line="748"/>
+        <location filename="sua.ui" line="829"/>
         <source>Широта</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="745"/>
-        <location filename="sua.ui" line="826"/>
+        <location filename="sua.ui" line="766"/>
+        <location filename="sua.ui" line="847"/>
         <source>Долгота</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="763"/>
-        <location filename="sua.ui" line="844"/>
+        <location filename="sua.ui" line="784"/>
+        <location filename="sua.ui" line="865"/>
         <source>Высота</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="781"/>
+        <location filename="sua.ui" line="802"/>
         <source>Статус</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="800"/>
+        <location filename="sua.ui" line="821"/>
         <source>БЛА</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="863"/>
+        <location filename="sua.ui" line="884"/>
         <source>ОПУ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="871"/>
+        <location filename="sua.ui" line="892"/>
         <source>Магнитный курс</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="926"/>
+        <location filename="sua.ui" line="947"/>
         <source>Вычисленное направление</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1015"/>
+        <location filename="sua.ui" line="1036"/>
         <source>Температура</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1033"/>
+        <location filename="sua.ui" line="1054"/>
         <source>Режим</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1051"/>
+        <location filename="sua.ui" line="1072"/>
         <source>Ошибка</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1081"/>
+        <location filename="sua.ui" line="1116"/>
         <source>Окно команд управления</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1091"/>
-        <location filename="sua.ui" line="1247"/>
-        <location filename="sua.ui" line="1266"/>
+        <location filename="sua.ui" line="1123"/>
+        <location filename="sua.ui" line="1257"/>
+        <location filename="sua.ui" line="1276"/>
         <source>Ввод</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1101"/>
+        <location filename="sua.ui" line="1099"/>
         <source>Окно данных телеметрии</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1111"/>
+        <location filename="sua.ui" line="1156"/>
         <source>Окно данных модема</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1139"/>
-        <location filename="sua.ui" line="1371"/>
+        <location filename="sua.ui" line="1184"/>
+        <location filename="sua.ui" line="1408"/>
         <source>Управление</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1159"/>
+        <location filename="sua.ui" line="1204"/>
         <source>Установить ноль</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1173"/>
-        <source>Вкл. подогрев</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sua.ui" line="1180"/>
-        <source>Выкл. подогрев</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sua.ui" line="1187"/>
-        <source>Вкл. охлаждение</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sua.ui" line="1194"/>
-        <source>Выкл. охлаждение</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sua.ui" line="1201"/>
+        <location filename="sua.ui" line="1306"/>
         <source>Тестовый режим</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1211"/>
+        <location filename="sua.ui" line="1221"/>
         <source>Сброс</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1232"/>
+        <location filename="sua.ui" line="1242"/>
         <source>Ручной режим</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1290"/>
+        <location filename="sua.ui" line="1286"/>
+        <source>Подогрев</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="sua.ui" line="1296"/>
+        <source>Охлаждение</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="sua.ui" line="1327"/>
         <source>Опции</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1328"/>
+        <location filename="sua.ui" line="1365"/>
         <source>toolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1355"/>
+        <location filename="sua.ui" line="1392"/>
         <source>Модем</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1363"/>
+        <location filename="sua.ui" line="1400"/>
         <source>Телеметрия</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1379"/>
+        <location filename="sua.ui" line="1416"/>
         <source>Все</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1389"/>
+        <location filename="sua.ui" line="1426"/>
         <source>Отключиться</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1394"/>
+        <location filename="sua.ui" line="1431"/>
         <source>Настройки сети</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sua.ui" line="1399"/>
+        <location filename="sua.ui" line="1436"/>
         <source>Пользовательский режим</source>
         <translation type="unfinished"></translation>
     </message>

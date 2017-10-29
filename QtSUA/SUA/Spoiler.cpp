@@ -44,6 +44,11 @@ Spoiler::Spoiler(const QString & title, const int animationDuration, QWidget *pa
   });
 }
 
+void Spoiler::SetTitle(const QString &title)
+{
+  toggleButton.setText(title);
+}
+
 void Spoiler::setContentLayout(QLayout* content) 
 {
   delete contentArea.layout();

@@ -4,6 +4,7 @@
 #include <QMetaEnum>
 #include <QDateTime>
 #include <QDir>
+#include <QFileDialog>
 
 #include "sua.h"
 #include "Spoiler.h"
@@ -13,8 +14,8 @@
 
 #define userWindowHeight 560
 #define userWindowWight 300
-#define mainWindowHeight 560
-#define mainWindowWight 720
+#define mainWindowHeight 660
+#define mainWindowWight 820
 #define configFilePath "config.conf"
 #define languageFile "SUA_"
 
@@ -27,7 +28,6 @@ SUA::SUA(QWidget *parent)
   {
     SUASerializer::Serialize(configFilePath, &suaSettings);
   }
-  tranlate(suaSettings.language);
 
   ui.btnSetDNAUpUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowUp));
   ui.btnSetDNAUpUsers->setIconSize(QSize(25, 25));
@@ -42,8 +42,11 @@ SUA::SUA(QWidget *parent)
   addStatusBar();
   activateFullMode(false);
   resize(userWindowWight, userWindowHeight);
+  tranlate(suaSettings.language);
 
   telemetryLogFile = "";
+  telemetryLogDir = QDir::current().currentPath() + "/LogFilesSUA";
+  txbLogFile->setText(telemetryLogDir);
     
   commandNetwork = new NetworkBase(suaSettings.hostAddress, suaSettings.commandPort);
   connect(commandNetwork, SIGNAL(NetworkStateChanged(int)), this, SLOT(updateCommSockLbl(int)));
@@ -132,10 +135,9 @@ void SUA::addSpoilers()
 
   Spoiler* options = new Spoiler("Опции"), 300, this);*/
 
-
   QWidget* w = new QWidget(ui.tabWidget);
   w->setObjectName(QStringLiteral("w"));
-  Spoiler* adjustment = new Spoiler(tr("Корректировка"), 300, w); // Adjustment
+  adjustment = new Spoiler(tr("Корректировка"), 300, w); // Adjustment
   QVBoxLayout* adjustmentSpoilerLayout = new QVBoxLayout();
   adjustmentSpoilerLayout->setSpacing(6);
   QHBoxLayout* h1 = new QHBoxLayout();
@@ -187,25 +189,25 @@ void SUA::addSpoilers()
   connect(btnSetDNADown, SIGNAL(clicked()), this, SLOT(on_btnSetDNADownUsers_clicked()));
 
 
-  Spoiler* azimuth = new Spoiler(tr("Азимут"), 300, w); // Azimuth
-  QVBoxLayout* azimuthSpoilerLayout = new QVBoxLayout(azimuth);
-  QGroupBox* motionAzimuth = new QGroupBox(tr("Движение"), azimuth);
+  azimuth = new Spoiler(tr("Азимут"), 300, w); // Azimuth
+  QVBoxLayout* azimuthSpoilerLayout = new QVBoxLayout();
+  motionAzimuth = new QGroupBox(azimuth);
   QVBoxLayout* motionAzimuthLayout = new QVBoxLayout();
-  QLabel* l1 = new QLabel(tr("Ускорение"), motionAzimuth);
+  lblAzimuthAcceleraion = new QLabel(motionAzimuth);
   txbAzimuthAcceleraion = new QLineEdit("15", motionAzimuth);
   txbAzimuthAcceleraion->setValidator(new QIntValidator());
-  QLabel* l2 = new QLabel(tr("Постоянная скорость"), motionAzimuth);
+  lblAzimuthSpeed = new QLabel(motionAzimuth);
   txbAzimuthSpeed = new QLineEdit("150", motionAzimuth);
   txbAzimuthSpeed->setValidator(new QIntValidator());
-  QLabel* l3 = new QLabel(tr("Торможение"), motionAzimuth);
+  lblAzimuthBraking = new QLabel(motionAzimuth);
   txbAzimuthBraking = new QLineEdit("20", motionAzimuth);
   txbAzimuthBraking->setValidator(new QIntValidator());
-  QPushButton* btnSetAzimuthMovOptCommand = new QPushButton(tr("Ввод"), motionAzimuth);
-  motionAzimuthLayout->addWidget(l1);
+  btnSetAzimuthMovOptCommand = new QPushButton(motionAzimuth);
+  motionAzimuthLayout->addWidget(lblAzimuthAcceleraion);
   motionAzimuthLayout->addWidget(txbAzimuthAcceleraion);
-  motionAzimuthLayout->addWidget(l2);
+  motionAzimuthLayout->addWidget(lblAzimuthSpeed);
   motionAzimuthLayout->addWidget(txbAzimuthSpeed);
-  motionAzimuthLayout->addWidget(l3);
+  motionAzimuthLayout->addWidget(lblAzimuthBraking);
   motionAzimuthLayout->addWidget(txbAzimuthBraking);
   motionAzimuthLayout->addWidget(btnSetAzimuthMovOptCommand);
   motionAzimuth->setLayout(motionAzimuthLayout);
@@ -214,18 +216,18 @@ void SUA::addSpoilers()
   connect(txbAzimuthBraking, SIGNAL(returnPressed()), this, SLOT(txbSetAzimuthMovOptCommand_returnPressed()));
   connect(btnSetAzimuthMovOptCommand, SIGNAL(pressed()), this, SLOT(btnSetAzimuthMovOptCommand_clicked()));
 
-  QGroupBox* additionallyAzimuth = new QGroupBox(tr("Дополнительно"), azimuth);
+  additionallyAzimuth = new QGroupBox(azimuth);
   QVBoxLayout* additionallyAzimuthLayout = new QVBoxLayout();
-  QLabel* l4 = new QLabel(tr("Скорость поиска нуля"), additionallyAzimuth);
+  lblAzimuthSlowSpeed = new QLabel(additionallyAzimuth);
   txbAzimuthSlowSpeed = new QLineEdit("20", additionallyAzimuth);
   txbAzimuthSlowSpeed->setValidator(new QIntValidator());
-  QLabel* l5 = new QLabel(tr("Скорость подхода к точке"), additionallyAzimuth);
+  lblAzimuthZeroSeek = new QLabel(additionallyAzimuth);
   txbAzimuthZeroSeek = new QLineEdit("50", additionallyAzimuth);
   txbAzimuthZeroSeek->setValidator(new QIntValidator());
-  QPushButton* btnSetAzimuthZerSOptCommand = new QPushButton(tr("Ввод"), additionallyAzimuth);
-  additionallyAzimuthLayout->addWidget(l4);
+  btnSetAzimuthZerSOptCommand = new QPushButton(additionallyAzimuth);
+  additionallyAzimuthLayout->addWidget(lblAzimuthSlowSpeed);
   additionallyAzimuthLayout->addWidget(txbAzimuthSlowSpeed);
-  additionallyAzimuthLayout->addWidget(l5);
+  additionallyAzimuthLayout->addWidget(lblAzimuthZeroSeek);
   additionallyAzimuthLayout->addWidget(txbAzimuthZeroSeek);
   additionallyAzimuthLayout->addWidget(btnSetAzimuthZerSOptCommand);
   additionallyAzimuth->setLayout(additionallyAzimuthLayout);
@@ -238,25 +240,25 @@ void SUA::addSpoilers()
   azimuth->setContentLayout(azimuthSpoilerLayout);
 
   
-  Spoiler* zenith = new Spoiler(tr("Угол места"), 300, w);
-  QVBoxLayout* zenithSpoilerLayout = new QVBoxLayout(zenith);
-  QGroupBox* motionZenith = new QGroupBox(tr("Движение"), zenith);
+  zenith = new Spoiler(tr("Угол места"), 300, w);
+  QVBoxLayout* zenithSpoilerLayout = new QVBoxLayout();
+  motionZenith = new QGroupBox(zenith);
   QVBoxLayout* motionZenithLayout = new QVBoxLayout();
-  QLabel* l6 = new QLabel(tr("Ускорение"), motionZenith);
+  lblZenithAcceleraion = new QLabel(motionZenith);
   txbZenithAcceleraion = new QLineEdit("15", motionZenith);
   txbZenithAcceleraion->setValidator(new QIntValidator());
-  QLabel* l7 = new QLabel(tr("Постоянная скорость"), motionZenith);
+  lblZenithSpeed = new QLabel(motionZenith);
   txbZenithSpeed = new QLineEdit("150", motionZenith);
   txbZenithSpeed->setValidator(new QIntValidator());
-  QLabel* l8 = new QLabel(tr("Торможение"), motionZenith);
+  lblZenithBraking = new QLabel(motionZenith);
   txbZenithBraking = new QLineEdit("20", motionZenith);
   txbZenithBraking->setValidator(new QIntValidator());
-  QPushButton* btnSetZenithMovOptCommand = new QPushButton(tr("Ввод"), motionZenith);
-  motionZenithLayout->addWidget(l6);
+  btnSetZenithMovOptCommand = new QPushButton(motionZenith);
+  motionZenithLayout->addWidget(lblZenithAcceleraion);
   motionZenithLayout->addWidget(txbZenithAcceleraion);
-  motionZenithLayout->addWidget(l7);
+  motionZenithLayout->addWidget(lblZenithSpeed);
   motionZenithLayout->addWidget(txbZenithSpeed);
-  motionZenithLayout->addWidget(l8);
+  motionZenithLayout->addWidget(lblZenithBraking);
   motionZenithLayout->addWidget(txbZenithBraking);
   motionZenithLayout->addWidget(btnSetZenithMovOptCommand);
   motionZenith->setLayout(motionZenithLayout);
@@ -265,18 +267,18 @@ void SUA::addSpoilers()
   connect(txbZenithBraking, SIGNAL(returnPressed()), this, SLOT(txbSetZenithMovOptCommand_returnPressed()));
   connect(btnSetZenithMovOptCommand, SIGNAL(pressed()), this, SLOT(btnSetZenithMovOptCommand_clicked()));
 
-  QGroupBox* additionallyZenith = new QGroupBox(tr("Дополнительно"), azimuth);
+  additionallyZenith = new QGroupBox(azimuth);
   QVBoxLayout* additionallyZenithLayout = new QVBoxLayout();
-  QLabel* l9 = new QLabel(tr("Скорость поиска нуля"), additionallyZenith);
+  lblZenithSlowSpeed = new QLabel(additionallyZenith);
   txbZenithSlowSpeed = new QLineEdit("20", additionallyZenith);
   txbZenithSlowSpeed->setValidator(new QIntValidator());
-  QLabel* l10 = new QLabel(tr("Скорость подхода к точке"), additionallyZenith);
+  lblZenithZeroSeek = new QLabel(additionallyZenith);
   txbZenithZeroSeek = new QLineEdit("50", additionallyZenith);
   txbZenithZeroSeek->setValidator(new QIntValidator());
-  QPushButton* btnSetZenithZerSOptCommand = new QPushButton(tr("Ввод"), additionallyZenith);
-  additionallyZenithLayout->addWidget(l9);
+  btnSetZenithZerSOptCommand = new QPushButton(additionallyZenith);
+  additionallyZenithLayout->addWidget(lblZenithSlowSpeed);
   additionallyZenithLayout->addWidget(txbZenithSlowSpeed);
-  additionallyZenithLayout->addWidget(l10);
+  additionallyZenithLayout->addWidget(lblZenithZeroSeek);
   additionallyZenithLayout->addWidget(txbZenithZeroSeek);
   additionallyZenithLayout->addWidget(btnSetZenithZerSOptCommand);
   additionallyZenith->setLayout(additionallyZenithLayout);
@@ -288,19 +290,18 @@ void SUA::addSpoilers()
   zenithSpoilerLayout->addWidget(additionallyZenith);
   zenith->setContentLayout(zenithSpoilerLayout);
 
-
-  Spoiler* heating = new Spoiler(tr("Подогрев"), 300, w);
-  QVBoxLayout* heatingSpoilerLayout = new QVBoxLayout(zenith);
-  QLabel* l11 = new QLabel(tr("Температура включения"), heating);
+  heating = new Spoiler(tr("Подогрев"), 300, w);
+  QVBoxLayout* heatingSpoilerLayout = new QVBoxLayout();
+  lblTempEnHeating = new QLabel(heating);
   txbTempEnHeating = new QLineEdit("10", heating);
   txbTempEnHeating->setValidator(new QIntValidator());
-  QLabel* l12 = new QLabel(tr("Температура выключения"), heating);
+  lblTempDisHeating= new QLabel(heating);
   txbTempDisHeating = new QLineEdit("18", heating);
   txbTempDisHeating->setValidator(new QIntValidator());
-  QPushButton* btnSetHeatingOptCommand = new QPushButton(tr("Ввод"), heating);
-  heatingSpoilerLayout->addWidget(l11);
+  btnSetHeatingOptCommand = new QPushButton(heating);
+  heatingSpoilerLayout->addWidget(lblTempEnHeating);
   heatingSpoilerLayout->addWidget(txbTempEnHeating);
-  heatingSpoilerLayout->addWidget(l12);
+  heatingSpoilerLayout->addWidget(lblTempDisHeating);
   heatingSpoilerLayout->addWidget(txbTempDisHeating);
   heatingSpoilerLayout->addWidget(btnSetHeatingOptCommand);
   heating->setContentLayout(heatingSpoilerLayout);
@@ -308,18 +309,18 @@ void SUA::addSpoilers()
   connect(txbTempDisHeating, SIGNAL(returnPressed()), this, SLOT(txbSetHeatingOptCommand_returnPressed()));
   connect(btnSetHeatingOptCommand, SIGNAL(pressed()), this, SLOT(btnSetHeatingOptCommand_clicked()));
 
-  Spoiler* ventilation = new Spoiler(tr("Охлаждение"), 300, w);
-  QVBoxLayout* ventilationSpoilerLayout = new QVBoxLayout(zenith);
-  QLabel* l13 = new QLabel(tr("Температура включения"), ventilation);
+  ventilation = new Spoiler(tr("Охлаждение"), 300, w);
+  QVBoxLayout* ventilationSpoilerLayout = new QVBoxLayout();
+  lblTempEnVentilation = new QLabel(ventilation);
   txbTempEnVentilation = new QLineEdit("45", ventilation);
   txbTempEnVentilation->setValidator(new QIntValidator());
-  QLabel* l14 = new QLabel(tr("Температура выключения"), ventilation);
+  lblTempDisVentilation = new QLabel(ventilation);
   txbTempDisVentilation = new QLineEdit("35", ventilation);
   txbTempDisVentilation->setValidator(new QIntValidator());
-  QPushButton* btnSetVentilationOptCommand = new QPushButton(tr("Ввод"), ventilation);
-  ventilationSpoilerLayout->addWidget(l13);
+  btnSetVentilationOptCommand = new QPushButton(ventilation);
+  ventilationSpoilerLayout->addWidget(lblTempEnVentilation);
   ventilationSpoilerLayout->addWidget(txbTempEnVentilation);
-  ventilationSpoilerLayout->addWidget(l14);
+  ventilationSpoilerLayout->addWidget(lblTempDisVentilation);
   ventilationSpoilerLayout->addWidget(txbTempDisVentilation);
   ventilationSpoilerLayout->addWidget(btnSetVentilationOptCommand);
   ventilation->setContentLayout(ventilationSpoilerLayout);
@@ -327,12 +328,36 @@ void SUA::addSpoilers()
   connect(txbTempDisVentilation, SIGNAL(returnPressed()), this, SLOT(txbSetVentilationOptCommand_returnPressed()));
   connect(btnSetVentilationOptCommand, SIGNAL(pressed()), this, SLOT(btnSetVentilationOptCommand_clicked()));
 
+  language = new Spoiler(tr("Язык"), 300, w);
+  QVBoxLayout* languageSpoilerLayout = new QVBoxLayout();
+  lblLanguage = new QLabel(language);
+  cmbLanguage = new QComboBox(language);
+  btnLanguageSelect = new QPushButton(language);
+  languageSpoilerLayout->addWidget(lblLanguage);
+  languageSpoilerLayout->addWidget(cmbLanguage);
+  languageSpoilerLayout->addWidget(btnLanguageSelect);
+  language->setContentLayout(languageSpoilerLayout);
+  connect(btnLanguageSelect, SIGNAL(pressed()), this, SLOT(btnSelectLanguage_clicked()));
+
+  logFile = new Spoiler(tr("Файл логирования"), 300, w);
+  QVBoxLayout* logFileSpoilerLayout = new QVBoxLayout();
+  lblLogFile = new QLabel(logFile);
+  txbLogFile = new QLineEdit(this);
+  btnSetLogFile = new QPushButton(this);
+  logFileSpoilerLayout->addWidget(lblLogFile);
+  logFileSpoilerLayout->addWidget(txbLogFile);
+  logFileSpoilerLayout->addWidget(btnSetLogFile);
+  logFile->setContentLayout(logFileSpoilerLayout);
+  connect(btnSetLogFile, SIGNAL(pressed()), this, SLOT(chooseLogDir()));
+
   QVBoxLayout* optionsSpoilerLayout = new QVBoxLayout();
   optionsSpoilerLayout->addWidget(adjustment);
   optionsSpoilerLayout->addWidget(azimuth);
   optionsSpoilerLayout->addWidget(zenith);
   optionsSpoilerLayout->addWidget(heating);
   optionsSpoilerLayout->addWidget(ventilation);
+  optionsSpoilerLayout->addWidget(language);
+  optionsSpoilerLayout->addWidget(logFile);
   QSpacerItem* verticalSpacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
   optionsSpoilerLayout->addItem(verticalSpacer);
 
@@ -341,13 +366,65 @@ void SUA::addSpoilers()
   ui.scrollArea->setWidget(w);
 }
 
+void SUA::translateSpoilers()
+{
+  adjustment->SetTitle(tr("Корректировка"));
+  azimuth->SetTitle(tr("Азимут"));
+  motionAzimuth->setTitle(tr("Движение"));
+  lblAzimuthAcceleraion->setText(tr("Ускорение"));
+  lblAzimuthSpeed->setText(tr("Постоянная скорость"));
+  lblAzimuthBraking->setText(tr("Торможение"));
+  btnSetAzimuthMovOptCommand->setText(tr("Ввод"));
+  additionallyAzimuth->setTitle(tr("Дополнительно"));
+  lblAzimuthSlowSpeed->setText(tr("Скорость поиска нуля"));
+  lblAzimuthZeroSeek->setText(tr("Скорость подхода к точке"));
+  btnSetAzimuthZerSOptCommand->setText(tr("Ввод"));
+  zenith->SetTitle(tr("Угол места"));
+  motionZenith->setTitle(tr("Движение"));
+  lblZenithAcceleraion->setText(tr("Ускорение"));
+  lblZenithSpeed->setText(tr("Постоянная скорость"));
+  lblZenithBraking->setText(tr("Торможение"));
+  btnSetZenithMovOptCommand->setText(tr("Ввод"));
+  additionallyZenith->setTitle(tr("Дополнительно"));
+  lblZenithSlowSpeed->setText(tr("Скорость поиска нуля"));
+  lblZenithZeroSeek->setText(tr("Скорость подхода к точке"));
+  btnSetZenithZerSOptCommand->setText(tr("Ввод"));
+  heating->SetTitle(tr("Подогрев"));
+  lblTempEnHeating->setText(tr("Температура включения"));
+  lblTempDisHeating->setText(tr("Температура выключения"));
+  btnSetHeatingOptCommand->setText(tr("Ввод"));
+  ventilation->SetTitle(tr("Охлаждение"));
+  lblTempEnVentilation->setText(tr("Температура включения"));
+  lblTempDisVentilation->setText(tr("Температура выключения"));
+  btnSetVentilationOptCommand->setText(tr("Ввод"));
+  language->SetTitle(tr("Язык"));
+  lblLanguage->setText(tr("Выберите язык"));
+  QStringList languages;
+  languages << tr("Русский") << tr("Английский");
+  cmbLanguage->clear();
+  cmbLanguage->addItems(languages);
+  switch(suaSettings.language)
+  {
+   case SUASettings::ru:
+    cmbLanguage->setCurrentIndex(0);
+    break;
+  case SUASettings::en:
+    cmbLanguage->setCurrentIndex(1);
+    break;
+  }
+  btnLanguageSelect->setText(tr("Установить"));
+  logFile->SetTitle(tr("Файл логирования"));
+  lblLogFile->setText(tr("Выберите папку для файлов"));
+  btnSetLogFile->setText(tr("Выбрать"));
+}
+
 void SUA::addStatusBar()
 {
-  QLabel* l = new QLabel(tr("Состояние"), this);
-  l->setStyleSheet("font-weight: bold;");
-  QLabel* modem = new QLabel(tr("Порт модема"), this);
-  QLabel* telemetry = new QLabel(tr("Порт телеметрии"), this);
-  QLabel* command = new QLabel(tr("Порт управления"), this);
+  lblState = new QLabel(this);
+  lblState->setStyleSheet("font-weight: bold;");
+  modem = new QLabel(this);
+  telemetry = new QLabel(this);
+  command = new QLabel(this);
   lblModemSocketState = new QLabel(this);
   lblTelemetrySocketState = new QLabel(this);
   lblCommandSocketState = new QLabel(this);
@@ -357,7 +434,7 @@ void SUA::addStatusBar()
   lblCommandSocketState->setStyleSheet("background-color:pink;");
   lblTelemetrySocketState->setStyleSheet("background-color:pink;");
   lblModemSocketState->setStyleSheet("background-color:pink;");
-  statusBar()->addWidget(l);
+  statusBar()->addWidget(lblState);
   statusBar()->addWidget(modem);
   statusBar()->addWidget(lblModemSocketState);
   statusBar()->addWidget(telemetry);
@@ -366,10 +443,21 @@ void SUA::addStatusBar()
   statusBar()->addWidget(lblCommandSocketState);
 }
 
-void SUA::tranlate(QString lng)
+void SUA::translateSatatusBar()
 {
-  qtLanguageTranslator.load(languageFile + lng);
+  lblState->setText(tr("Состояние"));
+  modem->setText(tr("Порт модема"));
+  telemetry->setText(tr("Порт телеметрии"));
+  command->setText(tr("Порт управления"));
+}
+
+void SUA::tranlate(SUASettings::Languages lng)
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<SUASettings::Languages>();
+  qtLanguageTranslator.load(QString(languageFile) + metaEnum.valueToKey(lng));
   qApp->installTranslator(&qtLanguageTranslator);
+  translateSatatusBar();
+  translateSpoilers();
   ui.retranslateUi(this);
 }
 
@@ -403,7 +491,7 @@ void SUA::on_actionNetworkSettings_triggered()
 void SUA::on_actionUserMod_triggered()
 {
   activateFullMode(false);
-  resize(userWindowWight, userWindowHeight);
+  setFixedSize(userWindowWight, userWindowHeight);
 }
 
 void SUA::on_actionAll_changed()
@@ -417,7 +505,7 @@ void SUA::on_actionAll_changed()
 void SUA::on_btnFullMode_clicked()
 {
   activateFullMode(true);
-  resize(mainWindowWight, mainWindowHeight);
+  setFixedSize(mainWindowWight, mainWindowHeight);
 }
 
 void SUA::on_btnReConnectUsers_clicked()
@@ -925,6 +1013,13 @@ void SUA::on_txbSuaControlPacket_returnPressed()
   on_btnSendSUAControlPacketCommand_clicked();
 }
 
+void SUA::btnSelectLanguage_clicked()
+{
+  suaSettings.language = (SUASettings::Languages)cmbLanguage->currentIndex();
+  tranlate(suaSettings.language);
+  SUASerializer::Serialize(configFilePath, &suaSettings);
+}
+
 void SUA::on_btnSendSUAControlPacketCommand_clicked()
 {
   if (ui.txbSuaControlPacket->text().length() > 0 && commandNetwork->State() == NetworkBase::CONNECTED)
@@ -1011,6 +1106,7 @@ void SUA::updateTelemetryErrors(QString errors)
 {
   try
   {
+    ui.lblError->setToolTip(errors);
   }
   catch (...)
   {
@@ -1128,7 +1224,6 @@ void SUA::updateCommSockLbl(int state)
 {
   QMetaEnum metaEnum = QMetaEnum::fromType<NetworkBase::SocketState>();
   lblCommandSocketState->setText(metaEnum.valueToKey(state));
-
   switch (state)
   {
   case NetworkBase::SocketState::CONNECTED:
@@ -1203,8 +1298,8 @@ void SUA::reconnectAllSockets()
     lblTelemetrySocketState->setText("Connecting... Wait!");
     telemetryNetwork->ConnectToHost(suaSettings.hostAddress, suaSettings.telemetryPort);
     QString timeSystem = QDateTime::currentDateTime().toString("yyyy.MM.dd_HH-mm-ss");
-    QDir().mkdir("LogFilesSUA");
-    telemetryLogFile = QString("LogFilesSUA/LogFile_%1.txt").arg(timeSystem);
+    QDir().mkdir(telemetryLogDir);
+    telemetryLogFile = telemetryLogDir + QString("/LogFile_%1.txt").arg(timeSystem);
     printTelemetryLogFileBegin(telemetryLogFile);
   }
   if (ui.actionModem->isChecked())
@@ -1257,18 +1352,19 @@ void SUA::setConsoleCommand(QByteArray command)
 void SUA::printTelemetryLogFileBegin(QString path)
 {
   QFile data(path);
-  if (data.open(QFile::WriteOnly | QFile::Truncate)) 
+  if (data.open(QFile::WriteOnly))
   {
     QTextStream out(&data);
     out << "time_date;base_lat;base_long;base_alt;base_status;uav_lat;uav_long;uav_alt;dir;enc_az;enc_zen;temp;calc_az;calc_zen;work;error;distance;height_GPS/n";
     out << "/n";
   }
+  data.close();
 }
 
 void SUA::printTelemetryLogFile(QString path, TelemetryPacket packet)
 {
   QFile data(path);
-  if (data.open(QFile::WriteOnly | QFile::Truncate))
+  if (data.open(QFile::WriteOnly))
   {
     QTextStream out(&data);
     out << packet.time + ';' + packet.latitude + ';' + packet.longitude + ';' + packet.height + ';' + packet.status + ';' +
@@ -1276,5 +1372,16 @@ void SUA::printTelemetryLogFile(QString path, TelemetryPacket packet)
       packet.azimuth + ';' + packet.zenith + ';' + packet.temperature + ';' + packet.uavAzimuth + ';' + packet.uavZenith + ';' +
       packet.workMode + ';' + packet.error + ';' + packet.distance + ';' + packet.heightGPS;
     out << "/n";
+  }
+  data.close();
+}
+
+void SUA::chooseLogDir()
+{
+  QString tpath = QFileDialog::getExistingDirectory(this, tr("Выберите путь для сохранения файла"), telemetryLogDir);
+  if(tpath != "")
+  {
+    telemetryLogDir = tpath;
+    txbLogFile->setText(tpath);
   }
 }

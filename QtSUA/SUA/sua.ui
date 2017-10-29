@@ -676,6 +676,12 @@
        </property>
        <item>
         <widget class="QFrame" name="frame_2">
+         <property name="minimumSize">
+          <size>
+           <width>180</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>180</width>
@@ -1098,7 +1104,11 @@
           <widget class="QLineEdit" name="txbSuaControlPacket"/>
          </item>
          <item row="4" column="0" colspan="2">
-          <widget class="QTextEdit" name="txbConsoleWindow"/>
+          <widget class="QTextEdit" name="txbConsoleWindow">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="3" column="0" colspan="2">
           <widget class="QLabel" name="label_21">
@@ -1115,13 +1125,17 @@
           </widget>
          </item>
          <item row="4" column="2" rowspan="2" colspan="2">
-          <widget class="QTextEdit" name="txbModemConsole"/>
+          <widget class="QTextEdit" name="txbModemConsole">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="2" column="0" colspan="4">
           <widget class="QTextEdit" name="txbTelemetryWindow">
            <property name="minimumSize">
             <size>
-             <width>200</width>
+             <width>0</width>
              <height>150</height>
             </size>
            </property>
@@ -1130,6 +1144,9 @@
              <width>16777215</width>
              <height>150</height>
             </size>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -1160,7 +1177,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="control">
        <attribute name="title">

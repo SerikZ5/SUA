@@ -2,10 +2,20 @@
 #define SUASettings_H
 
 #include <QString>
+#include <QObject>
 
-class SUASettings
+class SUASettings : public QObject
 {
+  Q_OBJECT
+
 public:
+  enum Languages
+  {
+    ru = 0,
+    en = 1
+  };
+  Q_ENUM(Languages)
+
   SUASettings();
   
   int azimuthAcceleraion;
@@ -34,7 +44,7 @@ public:
   int commandPort;
   int telemetryPort;
 
-  QString language;
+  Languages language;
 };
 
 #endif

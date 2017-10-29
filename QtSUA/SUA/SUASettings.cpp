@@ -28,5 +28,5 @@ SUASettings::SUASettings()
   modemPort = 9876;
   commandPort = 9875;
 
-  language = "ru";
+  language = Languages::ru;
 }
