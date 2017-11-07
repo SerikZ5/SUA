@@ -335,7 +335,7 @@ QByteArray Protocol::MoveCommand(RotatePlane plane, int value)
   arr.push_back(QString("O%1").arg((int)plane, 1, 10, QChar('0')).toLatin1());
   if (value >= 0)
   {
-    arr.push_back(QString("3").toLatin1());
+    arr.push_back(QString("4+").toLatin1());
     arr.push_back(QString("%1").arg(value, 3, 10, QChar('0')).toLatin1());
   }
   else
