@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>SUA Installer</Name>
+    <Version>1.0.0</Version>
+    <Title>SUA</Title>
+    <Publisher>Serik</Publisher>
+    <!-- Directory name is used in component.xml -->
+    <StartMenuDir>SUA</StartMenuDir>
+    <TargetDir>@HomeDir@/SUA</TargetDir>
+</Installer>

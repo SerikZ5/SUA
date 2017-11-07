@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>SUA</DisplayName>
+    <Description>SUA, accessible through a start menu entry.</Description>
+    <Version>1.0.0-1</Version>
+    <ReleaseDate>2017-10-29</ReleaseDate>
+    <Default>true</Default>
+    <Script>installscript.qs</Script>
+</Package>
