@@ -13,7 +13,7 @@
 #include "SUASerializer.h"
 
 #define userWindowHeight 560
-#define userWindowWight 300
+#define userWindowWight 310
 #define mainWindowHeight 660
 #define mainWindowWight 820
 #define configFilePath "config.conf"
@@ -23,6 +23,10 @@ SUA::SUA(QWidget *parent)
     : QMainWindow(parent)
 {
   ui.setupUi(this);
+  Qt::WindowFlags flags = windowFlags();
+  flags ^= Qt::WindowMaximizeButtonHint;
+  flags ^= Qt::WindowMinimizeButtonHint;
+  setWindowFlags(flags);
 
   if (!SUASerializer::Deserialize(configFilePath, &suaSettings))
   {
