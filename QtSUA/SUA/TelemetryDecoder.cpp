@@ -19,11 +19,13 @@ int TelemetryDecoder::Avaible()
 
 void TelemetryDecoder::AddBytesToQueue(RecievedArray bytes)
 {
-  inputBytes.append(bytes.arr);
-  if (!isSynchonized && inputBytes.count() > 360)
+  inputBytes.append(bytes.arr);  
+  QByteArray arr = inputBytes.left(5);
+  if (QString(arr) != "Time:")
   {
-    Synchronize();
+    isSynchonized = false;
   }
+  Synchronize();
 }
 
 void TelemetryDecoder::Synchronize()
@@ -52,7 +54,9 @@ void TelemetryDecoder::Synchronize()
 
 float QByteArrayToFloat(QByteArray array)
 {
-  return QString(array).replace(".", ",").remove(' ').toFloat();
+  QString str(array);
+  str = str.remove(' ');
+  return str.toFloat();
 }
 
 TelemetryPacket TelemetryDecoder::GetTelemetryPacket(bool* ok)
@@ -80,9 +84,11 @@ TelemetryPacket TelemetryDecoder::GetTelemetryPacket(bool* ok)
       workMode |= 0x80;
       //workmode - QString от int в двоичной системе координат;
       packet.workMode = QString::number(workMode, 2);
+      packet.workMode = packet.workMode.right(8);
       int error = (int)arr[191];
       error |= 0x80;
       packet.error = QString::number(error, 2);
+      packet.error = packet.error.right(8);
       packet.uavAzimuth = QByteArrayToFloat(arr.mid(200, 5));
       packet.uavZenith = QByteArrayToFloat(arr.mid(206, 5));
 
@@ -132,6 +138,9 @@ QString TelemetryDecoder::GetErrors(QString error)
     result +=  QObject::tr("ќшибка BMSD2 \n");
   if(error[charCount-3] == '1')
     result +=  QObject::tr("ќшибка BMSD1 \n");
-  if(error[charCount-1] == '1')
+  if(error[charCount-4] == '1')
     result +=  QObject::tr("ќшибка эмул€ции EEPROM");
+  if(result.isEmpty())
+    result = "no errors";
+  return result;
 }

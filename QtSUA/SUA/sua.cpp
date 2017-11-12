@@ -86,59 +86,6 @@ SUA::~SUA()
 
 void SUA::addSpoilers()
 {
-  /*Spoiler* control = new Spoiler("Управление"), 300, this);
-  QVBoxLayout* controlSpoilerLayout = new QVBoxLayout(control);
-  QPushButton* btnFollowCommand = new QPushButton("Режим слежения"), control);
-  QPushButton* btnOrientedAntennasCommand = new QPushButton("Ориентация"), control);
-  QPushButton* btnSetZeroPositionCommand = new QPushButton("Установить ноль"), control);
-  QPushButton* btnStopEnginesCommand = new QPushButton("Стоп"), control);
-  QPushButton* btnEnableHeatingCommand = new QPushButton("Вкл. подогрев"), control);
-  QPushButton* btnDisableHeatingCommand = new QPushButton("Выкл. подогрев"), control);
-  QPushButton* btnEnableVentilationCommand = new QPushButton("Вкл. охлаждение"), control);
-  QPushButton* btnDisableVentilationCommand = new QPushButton("Выкл. охлаждение"), control);
-  QPushButton* btnTestCommand = new QPushButton("Тестовый режим"), control);
-  QPushButton* btnResetCommand = new QPushButton("Сброс"), control);
-  controlSpoilerLayout->addWidget(btnFollowCommand);
-  controlSpoilerLayout->addWidget(btnOrientedAntennasCommand);
-  controlSpoilerLayout->addWidget(btnSetZeroPositionCommand);
-  controlSpoilerLayout->addWidget(btnStopEnginesCommand);
-  controlSpoilerLayout->addWidget(btnEnableHeatingCommand);
-  controlSpoilerLayout->addWidget(btnDisableHeatingCommand);
-  controlSpoilerLayout->addWidget(btnEnableVentilationCommand);
-  controlSpoilerLayout->addWidget(btnDisableVentilationCommand);
-  controlSpoilerLayout->addWidget(btnTestCommand);
-  controlSpoilerLayout->addWidget(btnResetCommand);
-  control->setContentLayout(controlSpoilerLayout);
-
-
-
-  Spoiler* userControl = new Spoiler("Ручной режим управления"), 300, this);
-  QVBoxLayout* userControlSpoilerLayout = new QVBoxLayout(userControl);
-
-  QGroupBox* groupAzimuth = new QGroupBox(userControl);
-  groupAzimuth->setTitle("Азимут"));
-  QHBoxLayout* azimuthLayout = new QHBoxLayout(groupAzimuth);
-  QLineEdit* txbSuaCommandAzimuth = new QLineEdit(groupAzimuth);
-  QPushButton* btnSetAzimuthCommand = new QPushButton("Ввод"), groupAzimuth);
-  azimuthLayout->addWidget(txbSuaCommandAzimuth);
-  azimuthLayout->addWidget(btnSetAzimuthCommand);
-  groupAzimuth->setLayout(azimuthLayout);
-  QGroupBox* groupElevationAngle = new QGroupBox(userControl);
-  groupElevationAngle->setTitle("Угол места"));
-  QHBoxLayout* ElevationAngleLayout = new QHBoxLayout(groupAzimuth);
-  QLineEdit* txbSuaCommandZenith = new QLineEdit(groupAzimuth);
-  QPushButton* btnSetZenithCommand = new QPushButton("Ввод"), groupAzimuth);
-  ElevationAngleLayout->addWidget(txbSuaCommandZenith);
-  ElevationAngleLayout->addWidget(btnSetZenithCommand);
-  groupElevationAngle->setLayout(ElevationAngleLayout);
-
-  userControlSpoilerLayout->addWidget(groupAzimuth);
-  userControlSpoilerLayout->addWidget(groupElevationAngle);
-  userControl->setContentLayout(userControlSpoilerLayout);
-
-
-  Spoiler* options = new Spoiler("Опции"), 300, this);*/
-
   QWidget* w = new QWidget(ui.tabWidget);
   w->setObjectName(QStringLiteral("w"));
   adjustment = new Spoiler(tr("Корректировка"), 300, w); // Adjustment
@@ -1061,6 +1008,37 @@ void SUA::updateTelemetryWorkMode(QString workModeString)
   try
   {
     //Idle mode (STOP lable is GREEN)
+    if (workModeString[7] == '1')
+    {
+      imageStatus.SetImage(ui.imgStopState, SUAImages::GREEN);
+      //imageStatus.SetImage(ref imgMoveState, "GREY");
+    }
+    else
+    {
+      imageStatus.SetImage(ui.imgStopState, SUAImages::GREY);
+    }
+
+    //Orientation Mode (Orientation lable is GREEN_BLINK)
+    if (workModeString[6] == '1' || workModeString[5] == '1')
+    {
+      imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREEN_BLINK);
+    }
+    else
+    {
+      imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREY);
+    }
+
+    //Following Mode (Follow lable is GREEN)
+    if (workModeString[4] == '0')
+    {
+      imageStatus.SetImage(ui.imgFollowState, SUAImages::GREEN);
+    }
+    else
+    {
+      imageStatus.SetImage(ui.imgFollowState, SUAImages::GREY);
+    }
+
+    /*//Idle mode (STOP lable is GREEN)
     if (workModeString[0] == '1')
     {
       imageStatus.SetImage(ui.imgStopState, SUAImages::GREEN);
@@ -1089,7 +1067,7 @@ void SUA::updateTelemetryWorkMode(QString workModeString)
     else
     {
       imageStatus.SetImage(ui.imgFollowState, SUAImages::GREY);
-    }
+    }*/
 
     ui.btnHeatingCommand->blockSignals(true);
     ui.btnHeatingCommand->setChecked(workModeString[6] == '1');
@@ -1109,7 +1087,7 @@ void SUA::updateTelemetryWorkMode(QString workModeString)
 void SUA::updateTelemetryErrors(QString errors)
 {
   try
-  {
+  {    
     ui.lblError->setToolTip(errors);
   }
   catch (...)
@@ -1179,28 +1157,36 @@ void SUA::updateSUAStateLabels(TelemetryPacket packet)
   ui.lblDistance->setText(QString::number(packet.distance) + " м");
   ui.lblHeightGPSUser->setText(QString::number(packet.heightGPS) + " м");
   ui.lblHeightGPS->setText(QString::number(packet.heightGPS) + " м");
+  update();
 }
 
 void SUA::telelemtryRcvd(RecievedArray arr)
 {
-  updateSUATelemetryConsole(arr);
   telemetryDecoder.AddBytesToQueue(arr);
   bool ok;
   TelemetryPacket packet = telemetryDecoder.GetTelemetryPacket(&ok);
   if (ok)
   {
+    updateSUATelemetryConsole(packet);
     updateSUAStateLabels(packet);
     updateTelemetryStatus(packet.status);
     updateTelemetryWorkMode(packet.workMode);
-    updateTelemetryErrors(packet.error);
+    updateTelemetryErrors(telemetryDecoder.GetErrors(packet.error));
     if (telemetryLogFile != "")
       printTelemetryLogFile(telemetryLogFile, packet);
   }
 }
 
-void SUA::updateSUATelemetryConsole(RecievedArray arr)
+void SUA::updateSUATelemetryConsole(TelemetryPacket decodedPacket)
 {
-  ui.txbTelemetryWindow->append(arr.ToString());
+  QString text = "Time: " + decodedPacket.time + "\n";
+  text += "Case Coordinates: " + QString::number(decodedPacket.latitude) + "   " + QString::number(decodedPacket.longitude) + " Height: " + QString::number(decodedPacket.height) + "\n";
+  text += "Status: " + decodedPacket.status + "\n";
+  text += "UAV Coordinates: " + QString::number(decodedPacket.uavLatitude) + "   " + QString::number(decodedPacket.uavLongitude) + " Height UAV: " + QString::number(decodedPacket.uavAltitude) + "\n";
+  text += "Dir: " + QString::number(decodedPacket.direction) + "\n";
+  text += "Enc: " + QString::number(decodedPacket.azimuth) + "   " + QString::number(decodedPacket.zenith) + " T: " + decodedPacket.temperature + "°C\n";
+  text += "Calc: " + QString::number(decodedPacket.uavAzimuth) + "   " + QString::number(decodedPacket.uavZenith);
+  ui.txbTelemetryWindow->setText(text);
   QScrollBar* scroll = ui.txbTelemetryWindow->verticalScrollBar();
   scroll->setValue(scroll->maximum());
 }
@@ -1359,8 +1345,8 @@ void SUA::printTelemetryLogFileBegin(QString path)
   if (data.open(QFile::WriteOnly))
   {
     QTextStream out(&data);
-    out << "time_date;base_lat;base_long;base_alt;base_status;uav_lat;uav_long;uav_alt;dir;enc_az;enc_zen;temp;calc_az;calc_zen;work;error;distance;height_GPS/n";
-    out << "/n";
+    out << "time_date;base_lat;base_long;base_alt;base_status;uav_lat;uav_long;uav_alt;dir;enc_az;enc_zen;temp;calc_az;calc_zen;work;error;distance;height_GPS\n";
+    out << "\n";
   }
   data.close();
 }
@@ -1375,7 +1361,7 @@ void SUA::printTelemetryLogFile(QString path, TelemetryPacket packet)
       packet.uavLatitude + ';' + packet.uavLongitude + ';' + packet.uavAltitude + ';' + packet.direction + ';' +
       packet.azimuth + ';' + packet.zenith + ';' + packet.temperature + ';' + packet.uavAzimuth + ';' + packet.uavZenith + ';' +
       packet.workMode + ';' + packet.error + ';' + packet.distance + ';' + packet.heightGPS;
-    out << "/n";
+    out << "\n";
   }
   data.close();
 }

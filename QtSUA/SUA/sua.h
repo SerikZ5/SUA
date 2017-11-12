@@ -103,7 +103,7 @@ private:
   
   void updateTextField();
 
-  void updateSUATelemetryConsole(RecievedArray arr);
+  void updateSUATelemetryConsole(TelemetryPacket decodedPacket);
   void updateTelemetryWorkMode(QString workModeString);
   void updateTelemetryErrors(QString errors);
   void updateTelemetryStatus(QString statusGPSString);
