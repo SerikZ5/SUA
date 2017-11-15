@@ -347,3 +347,13 @@ QByteArray Protocol::MoveCommand(RotatePlane plane, int value)
   arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }
+
+QByteArray Protocol::SendIP(QString IP)
+{
+  QByteArray arr;
+  arr.push_back(preambula);
+  arr.push_back(QString("I%1").arg(IP.count()).toLatin1());
+  arr.push_back(IP.toLatin1());
+  arr.push_back(QString("\r\n").toLatin1());
+  return arr;
+}

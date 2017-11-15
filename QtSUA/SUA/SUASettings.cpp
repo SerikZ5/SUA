@@ -1,3 +1,5 @@
+#include <QDir>
+
 #include "SUASettings.h"
 
 SUASettings::SUASettings()
@@ -29,4 +31,5 @@ SUASettings::SUASettings()
   commandPort = 9875;
 
   language = Languages::ru;
+  telemetryLogDir = QDir::current().currentPath() + "/LogFilesSUA";
 }

@@ -5,6 +5,7 @@
 
 #include "NetworkSettings.h"
 #include "SUASerializer.h"
+#include "sua.h"
 
 
 NetworkSettings::NetworkSettings(SUASettings* settings, QString configFilePath, QWidget* parent) : QDialog(parent)
@@ -12,38 +13,46 @@ NetworkSettings::NetworkSettings(SUASettings* settings, QString configFilePath, 
   this->settings = settings;
   this->configFilePath = configFilePath;
   setWindowTitle(tr("Настройки сети"));
-  QGridLayout* layout = new QGridLayout();
 
+  QVBoxLayout* layout = new QVBoxLayout;
+  QGridLayout* gridlayout = new QGridLayout();
   QLabel* host = new QLabel(tr("IP-адрес"), this);
-  layout->addWidget(host, 0, 0, 1, 1);
+  gridlayout->addWidget(host, 0, 0, 1, 1);
   txtHostAddress = new QLineEdit(this);
   txtHostAddress->setText(settings->hostAddress);
-  layout->addWidget(txtHostAddress, 0, 1, 1, 1);
+  gridlayout->addWidget(txtHostAddress, 0, 1, 1, 1);
 
   QLabel* modem = new QLabel(tr("Порт модема"), this);
-  layout->addWidget(modem, 1, 0, 1, 1);
+  gridlayout->addWidget(modem, 1, 0, 1, 1);
   txtModemPort = new QLineEdit(this);
   txtModemPort->setText(QString::number(settings->modemPort));
-  layout->addWidget(txtModemPort, 1, 1, 1, 1);
+  gridlayout->addWidget(txtModemPort, 1, 1, 1, 1);
 
   QLabel* telemetry = new QLabel(tr("Порт телеметрии"), this);
-  layout->addWidget(telemetry, 2, 0, 1, 1);
+  gridlayout->addWidget(telemetry, 2, 0, 1, 1);
   txtTelemetryPort = new QLineEdit(this);
   txtTelemetryPort->setText(QString::number(settings->telemetryPort));
-  layout->addWidget(txtTelemetryPort, 2, 1, 1, 1);
+  gridlayout->addWidget(txtTelemetryPort, 2, 1, 1, 1);
 
   QLabel* command = new QLabel(tr("Порт управления"), this);
-  layout->addWidget(command, 3, 0, 1, 1);
+  gridlayout->addWidget(command, 3, 0, 1, 1);
   txtCommandPort = new QLineEdit(this);
   txtCommandPort->setText(QString::number(settings->commandPort));
-  layout->addWidget(txtCommandPort, 3, 1, 1, 1);
+  gridlayout->addWidget(txtCommandPort, 3, 1, 1, 1);
 
+  QHBoxLayout* buttonsLayout = new QHBoxLayout;
   QPushButton* ok = new QPushButton(tr("Применить"), this);
   connect(ok, SIGNAL(clicked()), this, SLOT(buttonOk_click()));
-  layout->addWidget(ok, 4, 0, 1, 1);
+  buttonsLayout->addWidget(ok);
+  QPushButton* setIP = new QPushButton(tr("Выслать IP"), this);
+  connect(setIP, SIGNAL(clicked()), this, SLOT(sendIP_click()));
+  buttonsLayout->addWidget(setIP);
   QPushButton* cancel = new QPushButton(tr("Отмена"), this);
   connect(cancel, SIGNAL(clicked()), this, SLOT(buttonCancel_click()));
-  layout->addWidget(cancel, 4, 1, 1, 1);
+  buttonsLayout->addWidget(cancel);
+
+  layout->addLayout(gridlayout);
+  layout->addLayout(buttonsLayout);
   setLayout(layout);
 }
 
@@ -81,6 +90,13 @@ void NetworkSettings::buttonOk_click()
   {
     QMessageBox::warning(this, "Предупреждение!", s);
   }
+}
+
+void NetworkSettings::sendIP_click()
+{
+  settings->hostAddress = txtHostAddress->text();
+  SUASerializer::Serialize(configFilePath, settings);
+  ((SUA*)parent())->SendIP(settings->hostAddress);
 }
 
 void NetworkSettings::buttonCancel_click()

@@ -45,6 +45,8 @@ public:
   int telemetryPort;
 
   Languages language;
+
+  QString telemetryLogDir;
 };
 
 #endif

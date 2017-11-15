@@ -15,6 +15,7 @@ public:
 
 private slots:
   void buttonOk_click();
+  void sendIP_click();
   void buttonCancel_click();
 
 private:

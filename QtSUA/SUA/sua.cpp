@@ -48,9 +48,7 @@ SUA::SUA(QWidget *parent)
   resize(userWindowWight, userWindowHeight);
   tranlate(suaSettings.language);
 
-  telemetryLogFile = "";
-  telemetryLogDir = QDir::current().currentPath() + "/LogFilesSUA";
-  txbLogFile->setText(telemetryLogDir);
+  txbLogFile->setText(suaSettings.telemetryLogDir);
     
   commandNetwork = new NetworkBase(suaSettings.hostAddress, suaSettings.commandPort);
   connect(commandNetwork, SIGNAL(NetworkStateChanged(int)), this, SLOT(updateCommSockLbl(int)));
@@ -439,6 +437,17 @@ void SUA::on_actionNetworkSettings_triggered()
   networkSettings.exec();
 }
 
+void SUA::SendIP(QString IP)
+{
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QByteArray comm = Protocol::SendIP(IP);
+    commandNetwork->Send(comm);
+    setConsoleCommand(comm);
+  }
+  //reconnectAllSockets();
+}
+
 void SUA::on_actionUserMod_triggered()
 {
   activateFullMode(false);
@@ -671,8 +680,11 @@ void SUA::on_txbSuaCommandZenithUsers_returnPressed()
 
 void SUA::on_SLZen_valueChanged(int value)
 {
-  QByteArray comm = Protocol::MoveCommand(RotatePlane::ZENITH, value);
-  commandNetwork->Send(comm);
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QByteArray comm = Protocol::MoveCommand(RotatePlane::ZENITH, value);
+    commandNetwork->Send(comm);
+  }
 }
 
 void SUA::on_SLZen_sliderReleased()
@@ -682,8 +694,11 @@ void SUA::on_SLZen_sliderReleased()
 
 void SUA::on_SLAzim_valueChanged(int value)
 {
-  QByteArray comm = Protocol::MoveCommand(RotatePlane::AZIMUTH, value);
-  commandNetwork->Send(comm);
+  if (commandNetwork->State() == NetworkBase::CONNECTED)
+  {
+    QByteArray comm = Protocol::MoveCommand(RotatePlane::AZIMUTH, value);
+    commandNetwork->Send(comm);
+  }
 }
 
 void SUA::on_SLAzim_sliderReleased()
@@ -1172,8 +1187,7 @@ void SUA::telelemtryRcvd(RecievedArray arr)
     updateTelemetryStatus(packet.status);
     updateTelemetryWorkMode(packet.workMode);
     updateTelemetryErrors(telemetryDecoder.GetErrors(packet.error));
-    if (telemetryLogFile != "")
-      printTelemetryLogFile(telemetryLogFile, packet);
+    printTelemetryLogFile(packet);
   }
 }
 
@@ -1288,9 +1302,8 @@ void SUA::reconnectAllSockets()
     lblTelemetrySocketState->setText("Connecting... Wait!");
     telemetryNetwork->ConnectToHost(suaSettings.hostAddress, suaSettings.telemetryPort);
     QString timeSystem = QDateTime::currentDateTime().toString("yyyy.MM.dd_HH-mm-ss");
-    QDir().mkdir(telemetryLogDir);
-    telemetryLogFile = telemetryLogDir + QString("/LogFile_%1.txt").arg(timeSystem);
-    printTelemetryLogFileBegin(telemetryLogFile);
+    QDir().mkdir(suaSettings.telemetryLogDir);
+    printTelemetryLogFileBegin(suaSettings.telemetryLogDir + QString("/LogFile_%1.txt").arg(timeSystem));
   }
   if (ui.actionModem->isChecked())
   {
@@ -1324,7 +1337,7 @@ void SUA::disconnectAllSockets()
     lblTelemetrySocketState->setText("Disconnecting... Wait!");
     telemetryNetwork->DisconnectFromHost();
 
-    telemetryLogFile = "";
+    telemetryLogFile.close();
   }
   else
   {
@@ -1341,37 +1354,35 @@ void SUA::setConsoleCommand(QByteArray command)
 
 void SUA::printTelemetryLogFileBegin(QString path)
 {
-  QFile data(path);
-  if (data.open(QFile::WriteOnly))
+  telemetryLogFile.setFileName(path);
+  if (telemetryLogFile.open(QFile::WriteOnly))
   {
-    QTextStream out(&data);
-    out << "time_date;base_lat;base_long;base_alt;base_status;uav_lat;uav_long;uav_alt;dir;enc_az;enc_zen;temp;calc_az;calc_zen;work;error;distance;height_GPS\n";
-    out << "\n";
+    telemetryLogFileStream.setDevice(&telemetryLogFile);
+    telemetryLogFileStream << "time_date;base_lat;base_long;base_alt;base_status;uav_lat;uav_long;uav_alt;dir;enc_az;enc_zen;temp;calc_az;calc_zen;work;error;distance;height_GPS\n";
+    telemetryLogFileStream << "\n";
   }
-  data.close();
 }
 
-void SUA::printTelemetryLogFile(QString path, TelemetryPacket packet)
+void SUA::printTelemetryLogFile(TelemetryPacket packet)
 {
-  QFile data(path);
-  if (data.open(QFile::WriteOnly))
+  if (telemetryLogFileStream.status() == QTextStream::Ok)
   {
-    QTextStream out(&data);
-    out << packet.time + ';' + packet.latitude + ';' + packet.longitude + ';' + packet.height + ';' + packet.status + ';' +
+    telemetryLogFileStream << packet.time + ';' + packet.latitude + ';' + packet.longitude + ';' + packet.height + ';' + packet.status + ';' +
       packet.uavLatitude + ';' + packet.uavLongitude + ';' + packet.uavAltitude + ';' + packet.direction + ';' +
       packet.azimuth + ';' + packet.zenith + ';' + packet.temperature + ';' + packet.uavAzimuth + ';' + packet.uavZenith + ';' +
       packet.workMode + ';' + packet.error + ';' + packet.distance + ';' + packet.heightGPS;
-    out << "\n";
+    telemetryLogFileStream << "\n";
   }
-  data.close();
 }
 
 void SUA::chooseLogDir()
 {
-  QString tpath = QFileDialog::getExistingDirectory(this, tr("Выберите путь для сохранения файла"), telemetryLogDir);
+  QString tpath = QFileDialog::getExistingDirectory(this, tr("Выберите путь для сохранения файла"), suaSettings.telemetryLogDir);
   if(tpath != "")
   {
-    telemetryLogDir = tpath;
+    tpath += "/LogFilesSUA";
+    suaSettings.telemetryLogDir = tpath;
+    SUASerializer::Serialize(configFilePath, &suaSettings);
     txbLogFile->setText(tpath);
   }
 }

@@ -24,6 +24,8 @@ public:
   SUA(QWidget *parent = 0);
   ~SUA();
 
+  void SendIP(QString IP);
+
 public slots:
   void telelemtryRcvd(RecievedArray arr);
   void updateConsoleWindow(RecievedArray arr);
@@ -115,14 +117,14 @@ private:
   void disconnectAllSockets();
 
   void printTelemetryLogFileBegin(QString path);
-  void printTelemetryLogFile(QString path, TelemetryPacket packet);
+  void printTelemetryLogFile(TelemetryPacket packet);
     
   ImageStatus imageStatus;
 
   SUASettings suaSettings;
   TelemetryDecoder telemetryDecoder;
-  QString telemetryLogFile;
-  QString telemetryLogDir;
+  QFile telemetryLogFile;
+  QTextStream telemetryLogFileStream;
 
   NetworkBase* commandNetwork;
   NetworkBase* telemetryNetwork;

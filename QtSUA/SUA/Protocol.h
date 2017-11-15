@@ -29,6 +29,7 @@ public:
   static QByteArray EnableVentilation(bool ventilation);
   static QByteArray ResetCommand();
   static QByteArray MoveCommand(RotatePlane plane, int value);
+  static QByteArray SendIP(QString IP);
 
 private:
   static QByteArray preambula;
