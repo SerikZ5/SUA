@@ -33,13 +33,13 @@ SUA::SUA(QWidget *parent)
     SUASerializer::Serialize(configFilePath, &suaSettings);
   }
 
-  ui.btnSetDNAUpUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowUp));
+  ui.btnSetDNAUpUsers->setIcon(style()->standardIcon(QStyle::SP_ArrowUp));
   ui.btnSetDNAUpUsers->setIconSize(QSize(25, 25));
-  ui.btnSetDNADownUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowDown));
+  ui.btnSetDNADownUsers->setIcon(style()->standardIcon(QStyle::SP_ArrowDown));
   ui.btnSetDNADownUsers->setIconSize(QSize(25, 25));
-  ui.btnSetDNALeftUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowLeft));
+  ui.btnSetDNALeftUsers->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
   ui.btnSetDNALeftUsers->setIconSize(QSize(25, 25));
-  ui.btnSetDNARightUsers->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowRight));
+  ui.btnSetDNARightUsers->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
   ui.btnSetDNARightUsers->setIconSize(QSize(25, 25));
   ui.txbSuaDNAUsers->setValidator(new QDoubleValidator(0, 99, 2));
   addSpoilers();
@@ -64,11 +64,11 @@ SUA::SUA(QWidget *parent)
 
   udpClient = new QUdpSocket(this);
 
-  imageStatus.SetImage(ui.imgConnectState, SUAImages::GREY);
-  imageStatus.SetImage(ui.imgGPSState, SUAImages::GREY);
-  imageStatus.SetImage(ui.imgFollowState, SUAImages::GREY);
-  imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREY);
-  imageStatus.SetImage(ui.imgStopState, SUAImages::GREY);
+  imageStatus.SetImage(ui.imgConnectState, GREY);
+  imageStatus.SetImage(ui.imgGPSState, GREY);
+  imageStatus.SetImage(ui.imgFollowState, GREY);
+  imageStatus.SetImage(ui.imgOrientationState, GREY);
+  imageStatus.SetImage(ui.imgStopState, GREY);
   updateTextField();
   ui.widget->setEnabled(false);
 }
@@ -92,7 +92,7 @@ void SUA::addSpoilers()
   QHBoxLayout* h1 = new QHBoxLayout();
   h1->setSpacing(6);
   QPushButton* btnSetDNAUp = new QPushButton(adjustment);
-  btnSetDNAUp->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowUp));
+  btnSetDNAUp->setIcon(style()->standardIcon(QStyle::SP_ArrowUp));
   btnSetDNAUp->setIconSize(QSize(25, 25));
   btnSetDNAUp->setMinimumSize(QSize(30, 30));
   btnSetDNAUp->setMaximumSize(QSize(30, 30));
@@ -104,7 +104,7 @@ void SUA::addSpoilers()
   QSpacerItem* spacer2 = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
   h2->addItem(spacer1);
   QPushButton* btnSetDNALeft = new QPushButton(adjustment);
-  btnSetDNALeft->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowLeft));
+  btnSetDNALeft->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
   btnSetDNALeft->setIconSize(QSize(25, 25));
   btnSetDNALeft->setMinimumSize(QSize(30, 30));
   btnSetDNALeft->setMaximumSize(QSize(30, 30));
@@ -115,7 +115,7 @@ void SUA::addSpoilers()
   txbSuaDNA->setValidator(new QDoubleValidator(0, 99, 2));
   h2->addWidget(txbSuaDNA);
   QPushButton* btnSetDNARight = new QPushButton(adjustment);
-  btnSetDNARight->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowRight));
+  btnSetDNARight->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
   btnSetDNARight->setIconSize(QSize(25, 25));
   btnSetDNARight->setMinimumSize(QSize(30, 30));
   btnSetDNARight->setMaximumSize(QSize(30, 30));
@@ -125,7 +125,7 @@ void SUA::addSpoilers()
   QHBoxLayout* h3 = new QHBoxLayout();
   h3->setSpacing(6);
   QPushButton* btnSetDNADown = new QPushButton(adjustment);
-  btnSetDNADown->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_ArrowDown));
+  btnSetDNADown->setIcon(style()->standardIcon(QStyle::SP_ArrowDown));
   btnSetDNADown->setIconSize(QSize(25, 25));
   btnSetDNADown->setMinimumSize(QSize(30, 30));
   btnSetDNADown->setMaximumSize(QSize(30, 30));
@@ -682,7 +682,7 @@ void SUA::on_SLZen_valueChanged(int value)
 {
   if (commandNetwork->State() == NetworkBase::CONNECTED)
   {
-    QByteArray comm = Protocol::MoveCommand(RotatePlane::ZENITH, value);
+    QByteArray comm = Protocol::MoveCommand(ZENITH, value);
     commandNetwork->Send(comm);
   }
 }
@@ -696,7 +696,7 @@ void SUA::on_SLAzim_valueChanged(int value)
 {
   if (commandNetwork->State() == NetworkBase::CONNECTED)
   {
-    QByteArray comm = Protocol::MoveCommand(RotatePlane::AZIMUTH, value);
+    QByteArray comm = Protocol::MoveCommand(AZIMUTH, value);
     commandNetwork->Send(comm);
   }
 }
@@ -809,7 +809,7 @@ void SUA::btnSetAzimuthMovOptCommand_clicked()
       text = txbAzimuthBraking->text();
       text = text.replace(".", ",");
       suaSettings.azimuthBraking = text.toInt();
-      QByteArray comm = Protocol::SetMovementOptions(RotatePlane::AZIMUTH, suaSettings.azimuthAcceleraion, suaSettings.azimuthSpeed, suaSettings.azimuthBraking);
+      QByteArray comm = Protocol::SetMovementOptions(AZIMUTH, suaSettings.azimuthAcceleraion, suaSettings.azimuthSpeed, suaSettings.azimuthBraking);
       commandNetwork->Send(comm);
       setConsoleCommand(comm);
       SUASerializer::Serialize(configFilePath, &suaSettings);
@@ -838,7 +838,7 @@ void SUA::btnSetAzimuthZerSOptCommand_cliked()
       text = txbAzimuthZeroSeek->text();
       text = text.replace(".", ",");
       suaSettings.azimuthZeroSeek = text.toInt();
-      QByteArray comm = Protocol::SetPositioningOptions(RotatePlane::AZIMUTH, suaSettings.azimuthSlowSpeed, suaSettings.azimuthZeroSeek);
+      QByteArray comm = Protocol::SetPositioningOptions(AZIMUTH, suaSettings.azimuthSlowSpeed, suaSettings.azimuthZeroSeek);
       commandNetwork->Send(comm);
       setConsoleCommand(comm);
       SUASerializer::Serialize(configFilePath, &suaSettings);
@@ -870,7 +870,7 @@ void SUA::btnSetZenithMovOptCommand_clicked()
       text = txbZenithBraking->text();
       text = text.replace(".", ",");
       suaSettings.zenithBraking = text.toInt();
-      QByteArray comm = Protocol::SetMovementOptions(RotatePlane::ZENITH, suaSettings.zenithAcceleraion, suaSettings.zenithSpeed, suaSettings.zenithBraking);
+      QByteArray comm = Protocol::SetMovementOptions(ZENITH, suaSettings.zenithAcceleraion, suaSettings.zenithSpeed, suaSettings.zenithBraking);
       commandNetwork->Send(comm);
       setConsoleCommand(comm);
       SUASerializer::Serialize(configFilePath, &suaSettings);
@@ -899,7 +899,7 @@ void SUA::btnSetZenithZerSOptCommand_clicked()
       text = txbZenithZeroSeek->text();
       text = text.replace(".", ",");
       suaSettings.zenithZeroSeek = text.toInt();
-      QByteArray comm = Protocol::SetPositioningOptions(RotatePlane::ZENITH, suaSettings.zenithSlowSpeed, suaSettings.zenithZeroSeek);
+      QByteArray comm = Protocol::SetPositioningOptions(ZENITH, suaSettings.zenithSlowSpeed, suaSettings.zenithZeroSeek);
       commandNetwork->Send(comm);
       setConsoleCommand(comm);
       SUASerializer::Serialize(configFilePath, &suaSettings);
@@ -1025,71 +1025,71 @@ void SUA::updateTelemetryWorkMode(QString workModeString)
     //Idle mode (STOP lable is GREEN)
     if (workModeString[7] == '1')
     {
-      imageStatus.SetImage(ui.imgStopState, SUAImages::GREEN);
+      imageStatus.SetImage(ui.imgStopState, GREEN);
       //imageStatus.SetImage(ref imgMoveState, "GREY");
     }
     else
     {
-      imageStatus.SetImage(ui.imgStopState, SUAImages::GREY);
+      imageStatus.SetImage(ui.imgStopState, GREY);
     }
 
     //Orientation Mode (Orientation lable is GREEN_BLINK)
     if (workModeString[6] == '1' || workModeString[5] == '1')
     {
-      imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREEN_BLINK);
+      imageStatus.SetImage(ui.imgOrientationState, GREEN_BLINK);
     }
     else
     {
-      imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREY);
+      imageStatus.SetImage(ui.imgOrientationState, GREY);
     }
 
     //Following Mode (Follow lable is GREEN)
     if (workModeString[4] == '0')
     {
-      imageStatus.SetImage(ui.imgFollowState, SUAImages::GREEN);
+      imageStatus.SetImage(ui.imgFollowState, GREEN);
     }
     else
     {
-      imageStatus.SetImage(ui.imgFollowState, SUAImages::GREY);
+      imageStatus.SetImage(ui.imgFollowState, GREY);
     }
 
     /*//Idle mode (STOP lable is GREEN)
     if (workModeString[0] == '1')
     {
-      imageStatus.SetImage(ui.imgStopState, SUAImages::GREEN);
+      imageStatus.SetImage(ui.imgStopState, GREEN);
       //imageStatus.SetImage(ref imgMoveState, "GREY");
     }
     else
     {
-      imageStatus.SetImage(ui.imgStopState, SUAImages::GREY);
+      imageStatus.SetImage(ui.imgStopState, GREY);
     }
 
     //Orientation Mode (Orientation lable is GREEN_BLINK)
     if (workModeString[1] == '1' || workModeString[2] == '1')
     {
-      imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREEN_BLINK);
+      imageStatus.SetImage(ui.imgOrientationState, GREEN_BLINK);
     }
     else
     {
-      imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREY);
+      imageStatus.SetImage(ui.imgOrientationState, GREY);
     }
 
     //Following Mode (Follow lable is GREEN)
     if (workModeString[3] == '0')
     {
-      imageStatus.SetImage(ui.imgFollowState, SUAImages::GREEN);
+      imageStatus.SetImage(ui.imgFollowState, GREEN);
     }
     else
     {
-      imageStatus.SetImage(ui.imgFollowState, SUAImages::GREY);
+      imageStatus.SetImage(ui.imgFollowState, GREY);
     }*/
 
     ui.btnHeatingCommand->blockSignals(true);
-    ui.btnHeatingCommand->setChecked(workModeString[6] == '1');
+    ui.btnHeatingCommand->setChecked(workModeString[1] == '1');
     ui.btnHeatingCommand->blockSignals(false);
 
     ui.btnVentilationCommand->blockSignals(true);
-    ui.btnVentilationCommand->setChecked(workModeString[7] == '1');
+    ui.btnVentilationCommand->setChecked(workModeString[0] == '1');
     ui.btnVentilationCommand->blockSignals(false);
 
   }
@@ -1121,17 +1121,17 @@ void SUA::updateTelemetryStatus(QString statusGPSString)
     }
     if (statusGPSString[0] == '1' && (statusGPSString[1] == 'A' || statusGPSString[2] == 'A'))
     {
-      imageStatus.SetImage(ui.imgGPSState, SUAImages::GREEN);
+      imageStatus.SetImage(ui.imgGPSState, GREEN);
       ui.btnFollowCommandUsers->setEnabled(true);
     }
     else if (statusGPSString[0] == '0' || statusGPSString[1] == 'V')
     {
-      imageStatus.SetImage(ui.imgGPSState, SUAImages::YELLOW_BLINK);
+      imageStatus.SetImage(ui.imgGPSState, YELLOW_BLINK);
       ui.btnFollowCommandUsers->setEnabled(false);
     }
     else
     {
-      imageStatus.SetImage(ui.imgGPSState, SUAImages::GREY);
+      imageStatus.SetImage(ui.imgGPSState, GREY);
       ui.btnFollowCommandUsers->setEnabled(false);
     }
   }
@@ -1155,12 +1155,7 @@ void SUA::updateSUAStateLabels(TelemetryPacket packet)
   ui.lblAzimuth->setText(QString::number(packet.azimuth));
   /**/
   ui.txbSuaCommandAzimuthUsers->setText(QString::number(packet.azimuth));
-  ui.txbSuaCommandZenithUsers->setText(QString::number(packet.zenith));
-  if (!userWindows)
-  {
-    ui.SLZen->setValue(packet.zenith);
-    ui.SLAzim->setValue(packet.azimuth);
-  }
+  ui.txbSuaCommandZenithUsers->setText(QString::number(packet.zenith));  
   /**/
   ui.lblZenith->setText(QString::number(packet.zenith));
   ui.lblUAVAzimuth->setText(QString::number(packet.uavAzimuth));
@@ -1194,7 +1189,7 @@ void SUA::telelemtryRcvd(RecievedArray arr)
 void SUA::updateSUATelemetryConsole(TelemetryPacket decodedPacket)
 {
   QString text = "Time: " + decodedPacket.time + "\n";
-  text += "Case Coordinates: " + QString::number(decodedPacket.latitude) + "   " + QString::number(decodedPacket.longitude) + " Height: " + QString::number(decodedPacket.height) + "\n";
+  text += "Base Coordinates: " + QString::number(decodedPacket.latitude) + "   " + QString::number(decodedPacket.longitude) + " Height: " + QString::number(decodedPacket.height) + "\n";
   text += "Status: " + decodedPacket.status + "\n";
   text += "UAV Coordinates: " + QString::number(decodedPacket.uavLatitude) + "   " + QString::number(decodedPacket.uavLongitude) + " Height UAV: " + QString::number(decodedPacket.uavAltitude) + "\n";
   text += "Dir: " + QString::number(decodedPacket.direction) + "\n";
@@ -1203,6 +1198,7 @@ void SUA::updateSUATelemetryConsole(TelemetryPacket decodedPacket)
   ui.txbTelemetryWindow->setText(text);
   QScrollBar* scroll = ui.txbTelemetryWindow->verticalScrollBar();
   scroll->setValue(scroll->maximum());
+  update();
 }
 
 void SUA::updateSUAModemConsole(RecievedArray arr)
@@ -1226,41 +1222,41 @@ void SUA::updateConsoleWindow(RecievedArray arr)
 
 void SUA::updateCommSockLbl(int state)
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<NetworkBase::SocketState>();
+  QMetaEnum metaEnum = QMetaEnum::fromType<NetworkBase::MySocketState>();
   lblCommandSocketState->setText(metaEnum.valueToKey(state));
   switch (state)
   {
-  case NetworkBase::SocketState::CONNECTED:
+  case NetworkBase::CONNECTED:
     lblCommandSocketState->setStyleSheet("background-color:rgb(0,255,128);");
     ui.widget->setEnabled(true);
-    imageStatus.SetImage(ui.imgConnectState, SUAImages::GREEN);
+    imageStatus.SetImage(ui.imgConnectState, GREEN);
     break;
   case NetworkBase::ERROR:
-  case NetworkBase::SocketState::NOT_CONNECTED:
+  case NetworkBase::NOT_CONNECTED:
     lblCommandSocketState->setStyleSheet("background-color:pink;");
     ui.widget->setEnabled(false);
   default:
-    imageStatus.SetImage(ui.imgConnectState, SUAImages::GREY);
-    imageStatus.SetImage(ui.imgFollowState, SUAImages::GREY);
-    imageStatus.SetImage(ui.imgGPSState, SUAImages::GREY);
+    imageStatus.SetImage(ui.imgConnectState, GREY);
+    imageStatus.SetImage(ui.imgFollowState, GREY);
+    imageStatus.SetImage(ui.imgGPSState, GREY);
     //imageStatus.SetImage(ui.imgMoveState, "GREY");
-    imageStatus.SetImage(ui.imgOrientationState, SUAImages::GREY);
-    imageStatus.SetImage(ui.imgStopState, SUAImages::GREY);
+    imageStatus.SetImage(ui.imgOrientationState, GREY);
+    imageStatus.SetImage(ui.imgStopState, GREY);
     break;
   }
 }
 
 void SUA::updateModemSockLbl(int state)
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<NetworkBase::SocketState>();
+  QMetaEnum metaEnum = QMetaEnum::fromType<NetworkBase::MySocketState>();
   lblModemSocketState->setText(metaEnum.valueToKey(state));  
   switch (state)
   {
-  case NetworkBase::SocketState::CONNECTED:
+  case NetworkBase::CONNECTED:
     lblModemSocketState->setStyleSheet("background-color:rgb(0,255,128);");
     break;
   case NetworkBase::ERROR:
-  case NetworkBase::SocketState::NOT_CONNECTED:
+  case NetworkBase::NOT_CONNECTED:
   default:
     lblModemSocketState->setStyleSheet("background-color:pink;");
     break;
@@ -1269,15 +1265,15 @@ void SUA::updateModemSockLbl(int state)
 
 void SUA::updateTelemSockLbl(int state)
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<NetworkBase::SocketState>();
+  QMetaEnum metaEnum = QMetaEnum::fromType<NetworkBase::MySocketState>();
   lblTelemetrySocketState->setText(metaEnum.valueToKey(state));
   switch (state)
   {
-  case NetworkBase::SocketState::CONNECTED:
+  case NetworkBase::CONNECTED:
     lblTelemetrySocketState->setStyleSheet("background-color:rgb(0,255,128);");
     break;
   case NetworkBase::ERROR:
-  case NetworkBase::SocketState::NOT_CONNECTED:
+  case NetworkBase::NOT_CONNECTED:
   default:
     lblTelemetrySocketState->setStyleSheet("background-color:pink;");
     break;
@@ -1286,7 +1282,7 @@ void SUA::updateTelemSockLbl(int state)
 
 void SUA::reconnectAllSockets()
 {
-  imageStatus.SetImage(ui.imgConnectState, SUAImages::YELLOW_BLINK);
+  imageStatus.SetImage(ui.imgConnectState, YELLOW_BLINK);
   if (ui.usersFrame->isVisible())
   {
     ui.actionAll->setChecked(true);
@@ -1359,7 +1355,7 @@ void SUA::printTelemetryLogFileBegin(QString path)
   {
     telemetryLogFileStream.setDevice(&telemetryLogFile);
     telemetryLogFileStream << "time_date;base_lat;base_long;base_alt;base_status;uav_lat;uav_long;uav_alt;dir;enc_az;enc_zen;temp;calc_az;calc_zen;work;error;distance;height_GPS\n";
-    telemetryLogFileStream << "\n";
+    telemetryLogFileStream << "\r\n";
   }
 }
 
@@ -1367,11 +1363,14 @@ void SUA::printTelemetryLogFile(TelemetryPacket packet)
 {
   if (telemetryLogFileStream.status() == QTextStream::Ok)
   {
-    telemetryLogFileStream << packet.time + ';' + packet.latitude + ';' + packet.longitude + ';' + packet.height + ';' + packet.status + ';' +
-      packet.uavLatitude + ';' + packet.uavLongitude + ';' + packet.uavAltitude + ';' + packet.direction + ';' +
-      packet.azimuth + ';' + packet.zenith + ';' + packet.temperature + ';' + packet.uavAzimuth + ';' + packet.uavZenith + ';' +
-      packet.workMode + ';' + packet.error + ';' + packet.distance + ';' + packet.heightGPS;
-    telemetryLogFileStream << "\n";
+    telemetryLogFileStream << packet.time + ';' + QString::number(packet.latitude) + ';' + QString::number(packet.longitude) + ';' +
+                              QString::number(packet.height) + ';' + packet.status + ';' +
+                              QString::number(packet.uavLatitude) + ';' + QString::number(packet.uavLongitude) + ';' + QString::number(packet.uavAltitude) + ';' +
+                              QString::number(packet.direction) + ';' +
+                              QString::number(packet.azimuth) + ';' + QString::number(packet.zenith) + ';' + packet.temperature + ';' +
+                              QString::number(packet.uavAzimuth) + ';' + QString::number(packet.uavZenith) + ';' +
+                              packet.workMode + ';' + packet.error + ';' + QString::number(packet.distance) + ';' + QString::number(packet.heightGPS);
+    telemetryLogFileStream << "\r\n";
   }
 }
 

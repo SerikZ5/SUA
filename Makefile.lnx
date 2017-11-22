@@ -1,0 +1,238 @@
+# -----------------------------------------------------------------------------
+#                      Set up development environment
+#
+# SFT_HOME is the root location of tools and packages used during build.
+# SFT_RUNPLAT is the platform on which we are running.
+# SFT_TGTPLAT is the target platform for which we are building.
+# -----------------------------------------------------------------------------
+
+SFT_HOME              ?= /home/sft
+
+SFT_RUNPLAT           := $(shell $(SFT_HOME)/bin/sftplat)
+SFT_RUNPLAT_BITS      := $(shell $(SFT_HOME)/bin/sftplatbits $(SFT_RUNPLAT))
+SFT_RUNPLAT_DIR       := $(SFT_HOME)/plat/$(SFT_RUNPLAT)
+SFT_RUNPLAT_PKGS_DIR  := $(SFT_RUNPLAT_DIR)/pkgs
+
+SFT_TGTPLAT           ?= $(SFT_RUNPLAT)
+SFT_TGTPLAT_BITS      := $(shell $(SFT_HOME)/bin/sftplatbits $(SFT_TGTPLAT))
+SFT_TGTPLAT_DIR       := $(SFT_HOME)/plat/$(SFT_TGTPLAT)
+SFT_TGTPLAT_PKGS_DIR  := $(SFT_TGTPLAT_DIR)/pkgs
+
+SRC_DIR               := $(shell pwd)
+
+# -----------------------------------------------------------------------------
+#                                Build tools
+# -----------------------------------------------------------------------------
+
+BINUTILS_VERSION := binutils-2.20.1
+BINUTILS_HOME    := $(SFT_RUNPLAT_PKGS_DIR)/$(BINUTILS_VERSION)
+GCC_VERSION      := gcc-4.8.1
+GCC_HOME         := $(SFT_RUNPLAT_PKGS_DIR)/$(GCC_VERSION)
+ifeq ($(SFT_TGTPLAT_BITS),64)
+    GCC_LIBDIR   := $(GCC_HOME)/lib64
+else
+    GCC_LIBDIR   := $(GCC_HOME)/lib
+endif
+
+CC_OPTIONS  := -m$(SFT_TGTPLAT_BITS) -std=gnu99 -D__USE_XOPEN2K8
+CXX_OPTIONS := -m$(SFT_TGTPLAT_BITS) -std=c++11 -D__USE_XOPEN2K8
+
+CC323       := $(SFT_RUNPLAT_PKGS_DIR)/gcc-3.2.3/bin/gcc -B$(SFT_RUNPLAT_PKGS_DIR)/binutils-2.16/bin $(CC_OPTIONS)
+CC          := $(GCC_HOME)/bin/gcc -B$(BINUTILS_HOME)/bin $(CC_OPTIONS)
+CXX         := $(GCC_HOME)/bin/g++ -B$(BINUTILS_HOME)/bin $(CXX_OPTIONS)
+RM          := rm -rf
+AR          := ar cr
+TAR			:= tar cf
+ifeq ($(SFT_TGTPLAT_BITS),64)
+    G77_LIBDIR := $(SFT_RUNPLAT_PKGS_DIR)/gcc-3.2.3/lib64
+else
+    G77_LIBDIR := $(SFT_RUNPLAT_PKGS_DIR)/gcc-3.2.3/lib
+endif
+
+# -----------------------------------------------------------------------------
+#               Versions of external packages used during build
+# -----------------------------------------------------------------------------
+# Qt Library
+#QT_VERSION          := qt-4.5.0-gcc412
+QT_VERSION           := qt-4.8.5
+
+# -----------------------------------------------------------------------------
+#                        Set up Qt libraries
+# -----------------------------------------------------------------------------
+
+QT_HOME    := $(SFT_TGTPLAT_PKGS_DIR)/$(QT_VERSION)
+QT_INCDIR  := $(QT_HOME)/include
+QT_LIBDIR  := $(QT_HOME)/lib
+QT_LIBS    := -lQtGui -lQtCore -lQtXml -lQtNetwork -lQtWidgets
+QT_CFLAGS  := -I$(QT_INCDIR) -I$(QT_INCDIR)/QtCore -I$(QT_INCDIR)/QtGui -I$(QT_INCDIR)/QtXml -I$(QT_INCDIR)/QtNetwork -I$(QT_INCDIR)/QtWidgets
+ifneq (,$(findstring 2.6.,$(shell uname -r)))
+	QT_CFLAGS	+= -I$(QT_INCDIR)/QtDBus -DHAS_DBUS
+	QT_LIBS		+= -lQtDBus
+endif
+QT_LDFLAGS := -L$(QT_LIBDIR) $(QT_LIBS) -L$(X_LIBDIR) -pthread -lpng -lSM \
+              -lICE -lXi -lXrender -lXrandr -lfreetype -lfontconfig -lXext \
+              -lX11 -lz -lm -lgthread-2.0 -lglib-2.0 -lrt -ldl
+ifndef SFT_RELEASE
+QT_LDFLAGS += -Wl,-rpath $(QT_LIBDIR)
+endif
+
+
+# -----------------------------------------------------------------------------
+#                                Output
+# -----------------------------------------------------------------------------
+
+#
+# Output locations.
+#
+ifdef SFT_RELEASE
+    CONFIG := release
+else
+ifdef OPT
+    CONFIG := opt
+else
+    CONFIG := dbg
+endif
+endif
+
+ifeq ($(PROF),yes)
+    CONFIG := $(CONFIG)-profile
+endif
+
+ifdef OPT
+    LEGACY_OUTDIR := Release
+else
+    LEGACY_OUTDIR := Debug
+endif
+OUTROOT                := SFT_ROOT
+OUTDIR                 := $(OUTROOT).$(SFT_TGTPLAT).$(CONFIG)
+BINDIR                 := $(OUTDIR)/bin
+OBJDIR                 := $(OUTDIR)/obj
+SUA_OBJDIR             := $(OBJDIR)/SUA
+SUA_OUT                := $(BINDIR)/SUA
+
+$(OBJDIR) :
+	mkdir -p $@
+
+$(SUA_OBJDIR) :
+	mkdir -p $@
+
+# -----------------------------------------------------------------------------
+#           Common compiler and linker flags, for all targets
+# -----------------------------------------------------------------------------
+
+COMMON_CPPFLAGS := -I$(SRC_DIR)
+COMMON_CFLAGS   := -Wformat
+COMMON_CXXFLAGS := -Wformat
+COMMON_LDFLAGS  :=
+ifndef SFT_RELEASE
+COMMON_LDFLAGS += -Wl,-rpath $(GCC_LIBDIR)
+endif
+
+#
+# Optimization, debug info, profiling.
+#
+ifdef OPT
+    COMMON_CFLAGS   += -O$(OPT)
+    COMMON_CXXFLAGS += -O$(OPT)
+    COMMON_CPPFLAGS += -DNDEBUG
+    COMMON_LDFLAGS  += -O$(OPT)
+else
+    COMMON_CFLAGS   += -g
+    COMMON_CXXFLAGS += -g
+    COMMON_CPPFLAGS += -DDEBUG
+endif
+ifeq ($(PROF),yes)
+    COMMON_CFLAGS   += -pg -g
+    COMMON_CXXFLAGS += -pg -g
+    COMMON_LDFLAGS  += -pg -g
+endif
+
+#
+# Product- and release-specific.
+#
+ifdef SFT_RELEASE
+    COMMON_CPPFLAGS += -DSFT_RELEASE=$(SFT_RELEASE)
+endif
+
+COMMON_CFLAGS       += $(COMMON_CPPFLAGS)
+COMMON_CXXFLAGS     += $(COMMON_CPPFLAGS)
+
+
+# -----------------------------------------------------------------------------
+#           Compiler and linker flags for the SUA executable
+# -----------------------------------------------------------------------------
+
+SUA_INCLUDES        := -I$(SUA_OBJDIR) -I$(SRC_DIR) -I$(SRC_DIR)/oa
+SUA_CFLAGS          := $(QT_CFLAGS) $(SUA_INCLUDES)
+SUA_LDFLAGS         := $(QT_LDFLAGS)
+
+
+# -----------------------------------------------------------------------------
+#                      Sources, objects, dependencies, etc.
+# -----------------------------------------------------------------------------
+
+#
+# The included makefiles define "H3D_SRC", "LIBH3D_SRC", etc. variables that
+# contain lists of all sources for the executable and the support libraries.
+#
+
+sinclude makefile.src
+
+# -----------------------------------------------------------------------------
+SUA_FORMS           := sua
+SUA_FORMS_SRC       := $(addsuffix .cpp, $(SUA_FORMS))
+SUA_FORMS_HDR       := $(addsuffix .h, $(SUA_FORMS))
+SUA_FORMS_UI        := $(addsuffix .ui, $(SUA_FORMS))
+SUA_FORMS_UI_HDR    := $(addprefix $(SUA_OBJDIR)/, $(addprefix ui_, $(addsuffix .h, $(SUA_FORMS))))
+SUA_FORMS_MOC_SRC   := $(addprefix $(SUA_OBJDIR)/, $(addprefix moc_, $(addsuffix .cpp, $(SUA_FORMS))))
+SUA_WIDGETS         := ImageStatus NetworkBase NetworkSettings Protocol RecievedArray Spoiler sua SUASerializer SUASettings TelemetryDecoder TelemetryPacket
+SUA_WIDGETS_SRC     := $(addsuffix .cpp, $(SUA_WIDGETS)))
+SUA_WIDGETS_HDR     := $(addsuffix .h, $(SUA_WIDGETS)))
+SUA_WIDGETS_MOC_SRC := $(addprefix $(SUA_OBJDIR)/, $(addprefix moc_, $(addsuffix .cpp, $(SUA_WIDGETS))))
+SUA_RES             := sua
+SUA_RES_FILES       := $(wildcard Images/*.*)
+SUA_RES_QRC         := $(addsuffix .qrc, $(SUA_RES)))
+SUA_RES_SRC         := $(addprefix $(SUA_OBJDIR)/, $(addsuffix .cpp, $(addprefix qrc_, $(SUA_RES))))
+SUA_SRC             := ImageStatus.cpp NetworkBase.cpp NetworkSettings.cpp Protocol.cpp RecievedArray.cpp Spoiler.cpp sua.cpp SUASerializer.cpp SUASettings.cpp TelemetryDecoder.cpp TelemetryPacket.cpp main.cpp\
+                           $(SUA_FORMS_SRC) $(SUA_FORMS_MOC_SRC) \
+                           $(SUA_WIDGETS_SRC) $(SUA_WIDGETS_MOC_SRC) $(SUA_RES_SRC)
+SUA_OBJ             := $(addprefix $(SUA_OBJDIR)/, $(addsuffix .o, $(basename $(notdir $(SUA_SRC)))))
+
+# -----------------------------------------------------------------------------
+#                                   Targets
+# -----------------------------------------------------------------------------
+
+clean :
+        $(RM) $(OUTROOT).* $(LEGACY_OUTDIR)
+
+exe : $(SUA_OUT)
+	$(RM) $(LEGACY_OUTDIR) && ln -s $(BINDIR) $(LEGACY_OUTDIR)
+
+
+#############################################################
+
+$(SUA_OBJDIR)/%.o : %.cpp
+        $(CXX) $(SUA_CFLAGS) -MMD -o $@ -c $<
+
+$(SUA_OBJDIR)/%.o : %.c
+        $(CC) $(SUA_CFLAGS) -MMD -o $@ -c $<
+
+$(SUA_OBJDIR)/moc_%.o : $(SUA_OBJDIR)/moc_%.cpp
+        $(CXX) $(SUA_CFLAGS) -MMD -o $@ -c $<
+
+$(SUA_OBJDIR)/moc_%.cpp : %.h
+        $(QT_HOME)/bin/moc $(COMMON_CPPFLAGS) $(QT_CFLAGS) $(SUA_INCLUDES) -o $@ $<
+
+$(SUA_OBJDIR)/ui_%.h : %.ui
+	$(QT_HOME)/bin/uic -o $@ $<
+
+$(SUA_OBJDIR)/qrc_%.o : $(SUA_OBJDIR)/qrc_%.cpp
+        $(CXX) $(SUA_CFLAGS) -MMD -o $@ -c $<
+
+$(SUA_OBJDIR)/qrc_%.cpp : %.qrc
+        $(QT_HOME)/bin/rcc -name SUA -o $@ $<
+
+$(SUA_OBJ) : $(SUA_FORMS_UI_HDR)
+
+.PRECIOUS : $(SUA_OBJDIR)/moc_%.cpp
+.PRECIOUS : $(SUA_OBJDIR)/ui_%.h

@@ -6,7 +6,7 @@ NetworkBase::NetworkBase(QString address, int port)
 {
   this->address = address;
   this->port = port;
-  this->state = SocketState::NOT_CONNECTED;
+  this->state = NOT_CONNECTED;
   clientSocket = NULL;
   m_nNextBlockSize = 0;
 }
@@ -65,26 +65,26 @@ void NetworkBase::SlotError(QAbstractSocket::SocketError error)
 void NetworkBase::DisconnectFromHost()
 {
   clientSocket->disconnectFromHost();
-  state = SocketState::DISCONNECTING;
+  state = DISCONNECTING;
 }
 
 void NetworkBase::OnStateChanged(QAbstractSocket::SocketState newState)
 {
   switch (newState)
   {
-  case QAbstractSocket::SocketState::UnconnectedState:
-  case QAbstractSocket::SocketState::HostLookupState:
-    state = SocketState::NOT_CONNECTED;
+  case QAbstractSocket::UnconnectedState:
+  case QAbstractSocket::HostLookupState:
+    state = NOT_CONNECTED;
     NetworkStateChanged(state);
     break;
-  case QAbstractSocket::SocketState::ConnectingState:
-    state = SocketState::CONNECTING;
+  case QAbstractSocket::ConnectingState:
+    state = CONNECTING;
     NetworkStateChanged(state);
     break;
-  case QAbstractSocket::SocketState::ConnectedState:
-  case QAbstractSocket::SocketState::BoundState:
-  case QAbstractSocket::SocketState::ListeningState:
-    state = SocketState::CONNECTED;
+  case QAbstractSocket::ConnectedState:
+  case QAbstractSocket::BoundState:
+  case QAbstractSocket::ListeningState:
+    state = CONNECTED;
     NetworkStateChanged(state);
     break;
   }

@@ -30,6 +30,6 @@ SUASettings::SUASettings()
   modemPort = 9876;
   commandPort = 9875;
 
-  language = Languages::ru;
+  language = ru;
   telemetryLogDir = QDir::current().currentPath() + "/LogFilesSUA";
 }
