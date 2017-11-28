@@ -133,13 +133,13 @@ QString TelemetryDecoder::GetErrors(QString error)
   QString result;
   int charCount = error.count();
   if(error[charCount-1] == '1')
-    result += QObject::tr("Ошибка 1Wire \n");
+    result += QObject::tr("Error 1Wire \n");
   if(error[charCount-2] == '1')
-    result +=  QObject::tr("Ошибка BMSD2 \n");
+    result +=  QObject::tr("Error BMSD2 \n");
   if(error[charCount-3] == '1')
-    result +=  QObject::tr("Ошибка BMSD1 \n");
+    result +=  QObject::tr("Error BMSD1 \n");
   if(error[charCount-4] == '1')
-    result +=  QObject::tr("Ошибка эмуляции EEPROM");
+    result +=  QObject::tr("Emulation error EEPROM");
   if(result.isEmpty())
     result = "no errors";
   return result;

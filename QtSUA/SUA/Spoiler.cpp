@@ -4,6 +4,7 @@
 
 Spoiler::Spoiler(const QString & title, const int animationDuration, QWidget *parent) : QWidget(parent), animationDuration(animationDuration) 
 {  
+  this->animationDuration = animationDuration;
   QFrame* headerLine = new QFrame(this);
   headerLine->setFrameShape(QFrame::HLine);
   headerLine->setFrameShadow(QFrame::Sunken);
@@ -11,13 +12,13 @@ Spoiler::Spoiler(const QString & title, const int animationDuration, QWidget *pa
 
   toggleButton.setStyleSheet("QToolButton { border: none; }");
   toggleButton.setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-  toggleButton.setArrowType(Qt::ArrowType::RightArrow);
+  toggleButton.setArrowType(Qt::RightArrow);
   toggleButton.setText(title);
   toggleButton.setCheckable(true);
   toggleButton.setChecked(false);
 
   contentArea.setStyleSheet("QScrollArea { background-color:white; border: none; }");
-  contentArea.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Policy::Preferred);
+  contentArea.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   contentArea.setWidgetResizable(true);
   // start out collapsed
   contentArea.setMaximumHeight(0);
@@ -36,12 +37,14 @@ Spoiler::Spoiler(const QString & title, const int animationDuration, QWidget *pa
   mainLayout->addWidget(headerLine, row++, 2, 1, 1);
   mainLayout->addWidget(&contentArea, row, 0, 1, 3);
   setLayout(mainLayout);
-  QObject::connect(&toggleButton, &QToolButton::clicked, [this](const bool checked)
-  {
-    toggleButton.setArrowType(checked ? Qt::ArrowType::DownArrow : Qt::ArrowType::RightArrow);
+  connect(&toggleButton, SIGNAL(clicked(bool)), this, SLOT(animation(bool)));
+}
+
+void Spoiler::animation(bool checked)
+{
+    toggleButton.setArrowType(checked ? Qt::DownArrow : Qt::RightArrow);
     toggleAnimation.setDirection(checked ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
     toggleAnimation.start();
-  });
 }
 
 void Spoiler::SetTitle(const QString &title)
@@ -53,8 +56,8 @@ void Spoiler::setContentLayout(QLayout* content)
 {
   delete contentArea.layout();
   contentArea.setLayout(content);
-  const auto collapsedHeight = sizeHint().height() - contentArea.maximumHeight();
-  auto contentHeight = content->sizeHint().height();
+  const int collapsedHeight = sizeHint().height() - contentArea.maximumHeight();
+  int contentHeight = content->sizeHint().height();
   countAnimation(collapsedHeight, contentHeight);
 }
 
@@ -62,8 +65,8 @@ void Spoiler::setContentWidget(QWidget* content)
 {
   delete contentArea.layout();
   contentArea.setWidget(content);
-  const auto collapsedHeight = sizeHint().height() - contentArea.maximumHeight();
-  auto contentHeight = content->sizeHint().height();
+  const int collapsedHeight = sizeHint().height() - contentArea.maximumHeight();
+  int contentHeight = content->sizeHint().height();
   countAnimation(collapsedHeight, contentHeight);
 }
 

@@ -1383,6 +1383,7 @@
    <addaction name="actionNetworkSettings"/>
    <addaction name="separator"/>
    <addaction name="actionUserMod"/>
+   <addaction name="actionLogFiles"/>
   </widget>
   <action name="actionModem">
    <property name="checkable">
@@ -1434,6 +1435,11 @@
   <action name="actionUserMod">
    <property name="text">
     <string>Пользовательский режим</string>
+   </property>
+  </action>
+  <action name="actionLogFiles">
+   <property name="text">
+    <string>Файлы логирования</string>
    </property>
   </action>
  </widget>

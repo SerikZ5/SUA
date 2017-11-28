@@ -11,7 +11,7 @@ class NetworkBase: public QObject
 {
   Q_OBJECT
 public:
-  enum SocketState
+  enum MySocketState
   {
     NOT_CONNECTED = 0,
     CONNECTED = 1,
@@ -20,12 +20,12 @@ public:
     DISCONNECTING = 4,
     ERROR = 5
   };
-  Q_ENUM(SocketState)
+  Q_ENUM(MySocketState)
 
   NetworkBase(QString address, int port);
   virtual ~NetworkBase();
 
-  SocketState State() { return state; }
+  MySocketState State() { return state; }
 
   void ConnectToHost();
   void ConnectToHost(QString hostAddress, int hostPort); 
@@ -46,7 +46,7 @@ protected:
   QString address;
   int port;
   QTcpSocket* clientSocket;
-  SocketState state;
+  MySocketState state;
   quint16 m_nNextBlockSize;
 };
 

@@ -19,13 +19,16 @@ public:
   void setContentLayout(QLayout* contentLayout);
   void setContentWidget(QWidget* content);
 
+private slots:
+  void animation(bool checked);
+
 private:
   void countAnimation(int collapsedHeight, int contentHeight);
 
   QToolButton toggleButton;
   QScrollArea contentArea;
   QParallelAnimationGroup toggleAnimation;
-  int animationDuration{ 300 };
+  int animationDuration;
 };
 
 #endif
