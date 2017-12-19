@@ -15,7 +15,7 @@
 
 #define userWindowHeight 560
 #define userWindowWight 310
-#define mainWindowHeight 660
+#define mainWindowHeight 700
 #define mainWindowWight 820
 #define configFilePath "config.conf"
 #define languageFile "SUA_"
@@ -49,6 +49,8 @@ SUA::SUA(QWidget *parent)
   resize(userWindowWight, userWindowHeight);
   tranlate(suaSettings.language);
 
+  if(suaSettings.telemetryLogDir.isEmpty())
+    suaSettings.telemetryLogDir = QDir::currentPath() + "/LogFiles";
   txbLogFile->setText(suaSettings.telemetryLogDir);
     
   commandNetwork = new NetworkBase(suaSettings.hostAddress, suaSettings.commandPort);
@@ -153,6 +155,7 @@ void SUA::addSpoilers()
   txbAzimuthBraking = new QLineEdit("20", motionAzimuth);
   txbAzimuthBraking->setValidator(new QIntValidator());
   btnSetAzimuthMovOptCommand = new QPushButton(motionAzimuth);
+  btnSetAzimuthMovOptCommand->setMinimumHeight(23);
   motionAzimuthLayout->addWidget(lblAzimuthAcceleraion);
   motionAzimuthLayout->addWidget(txbAzimuthAcceleraion);
   motionAzimuthLayout->addWidget(lblAzimuthSpeed);
@@ -204,6 +207,7 @@ void SUA::addSpoilers()
   txbZenithBraking = new QLineEdit("20", motionZenith);
   txbZenithBraking->setValidator(new QIntValidator());
   btnSetZenithMovOptCommand = new QPushButton(motionZenith);
+  btnSetZenithMovOptCommand->setMinimumHeight(23);
   motionZenithLayout->addWidget(lblZenithAcceleraion);
   motionZenithLayout->addWidget(txbZenithAcceleraion);
   motionZenithLayout->addWidget(lblZenithSpeed);
