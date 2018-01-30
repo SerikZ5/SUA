@@ -41,6 +41,7 @@ protected slots:
   void on_actionDisconnect_triggered();
   void on_actionNetworkSettings_triggered();
   void on_actionUserMod_triggered();
+  void on_actionLogFiles_triggered();
 
   void on_btnReConnectUsers_clicked();
   void on_btnOrientedAntennasCommandUsers_clicked();
