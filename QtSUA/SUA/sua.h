@@ -69,8 +69,11 @@ protected slots:
   void on_btnOrientedAntennasCommand_clicked();
   void on_btnSetZeroPositionCommand_clicked();
   void on_btnStopEnginesCommand_clicked();
+  void on_btnStopEnginesCommand2_clicked();
   void on_btnHeatingCommand_clicked(bool checked);
+  void on_btnHeatingCommand_toggled(bool value);
   void on_btnVentilationCommand_clicked(bool checked);
+  void on_btnVentilationCommand_toggled(bool value);
   void on_btnTestCommand_clicked();
   void on_btnResetCommand_clicked();
 

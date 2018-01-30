@@ -2,6 +2,8 @@
 #include <QStringBuilder>
 #include <QObject>
 
+#define useRN 0
+
 #include "Protocol.h"
 
 QByteArray Protocol::preambula = QString("SUA").toLatin1();
@@ -10,7 +12,9 @@ QByteArray Protocol::OrientedAntennas()
 {
   QByteArray arr;
   arr.push_back(preambula);
-  arr.push_back(QString("111\r\n").toLatin1());
+  arr.push_back(QString("111").toLatin1());
+  if (useRN)
+    arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }
 
@@ -18,7 +22,9 @@ QByteArray Protocol::FollowCmnd()
 {
   QByteArray arr;
   arr.push_back(preambula);
-  arr.push_back(QString("E11\r\n").toLatin1());
+  arr.push_back(QString("E11").toLatin1());
+  if (useRN)
+    arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }
 
@@ -26,7 +32,9 @@ QByteArray Protocol::TestCmnd()
 {
   QByteArray arr;
   arr.push_back(preambula);
-  arr.push_back(QString("F11\r\n").toLatin1());
+  arr.push_back(QString("F11").toLatin1());
+  if (useRN)
+    arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }
 
@@ -34,7 +42,9 @@ QByteArray Protocol::SetZeroPos()
 {
   QByteArray arr;
   arr.push_back(preambula);
-  arr.push_back(QString("211\r\n").toLatin1());
+  arr.push_back(QString("211").toLatin1());
+  if (useRN)
+    arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }
 
@@ -48,7 +58,8 @@ QByteArray Protocol::SetAzimuth(float azimuth)
     QString arg = QString("%1").arg(azimuth, 5, 'f', 1, QChar('0'));
     arg.replace(",", ".");
     arr.push_back(arg.toLatin1());
-    arr.push_back(QString("\r\n").toLatin1());
+    if (useRN)
+      arr.push_back(QString("\r\n").toLatin1());
   }
   else
   {
@@ -67,7 +78,8 @@ QByteArray Protocol::SetZenith(float zenith)
     QString arg = QString("%1").arg(zenith, 5, 'f', 1, QChar('0'));
     arg.replace(",", ".");
     arr.push_back(arg.toLatin1());
-    arr.push_back(QString("\r\n").toLatin1());
+    if (useRN)
+      arr.push_back(QString("\r\n").toLatin1());
   }
   else if (zenith < 0 && zenith >= -5)
   {
@@ -76,7 +88,8 @@ QByteArray Protocol::SetZenith(float zenith)
     QString arg = QString("%1").arg(zenith, 5, 'f', 1, QChar('0'));
     arg.replace(",", ".");
     arr.push_back(arg.toLatin1());
-    arr.push_back(QString("\r\n").toLatin1());
+    if (useRN)
+      arr.push_back(QString("\r\n").toLatin1());
   }
   else
   {
@@ -95,7 +108,8 @@ QByteArray Protocol::SetDNAAzimuth(float dnaAzimuth)
     QString arg = QString("%1").arg(dnaAzimuth, 4, 'f', 1, QChar('0'));
     arg.replace(",", ".");
     arr.push_back(arg.toLatin1());
-    arr.push_back(QString("\r\n").toLatin1());
+    if (useRN)
+      arr.push_back(QString("\r\n").toLatin1());
   }
   else if (dnaAzimuth < 0 && dnaAzimuth >= -99.9f)
   {
@@ -104,7 +118,8 @@ QByteArray Protocol::SetDNAAzimuth(float dnaAzimuth)
     QString arg = QString("%1").arg(dnaAzimuth, 5, 'f', 1, QChar('0'));
     arg.replace(",", ".");
     arr.push_back(QString(arg).toLatin1());
-    arr.push_back(QString("\r\n").toLatin1());
+    if (useRN)
+      arr.push_back(QString("\r\n").toLatin1());
   }
   else
   {
@@ -123,7 +138,8 @@ QByteArray Protocol::SetDNAZenith(float dnaZenith)
     QString arg = QString("%1").arg(dnaZenith, 4, 'f', 1, QChar('0'));
     arg.replace(",", ".");
     arr.push_back(arg.toLatin1());
-    arr.push_back(QString("\r\n").toLatin1());
+    if (useRN)
+      arr.push_back(QString("\r\n").toLatin1());
   }
   else if (dnaZenith < 0 && dnaZenith >= -99.9f)
   {
@@ -132,7 +148,8 @@ QByteArray Protocol::SetDNAZenith(float dnaZenith)
     QString arg = QString("%1").arg(dnaZenith, 5, 'f', 1, QChar('0'));
     arg.replace(",", ".");
     arr.push_back(QString(arg).toLatin1());
-    arr.push_back(QString("\r\n").toLatin1());
+    if (useRN)
+      arr.push_back(QString("\r\n").toLatin1());
   }
   else
   {
@@ -189,7 +206,8 @@ QByteArray Protocol::SetMovementOptions(RotatePlane plane, int acceleration, int
   {
     throw QObject::tr("Торможение выходит за допустимые пределы");//Argument braking is out of range");
   }
-  arr.push_back(QString("\r\n").toLatin1());
+  if (useRN)
+    arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }
 
@@ -231,7 +249,8 @@ QByteArray Protocol::SetPositioningOptions(RotatePlane plane, int speed, int zer
   {
     throw QObject::tr("Ускорение выходит за допустимые пределы");//Argument acceleration is out of range");
   }
-  arr.push_back(QString("\r\n").toLatin1());
+  if (useRN)
+    arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }
 
@@ -258,7 +277,8 @@ QByteArray Protocol::SetTempHeating(int heatOnTemp, int heatOffTemp)
   {
     throw QObject::tr("Температура выключения подогрева выходит за допустимые пределы");//"Argument heat off temperature is out of range");
   }
-  arr.push_back(QString("\r\n").toLatin1());
+  if (useRN)
+    arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }
 
@@ -285,7 +305,8 @@ QByteArray Protocol::SetTempVentilation(int ventOnTemp, int ventOffTemp)
   {
     throw QObject::tr("Температура выключения охлаждения выходит за допустимые пределы");//"Argument ventilation off temperature is out of range");
   }
-  arr.push_back(QString("\r\n").toLatin1());
+  if (useRN)
+    arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }
 
@@ -293,7 +314,9 @@ QByteArray Protocol::StopEngines()
 {
   QByteArray arr;
   arr.push_back(preambula);
-  arr.push_back(QString("B11\r\n").toLatin1());
+  arr.push_back(QString("B11").toLatin1());
+  if (useRN)
+    arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }
 
@@ -306,7 +329,8 @@ QByteArray Protocol::EnableHeating(bool heat)
     arr.push_back(QString("1").toLatin1());
   else
     arr.push_back(QString("2").toLatin1());
-  arr.push_back(QString("\r\n").toLatin1());
+  if (useRN)
+    arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }
 
@@ -319,7 +343,8 @@ QByteArray Protocol::EnableVentilation(bool ventilation)
     arr.push_back(QString("1").toLatin1());
   else
     arr.push_back(QString("2").toLatin1());
-  arr.push_back(QString("\r\n").toLatin1());
+  if (useRN)
+    arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }
 
@@ -344,7 +369,8 @@ QByteArray Protocol::MoveCommand(RotatePlane plane, int value)
     value *= (-1);
     arr.push_back(QString("%1").arg(value, 3, 10, QChar('0')).toLatin1());
   }
-  arr.push_back(QString("\r\n").toLatin1());
+  if (useRN)
+    arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }
 
@@ -354,6 +380,7 @@ QByteArray Protocol::SendIP(QString IP)
   arr.push_back(preambula);
   arr.push_back(QString("I%1").arg(IP.count()).toLatin1());
   arr.push_back(IP.toLatin1());
-  arr.push_back(QString("\r\n").toLatin1());
+  if (useRN)
+    arr.push_back(QString("\r\n").toLatin1());
   return arr;
 }

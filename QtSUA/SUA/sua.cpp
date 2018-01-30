@@ -70,6 +70,10 @@ SUA::SUA(QWidget *parent)
   imageStatus.SetImage(ui.imgOrientationState, GREY);
   imageStatus.SetImage(ui.imgStopState, GREY);
   updateTextField();
+
+  ui.actionAll->setChecked(true);
+  reconnectAllSockets();
+
   ui.widget->setEnabled(false);
 }
 
@@ -746,6 +750,11 @@ void SUA::on_btnStopEnginesCommand_clicked()
   }
 }
 
+void SUA::on_btnStopEnginesCommand2_clicked()
+{
+  on_btnStopEnginesCommand_clicked();
+}
+
 void SUA::on_btnHeatingCommand_clicked(bool checked)
 {
   if (commandNetwork->State() == NetworkBase::CONNECTED)
@@ -760,6 +769,12 @@ void SUA::on_btnHeatingCommand_clicked(bool checked)
   }
 }
 
+void SUA::on_btnHeatingCommand_toggled(bool value)
+{
+  QString styleSheet = value ? "background-color:#FFDB8B" : "background-color:#D3D3D3";
+  ui.btnHeatingCommand->setStyleSheet(styleSheet);
+}
+
 void SUA::on_btnVentilationCommand_clicked(bool checked)
 {
   if (commandNetwork->State() == NetworkBase::CONNECTED)
@@ -772,6 +787,12 @@ void SUA::on_btnVentilationCommand_clicked(bool checked)
   {
     ui.btnVentilationCommand->setChecked(false);
   }
+}
+
+void SUA::on_btnVentilationCommand_toggled(bool value)
+{
+  QString styleSheet = value ? "background-color:#FFDB8B" : "background-color:#D3D3D3";
+  ui.btnVentilationCommand->setStyleSheet(styleSheet);
 }
 
 void SUA::on_btnTestCommand_clicked()
@@ -1213,7 +1234,7 @@ void SUA::updateSUAModemConsole(RecievedArray arr)
 void SUA::updateConsoleWindow(RecievedArray arr)
 {
   QString str = arr.ToString();
-  ui.txbConsoleWindow->append(">>>" + str + "\n");
+  ui.txbConsoleWindow->append(">>>" + str /*+ "\n"*/);
   QScrollBar* scroll = ui.txbConsoleWindow->verticalScrollBar();
   scroll->setValue(scroll->maximum());
   txbSuaDNA->setText("");
