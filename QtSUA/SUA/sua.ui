@@ -18,7 +18,7 @@
     <normaloff>:/SUA/images/icon.ico</normaloff>:/SUA/images/icon.ico</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color:</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -723,7 +723,7 @@
                  <property name="minimumSize">
                   <size>
                    <width>45</width>
-                   <height>0</height>
+                   <height>10</height>
                   </size>
                  </property>
                  <property name="text">
@@ -744,6 +744,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_15">
                <item>
                 <widget class="QLabel" name="label_6">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Широта</string>
                  </property>
@@ -762,6 +768,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_16">
                <item>
                 <widget class="QLabel" name="label_8">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Долгота</string>
                  </property>
@@ -780,6 +792,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_18">
                <item>
                 <widget class="QLabel" name="label_11">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Высота</string>
                  </property>
@@ -798,6 +816,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_17">
                <item>
                 <widget class="QLabel" name="label_13">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Статус</string>
                  </property>
@@ -825,6 +849,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_21">
                <item>
                 <widget class="QLabel" name="label_10">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Широта</string>
                  </property>
@@ -843,6 +873,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_19">
                <item>
                 <widget class="QLabel" name="label_14">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Долгота</string>
                  </property>
@@ -861,6 +897,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_20">
                <item>
                 <widget class="QLabel" name="label_16">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Высота</string>
                  </property>
@@ -888,6 +930,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_23">
                <item>
                 <widget class="QLabel" name="label_12">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Магнитный курс</string>
                  </property>
@@ -906,6 +954,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_24">
                <item>
                 <widget class="QLabel" name="label_17">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Азимут</string>
                  </property>
@@ -924,6 +978,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_22">
                <item>
                 <widget class="QLabel" name="label_19">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Угол места</string>
                  </property>
@@ -951,6 +1011,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_25">
                <item>
                 <widget class="QLabel" name="label_15">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Азимут</string>
                  </property>
@@ -969,6 +1035,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_26">
                <item>
                 <widget class="QLabel" name="label_20">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Угол места</string>
                  </property>
@@ -987,6 +1059,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_27">
                <item>
                 <widget class="QLabel" name="label_22">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Дальность</string>
                  </property>
@@ -1005,6 +1083,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_28">
                <item>
                 <widget class="QLabel" name="label_24">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Высота GPS</string>
                  </property>
@@ -1032,6 +1116,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_31">
                <item>
                 <widget class="QLabel" name="label_26">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Температура</string>
                  </property>
@@ -1050,6 +1140,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_30">
                <item>
                 <widget class="QLabel" name="label_18">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Режим</string>
                  </property>
@@ -1068,6 +1164,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_29">
                <item>
                 <widget class="QLabel" name="label_23">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>10</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Ошибка</string>
                  </property>

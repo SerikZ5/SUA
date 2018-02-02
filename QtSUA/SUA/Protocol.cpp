@@ -2,7 +2,7 @@
 #include <QStringBuilder>
 #include <QObject>
 
-#define useRN 0
+#define useRN 1
 
 #include "Protocol.h"
 

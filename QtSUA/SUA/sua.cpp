@@ -77,6 +77,9 @@ SUA::SUA(QWidget *parent)
   ui.actionAll->setChecked(true);
   reconnectAllSockets();
 
+  heatingIsTurnOn(false);
+  ventilationIsTurnOn(false);
+
   ui.widget->setEnabled(false);
 }
 
@@ -460,7 +463,7 @@ void SUA::SendIP(QString IP)
 void SUA::on_actionUserMod_triggered()
 {
   activateFullMode(false);
-  setFixedSize(userWindowWight, userWindowHeight);
+  resize(userWindowWight, userWindowHeight);
 }
 
 void SUA::on_actionLogFiles_triggered()
@@ -479,7 +482,7 @@ void SUA::on_actionAll_changed()
 void SUA::on_btnFullMode_clicked()
 {
   activateFullMode(true);
-  setFixedSize(mainWindowWight, mainWindowHeight);
+  resize(mainWindowWight, mainWindowHeight);
 }
 
 void SUA::on_btnReConnectUsers_clicked()
@@ -779,12 +782,6 @@ void SUA::on_btnHeatingCommand_clicked(bool checked)
   }
 }
 
-void SUA::on_btnHeatingCommand_toggled(bool value)
-{
-  QString styleSheet = value ? "background-color:#FFDB8B" : "background-color:#D3D3D3";
-  ui.btnHeatingCommand->setStyleSheet(styleSheet);
-}
-
 void SUA::on_btnVentilationCommand_clicked(bool checked)
 {
   if (commandNetwork->State() == NetworkBase::CONNECTED)
@@ -799,9 +796,15 @@ void SUA::on_btnVentilationCommand_clicked(bool checked)
   }
 }
 
-void SUA::on_btnVentilationCommand_toggled(bool value)
+void SUA::heatingIsTurnOn(bool value)
 {
   QString styleSheet = value ? "background-color:#FFDB8B" : "background-color:#D3D3D3";
+  ui.btnHeatingCommand->setStyleSheet(styleSheet);
+}
+
+void SUA::ventilationIsTurnOn(bool value)
+{
+  QString styleSheet = value ? "background-color:#61c3ff" : "background-color:#D3D3D3";
   ui.btnVentilationCommand->setStyleSheet(styleSheet);
 }
 
