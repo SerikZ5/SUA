@@ -24,10 +24,10 @@ SUA::SUA(QWidget *parent)
     : QMainWindow(parent)
 {
   ui.setupUi(this);
-  Qt::WindowFlags flags = windowFlags();
+  /*Qt::WindowFlags flags = windowFlags();
   flags ^= Qt::WindowMaximizeButtonHint;
   flags ^= Qt::WindowMinimizeButtonHint;
-  setWindowFlags(flags);
+  setWindowFlags(flags);*/
 
   if (!SUASerializer::Deserialize(configFilePath, &suaSettings))
   {
