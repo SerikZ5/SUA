@@ -81,12 +81,10 @@ TelemetryPacket TelemetryDecoder::GetTelemetryPacket(bool* ok)
       packet.zenith = QByteArrayToFloat(arr.mid(174, 5));
       packet.temperature = QString(arr.mid(183, 5));
       int workMode = (int)arr[189];
-      workMode |= 0x80;
       //workmode - QString от int в двоичной системе координат;
       packet.workMode = QString::number(workMode, 2);
       packet.workMode = packet.workMode.right(8);
       int error = (int)arr[191];
-      error |= 0x80;
       packet.error = QString::number(error, 2);
       packet.error = packet.error.right(8);
       packet.uavAzimuth = QByteArrayToFloat(arr.mid(200, 5));
