@@ -1113,13 +1113,9 @@ void SUA::updateTelemetryWorkMode(QString workModeString)
       imageStatus.SetImage(ui.imgFollowState, GREY);
     }*/
 
-    ui.btnHeatingCommand->blockSignals(true);
-    ui.btnHeatingCommand->setChecked(workModeString[1] == '1');
-    ui.btnHeatingCommand->blockSignals(false);
+    heatingIsTurnOn(workModeString[1] == '1');
 
-    ui.btnVentilationCommand->blockSignals(true);
-    ui.btnVentilationCommand->setChecked(workModeString[0] == '1');
-    ui.btnVentilationCommand->blockSignals(false);
+    ventilationIsTurnOn(workModeString[0] == '1');
 
   }
   catch (...)

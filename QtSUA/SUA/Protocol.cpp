@@ -3,6 +3,7 @@
 #include <QObject>
 
 #define useRN 1
+#define MODEL_OPU_30 1
 
 #include "Protocol.h"
 
@@ -72,7 +73,7 @@ QByteArray Protocol::SetZenith(float zenith)
 {
   QByteArray arr;
   arr.push_back(preambula);
-  if (zenith >= 0 && zenith <= 95)
+  if (zenith >= 0 && zenith <= MODEL_OPU_30 ? 95 : 55)
   {
     arr.push_back(QString("45").toLatin1());
     QString arg = QString("%1").arg(zenith, 5, 'f', 1, QChar('0'));
@@ -178,28 +179,28 @@ QByteArray Protocol::SetMovementOptions(RotatePlane plane, int acceleration, int
   default:
     throw QObject::tr("Недопустимая плоскость вращения"); //Invalid rotation rplane"));
   }
-  arr.push_back(QString("7").toLatin1());
-  if (acceleration >= 1 && acceleration <= 24)
+  arr.push_back(QString("15").toLatin1());
+  if (acceleration >= 1 && acceleration <= 10000)
   {
-    QString arg = QString("%1").arg(acceleration, 2, 10, QChar('0'));
+    QString arg = QString("%1").arg(acceleration, 5, 10, QChar('0'));
     arr.push_back(QString(arg).toLatin1());
   }
   else
   {
     throw QObject::tr("Ускорение выходит за допустимые пределы");//"Argument acceleration is out of range");
   }
-  if (velocity >= 0 && velocity <= 250)
+  if (velocity >= 0 && velocity <= 10000)
   {
-    QString arg = QString("%1").arg(velocity, 3, 10, QChar('0'));
+    QString arg = QString("%1").arg(velocity, 5, 10, QChar('0'));
     arr.push_back(QString(arg).toLatin1());
   }
   else
   {
     throw QObject::tr("Cкорость выходит за допустимые пределы");//Argument velocity is out of range");
   }
-  if (braking >= 1 && braking <= 24)
+  if (braking >= 1 && braking <= 10000)
   {
-    QString arg = QString("%1").arg(braking, 2, 10, QChar('0'));
+    QString arg = QString("%1").arg(braking, 5, 10, QChar('0'));
     arr.push_back(QString(arg).toLatin1());
   }
   else
@@ -230,19 +231,19 @@ QByteArray Protocol::SetPositioningOptions(RotatePlane plane, int speed, int zer
   default:
     throw QObject::tr("Недопустимая плоскость вращения");
   }
-  arr.push_back(QString("6").toLatin1());
-  if (speed >= 0 && speed <= 250)
+  arr.push_back(QString("10").toLatin1());
+  if (speed >= 0 && speed <= 10000)
   {
-    QString arg = QString("%1").arg(speed, 3, 10, QChar('0'));
+    QString arg = QString("%1").arg(speed, 5, 10, QChar('0'));
     arr.push_back(QString(arg).toLatin1());
   }
   else
   {
     throw QObject::tr("Cкорость выходит за допустимые пределы");//"Argument speed is out of range");
   }
-  if (zeroSeek >= 0 && zeroSeek <= 250)
+  if (zeroSeek >= 0 && zeroSeek <= 10000)
   {
-    QString arg = QString("%1").arg(zeroSeek, 3, 10, QChar('0'));
+    QString arg = QString("%1").arg(zeroSeek, 5, 10, QChar('0'));
     arr.push_back(QString(arg).toLatin1());
   }
   else
