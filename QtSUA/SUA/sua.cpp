@@ -515,7 +515,7 @@ void SUA::on_btnSetDNAUpUsers_clicked()
       {
         text = txbSuaDNA->text();
       }
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.zenithDNA = text.toFloat();
       QByteArray comm = Protocol::SetDNAZenith(suaSettings.zenithDNA);
       commandNetwork->Send(comm);
@@ -543,7 +543,7 @@ void SUA::on_btnSetDNADownUsers_clicked()
       {
         text = txbSuaDNA->text();
       }
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.zenithDNA = text.toFloat();
       suaSettings.zenithDNA *= (-1);
       QByteArray comm = Protocol::SetDNAZenith(suaSettings.zenithDNA);
@@ -572,7 +572,7 @@ void SUA::on_btnSetDNALeftUsers_clicked()
       {
         text = txbSuaDNA->text();
       }
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.azimuthDNA = text.toFloat();
       suaSettings.azimuthDNA *= (-1);
       QByteArray comm = Protocol::SetDNAAzimuth(suaSettings.azimuthDNA);
@@ -601,7 +601,7 @@ void SUA::on_btnSetDNARightUsers_clicked()
       {
         text = txbSuaDNA->text();
       }
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.azimuthDNA = text.toFloat();
       QByteArray comm = Protocol::SetDNAAzimuth(suaSettings.azimuthDNA);
       commandNetwork->Send(comm);
@@ -629,7 +629,7 @@ void SUA::on_btnSetAzimuthCommand_clicked()
       {
         text = ui.txbSuaCommandAzimuth->text();
       }
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       float arg = text.toFloat();
       QByteArray comm = Protocol::SetAzimuth(arg);
       commandNetwork->Send(comm);
@@ -657,7 +657,7 @@ void SUA::on_btnSetZenithCommand_clicked()
       {
         text = ui.txbSuaCommandZenith->text();
       }
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       float arg = text.toFloat();
       QByteArray comm = Protocol::SetZenith(arg);
       commandNetwork->Send(comm);
@@ -694,6 +694,7 @@ void SUA::on_SLZen_valueChanged(int value)
 {
   if (commandNetwork->State() == NetworkBase::CONNECTED)
   {
+    value *= 1000;
     QByteArray comm = Protocol::MoveCommand(ZENITH, value);
     commandNetwork->Send(comm);
   }
@@ -708,6 +709,7 @@ void SUA::on_SLAzim_valueChanged(int value)
 {
   if (commandNetwork->State() == NetworkBase::CONNECTED)
   {
+    value *= 1000;
     QByteArray comm = Protocol::MoveCommand(AZIMUTH, value);
     commandNetwork->Send(comm);
   }
@@ -830,13 +832,13 @@ void SUA::btnSetAzimuthMovOptCommand_clicked()
     try
     {
       QString text = txbAzimuthAcceleraion->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.azimuthAcceleraion = text.toInt();
       text = txbAzimuthSpeed->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.azimuthSpeed = text.toInt();
       text = txbAzimuthBraking->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.azimuthBraking = text.toInt();
       QByteArray comm = Protocol::SetMovementOptions(AZIMUTH, suaSettings.azimuthAcceleraion, suaSettings.azimuthSpeed, suaSettings.azimuthBraking);
       commandNetwork->Send(comm);
@@ -862,10 +864,10 @@ void SUA::btnSetAzimuthZerSOptCommand_cliked()
     try
     {
       QString text = txbAzimuthSlowSpeed->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.azimuthSlowSpeed = text.toInt();
       text = txbAzimuthZeroSeek->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.azimuthZeroSeek = text.toInt();
       QByteArray comm = Protocol::SetPositioningOptions(AZIMUTH, suaSettings.azimuthSlowSpeed, suaSettings.azimuthZeroSeek);
       commandNetwork->Send(comm);
@@ -891,13 +893,13 @@ void SUA::btnSetZenithMovOptCommand_clicked()
     try
     {
       QString text = txbZenithAcceleraion->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.zenithAcceleraion = text.toInt();
       text = txbZenithSpeed->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.zenithSpeed = text.toInt();
       text = txbZenithBraking->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.zenithBraking = text.toInt();
       QByteArray comm = Protocol::SetMovementOptions(ZENITH, suaSettings.zenithAcceleraion, suaSettings.zenithSpeed, suaSettings.zenithBraking);
       commandNetwork->Send(comm);
@@ -923,10 +925,10 @@ void SUA::btnSetZenithZerSOptCommand_clicked()
     try
     {
       QString text = txbZenithSlowSpeed->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.zenithSlowSpeed = text.toInt();
       text = txbZenithZeroSeek->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.zenithZeroSeek = text.toInt();
       QByteArray comm = Protocol::SetPositioningOptions(ZENITH, suaSettings.zenithSlowSpeed, suaSettings.zenithZeroSeek);
       commandNetwork->Send(comm);
@@ -952,10 +954,10 @@ void SUA::btnSetHeatingOptCommand_clicked()
     try
     {
       QString text = txbTempEnHeating->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.tempEnHeating = text.toInt();
       text = txbTempDisHeating->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.tempDisHeating = text.toInt();
       QByteArray comm = Protocol::SetTempHeating(suaSettings.tempEnHeating, suaSettings.tempDisHeating);
       commandNetwork->Send(comm);
@@ -981,10 +983,10 @@ void SUA::btnSetVentilationOptCommand_clicked()
     try
     {
       QString text = txbTempEnVentilation->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.tempEnVentilation = text.toInt();
       text = txbTempDisVentilation->text();
-      text = text.replace(".", ",");
+      text = text.replace(",", ".");
       suaSettings.tempDisVentilation = text.toInt();
       QByteArray comm = Protocol::SetTempVentilation(suaSettings.tempEnVentilation, suaSettings.tempDisVentilation);
       commandNetwork->Send(comm);

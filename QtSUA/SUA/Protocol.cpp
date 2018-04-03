@@ -361,14 +361,14 @@ QByteArray Protocol::MoveCommand(RotatePlane plane, int value)
   arr.push_back(QString("O%1").arg((int)plane, 1, 10, QChar('0')).toLatin1());
   if (value >= 0)
   {
-    arr.push_back(QString("4+").toLatin1());
-    arr.push_back(QString("%1").arg(value, 3, 10, QChar('0')).toLatin1());
+    arr.push_back(QString("6+").toLatin1());
+    arr.push_back(QString("%1").arg(value, 5, 10, QChar('0')).toLatin1());
   }
   else
   {
-    arr.push_back(QString("4-").toLatin1());
+    arr.push_back(QString("6-").toLatin1());
     value *= (-1);
-    arr.push_back(QString("%1").arg(value, 3, 10, QChar('0')).toLatin1());
+    arr.push_back(QString("%1").arg(value, 5, 10, QChar('0')).toLatin1());
   }
   if (useRN)
     arr.push_back(QString("\r\n").toLatin1());
