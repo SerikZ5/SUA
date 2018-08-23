@@ -236,3 +236,5 @@ $(SUA_OBJ) : $(SUA_FORMS_UI_HDR)
 
 .PRECIOUS : $(SUA_OBJDIR)/moc_%.cpp
 .PRECIOUS : $(SUA_OBJDIR)/ui_%.h
+
+http://www.tripleboot.org/?p=138
