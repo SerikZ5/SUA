@@ -1,0 +1,2 @@
+time_date;base_lat;base_long;base_alt;base_status;uav_lat;uav_long;uav_alt;dir;enc_az;enc_zen;temp;calc_az;calc_zen;work;error;distance;height_GPS
+
